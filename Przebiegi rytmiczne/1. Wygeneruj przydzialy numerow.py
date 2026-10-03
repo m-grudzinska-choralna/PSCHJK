@@ -1,4 +1,3 @@
-import glob
 import os
 from collections import Counter
 import yaml
@@ -63,6 +62,25 @@ def generuj_zestaw_rownomierny(liczba_uczniow, min_val, max_val):
     return zestawy
 
 
+def znajdz_plik_klasy(folder_klas, nazwa_klasy):
+    """
+    Szuka pliku z listą uczniów w folderze klas.
+    Sprawdza kolejno: nazwa.txt, Klasa_nazwa.txt, klasa_nazwa.txt
+    """
+    mozliwe_nazwy = [
+        f"{nazwa_klasy}.txt",
+        f"Klasa_{nazwa_klasy}.txt",
+        f"klasa_{nazwa_klasy}.txt",
+    ]
+
+    for nazwa_pliku in mozliwe_nazwy:
+        sciezka = os.path.join(folder_klas, nazwa_pliku)
+        if os.path.exists(sciezka):
+            return sciezka
+
+    return None
+
+
 def przydziel_numery_dla_klas(konfiguracja):
     liczba_przebiegow = konfiguracja.get("liczba_przebiegow", 20)
 
@@ -76,26 +94,37 @@ def przydziel_numery_dla_klas(konfiguracja):
         os.path.join(KATALOG_SKRYPTU, rel_folder_wynikowy)
     )
 
-    os.makedirs(folder_wynikowy, exist_ok=True)
+    pliki_wynikowe_cfg = konfiguracja.get("pliki_wynikowe", {})
+    szablon_przydzialow = pliki_wynikowe_cfg.get(
+        "przydzialy_przebiegow_do_uczniow",
+        "przydzialy_klasa_{klasa}.txt",
+    )
 
-    wzorzec_szukania = os.path.join(folder_klas, "*.txt")
-    sciezki_plikow = glob.glob(wzorzec_szukania)
-
-    if not sciezki_plikow:
-        print(f"Nie znaleziono żadnych plików .txt w folderze: {folder_klas}")
+    klasy = konfiguracja.get("klasy", [])
+    if not klasy:
+        print("Brak zdefiniowanych klas w pliku konfiguracyjnym (sekcja 'klasy').")
         return
 
     polowa = liczba_przebiegow // 2
 
-    for sciezka_pliku_wejsciowego in sciezki_plikow:
-        nazwa_pliku_bez_ext = os.path.splitext(
-            os.path.basename(sciezka_pliku_wejsciowego)
-        )[0]
+    for nazwa_klasy in klasy:
+        nazwa_klasy_str = str(nazwa_klasy).strip()
+        
+        # Oczyszczenie nazwy klasy z przedrostka Klasa_ na potrzeby zmiennej {klasa}
+        czysta_nazwa_klasy = nazwa_klasy_str.replace("Klasa_", "").replace("klasa_", "")
+
+        sciezka_pliku_wejsciowego = znajdz_plik_klasy(folder_klas, czysta_nazwa_klasy)
+
+        if not sciezka_pliku_wejsciowego:
+            print(
+                f"Ostrzeżenie: Nie znaleziono pliku z listą uczniów dla klasy '{czysta_nazwa_klasy}' w folderze: {folder_klas}"
+            )
+            continue
 
         uczniowie = wczytaj_uczniow_z_pliku(sciezka_pliku_wejsciowego)
 
         if not uczniowie:
-            print(f"Plik '{nazwa_pliku_wejsciowego}' jest pusty. Pomijam.")
+            print(f"Plik dla klasy '{czysta_nazwa_klasy}' jest pusty. Pomijam.")
             continue
 
         n = len(uczniowie)
@@ -124,19 +153,25 @@ def przydziel_numery_dla_klas(konfiguracja):
             linia = f"{uczen_format}{ciag_liczb}"
             zawartosc_pliku.append(linia)
 
-        # Zapis samej listy uczniów do pliku
-        nazwa_pliku_wyjsciowego = f"przydzialy_{nazwa_pliku_bez_ext}.txt"
-        sciezka_pliku_wynikowego = os.path.join(
-            folder_wynikowy, nazwa_pliku_wyjsciowego
+        # Tworzenie ścieżki docelowej z podstawieniem czystej nazwy klasy (np. "5")
+        wzgledna_sciezka_wynikowa = szablon_przydzialow.replace("\\", "/").format(
+            klasa=czysta_nazwa_klasy
         )
+        sciezka_pliku_wynikowego = os.path.abspath(
+            os.path.join(folder_wynikowy, wzgledna_sciezka_wynikowa)
+        )
+
+        os.makedirs(os.path.dirname(sciezka_pliku_wynikowego), exist_ok=True)
 
         with open(sciezka_pliku_wynikowego, "w", encoding="utf-8") as f:
             f.write("\n".join(zawartosc_pliku))
 
-        # Wyświetlenie raportu na ekranie (w konsoli)
-        print(f"\nPrzetworzono '{nazwa_pliku_bez_ext}' ({n} uczniów) -> Zapisano w '{sciezka_pliku_wynikowego}'")
+        # Raport w konsoli
+        print(
+            f"\nPrzetworzono klasę '{czysta_nazwa_klasy}' ({n} uczniów) -> Zapisano w '{sciezka_pliku_wynikowego}'"
+        )
         print("=" * 50)
-        print(f"RAPORT CZĘSTOTLIWOŚCI NUMERÓW DLA KLASY: {nazwa_pliku_bez_ext}")
+        print(f"RAPORT CZĘSTOTLIWOŚCI NUMERÓW DLA KLASY: {czysta_nazwa_klasy}")
         print("=" * 50)
         for num in range(1, liczba_przebiegow + 1):
             ilosc = licznik_numerow.get(num, 0)
