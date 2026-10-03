@@ -1,0 +1,16 @@
+Bocheński Filip:                   01, 11, 02, 12
+Bortual Danyil:                    13, 03, 14, 04
+Chrobak Sergiusz:                  05, 15, 06, 16
+Gadzińska Michalina:               17, 07, 18, 08
+Gondek Karolina:                   09, 19, 10, 20
+Jagła Justyna:                     11, 01, 13, 03
+Kierzyńska Hanna:                  02, 12, 04, 14
+Koźma Julia:                       15, 05, 17, 07
+Perez Nina:                        06, 16, 08, 18
+Rejzdrowicz Witold:                19, 09, 11, 01
+Ręgałek Karol:                     10, 20, 02, 12
+Roszkiewicz Celina:                13, 03, 15, 05
+Stachowiak Anton:                  04, 14, 06, 16
+Stachowiak Michał:                 17, 07, 19, 09
+Stróżyńska Olga:                   08, 18, 10, 20
+Vantslava Evialina:                11, 01, 12, 02

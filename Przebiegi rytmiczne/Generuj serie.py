@@ -9,8 +9,10 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 import yaml
 
-FOLDER_PRZEBIEGOW_INPUT = "INPUT"
-FOLDER_WYNIKOWY = "OUTPUT"
+FOLDER_PRZEBIEGOW_INPUT = "Definicje serii"
+FOLDER_WYNIKOWY = "Wygenerowane pakiety"
+FOLDER_ODPOWIEDZI = "Odpowiedzi"
+FOLDER_DLA_UCZNIOW = "Dla uczniów"
 FOLDER_PLIKOW_POSREDNICH = "Pliki pośrednie"
 SZABLON_PRZYDZIALOW = "Przydzialy/przydzialy_klasa_{klasa}.txt"
 
@@ -338,6 +340,7 @@ def przetworz_klasy(
         print("Brak wygenerowanych plików przydziałów do przetworzenia.")
         return
 
+    nazwa_serii = os.path.basename(os.path.normpath(path_output))
     obrazy_przebiegow = {}
     for nazwa_pliku in os.listdir(path_przebiegi_img):
         nazwa, ext = os.path.splitext(nazwa_pliku)
@@ -356,8 +359,12 @@ def przetworz_klasy(
                 )
 
     for sciezka_txt, nazwa_klasy in pliki_klas:
-        folder_klasy_out = os.path.join(path_output, nazwa_klasy)
+        folder_klasy_out = os.path.join(
+            path_output, FOLDER_DLA_UCZNIOW, nazwa_klasy
+        )
         os.makedirs(folder_klasy_out, exist_ok=True)
+        folder_odpowiedzi = os.path.join(path_output, FOLDER_ODPOWIEDZI)
+        os.makedirs(folder_odpowiedzi, exist_ok=True)
         doc = Document()
         print(f"\n--- Przetwarzanie: {nazwa_klasy} ---")
 
@@ -377,7 +384,9 @@ def przetworz_klasy(
             ]
 
             folder_ucznia = os.path.join(folder_klasy_out, nazwa_ucznia)
-            podfolder_audio = os.path.join(folder_ucznia, nazwa_ucznia_bez_nr)
+            podfolder_audio = os.path.join(
+                folder_ucznia, nazwa_ucznia_bez_nr, nazwa_serii
+            )
             os.makedirs(podfolder_audio, exist_ok=True)
             kopiowane_audio_count = 0
             for numer_porzadkowy, numer_przebiegu in enumerate(numery, start=1):
@@ -418,7 +427,9 @@ def przetworz_klasy(
             if idx < len(linie) - 1:
                 doc.add_page_break()
 
-        sciezka_doc_out = os.path.join(folder_klasy_out, f"{nazwa_klasy}.docx")
+        sciezka_doc_out = os.path.join(
+            folder_odpowiedzi, f"{nazwa_klasy}.docx"
+        )
         doc.save(sciezka_doc_out)
         print(f"Pomyślnie wygenerowano komplet dla klasy: {nazwa_klasy}")
 
@@ -447,6 +458,22 @@ def wybierz_serie(path_input):
         if wybor in serie:
             return os.path.join(path_input, wybor)
         print(f"Nieprawidłowa nazwa serii. Wybierz jedną z: {', '.join(serie)}")
+
+def ostrzez_o_nadpisaniu(path_output):
+    """Ostrzega o nadpisaniu i pyta o kontynuację, gdy folder nie jest pusty."""
+    if os.path.isdir(path_output) and os.listdir(path_output):
+        print(
+            f"\033[93mOstrzeżenie: folder serii zawiera już dane. "
+            f"Istniejące pliki mogą zostać nadpisane: {path_output}\033[0m"
+        )
+        while True:
+            wybor = input("Czy kontynuować? [t/N]: ").strip().casefold()
+            if wybor in {"t", "tak"}:
+                return True
+            if wybor in {"", "n", "nie"}:
+                return False
+            print("Wpisz 't' (tak) lub 'n' (nie).")
+    return True
 
 
 def przygotuj_materialy(
@@ -497,6 +524,9 @@ def glowna_funkcja():
     path_output = os.path.abspath(
         os.path.join(KATALOG_SKRYPTU, FOLDER_WYNIKOWY, nazwa_serii)
     )
+    if not ostrzez_o_nadpisaniu(path_output):
+        print("Przerwano działanie skryptu.")
+        return
 
     sciezka_docx = znajdz_plik_word(path_input)
     images_paths = pobierz_sciezki_obrazow_word(sciezka_docx)
