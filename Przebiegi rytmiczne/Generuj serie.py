@@ -1,6 +1,9 @@
+import io
 import os
 import re
 import shutil
+import sys
+import traceback
 import zipfile
 from collections import Counter
 from docx import Document
@@ -16,6 +19,34 @@ FOLDER_WERSJI = "Wersje"
 SZABLON_PRZYDZIALOW = "Przydzialy/przydzialy_klasa_{klasa}.txt"
 
 KATALOG_SKRYPTU = os.path.dirname(os.path.abspath(__file__))
+
+
+class StrumienKonsoliZLogiem:
+    def __init__(self, strumien_ekranu, bufor_logu):
+        self.strumien_ekranu = strumien_ekranu
+        self.bufor_logu = bufor_logu
+        self.plik_logu = None
+
+    def write(self, tekst):
+        self.strumien_ekranu.write(tekst)
+        self.strumien_ekranu.flush()
+        if self.plik_logu:
+            self.plik_logu.write(tekst)
+            self.plik_logu.flush()
+        else:
+            self.bufor_logu.write(tekst)
+        return len(tekst)
+
+    def flush(self):
+        self.strumien_ekranu.flush()
+        if self.plik_logu:
+            self.plik_logu.flush()
+
+    def podlacz_plik_logu(self, plik_logu):
+        self.plik_logu = plik_logu
+
+    def isatty(self):
+        return self.strumien_ekranu.isatty()
 
 
 def wczytaj_konfiguracje(nazwa_pliku=".przebiegi rytmiczne.yml"):
@@ -534,7 +565,7 @@ def skopiuj_wejscie_i_wyjscie_do_wersji(path_input, path_output, folder_wersji):
             return [FOLDER_WERSJI] if FOLDER_WERSJI in nazwy else []
         return []
 
-    shutil.copytree(
+    shutil.copytree(S
         path_output,
         sciezka_kopii_output,
         ignore=pomin_folder_wersji,
@@ -542,6 +573,23 @@ def skopiuj_wejscie_i_wyjscie_do_wersji(path_input, path_output, folder_wersji):
 
 
 def glowna_funkcja():
+    oryginalne_stdout = sys.stdout
+    oryginalne_stderr = sys.stderr
+    bufor_logu = io.StringIO()
+    strumien_stdout = StrumienKonsoliZLogiem(oryginalne_stdout, bufor_logu)
+    strumien_stderr = StrumienKonsoliZLogiem(oryginalne_stderr, bufor_logu)
+    sys.stdout = strumien_stdout
+    sys.stderr = strumien_stderr
+    try:
+        wykonaj_glowna_funkcje(
+            bufor_logu, strumien_stdout, strumien_stderr
+        )
+    finally:
+        sys.stdout = oryginalne_stdout
+        sys.stderr = oryginalne_stderr
+
+
+def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
     konfiguracja = wczytaj_konfiguracje(".przebiegi rytmiczne.yml")
     folder_wejsciowy = konfiguracja.get(
         "folder_wejsciowy", FOLDER_PRZEBIEGOW_INPUT
@@ -574,21 +622,32 @@ def glowna_funkcja():
     )
 
     folder_wersji = utworz_folder_nowej_wersji(path_output)
-    wygenerowane_przydzialy = przydziel_numery_dla_klas(
-        konfiguracja, path_output, folder_wersji
-    )
-    przygotuj_materialy(
-        konfiguracja,
-        wygenerowane_przydzialy,
-        path_input,
-        path_output,
-        folder_wersji,
-        sciezka_docx,
-        images_paths,
-    )
-    skopiuj_wejscie_i_wyjscie_do_wersji(
-        path_input, path_output, folder_wersji
-    )
+    sciezka_logu = os.path.join(folder_wersji, "Log.txt")
+    with open(sciezka_logu, "w", encoding="utf-8") as plik_logu:
+        plik_logu.write(bufor_logu.getvalue())
+        plik_logu.flush()
+        strumien_stdout.podlacz_plik_logu(plik_logu)
+        strumien_stderr.podlacz_plik_logu(plik_logu)
+        print(f"Log zapisywany w: {sciezka_logu}")
+        try:
+            wygenerowane_przydzialy = przydziel_numery_dla_klas(
+                konfiguracja, path_output, folder_wersji
+            )
+            przygotuj_materialy(
+                konfiguracja,
+                wygenerowane_przydzialy,
+                path_input,
+                path_output,
+                folder_wersji,
+                sciezka_docx,
+                images_paths,
+            )
+            skopiuj_wejscie_i_wyjscie_do_wersji(
+                path_input, path_output, folder_wersji
+            )
+        except Exception:
+            traceback.print_exc()
+            raise SystemExit(1)
 
 
 if __name__ == "__main__":
