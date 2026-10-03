@@ -1,6 +1,12 @@
 # Ścieżka do folderu z listami uczniów (.txt)
 folder_klas: "../Listy uczniow"
 
+# Folder z wejściowymi seriami przebiegów
+folder_wejsciowy: '\\salonowy\LaptopMarta\_KSZTAŁCENIE SŁUCHU\MOJE dyktanda rytmiczne - musescore\Serie dla programu'
+
+# Folder docelowy wygenerowanych materiałów
+folder_wynikowy: '\\salonowy\LaptopMarta\_KSZTAŁCENIE SŁUCHU\MOJE dyktanda rytmiczne - musescore\Gotowe'
+
 # Lista klas (nazwy plików .txt bez rozszerzenia) do przetworzenia
 klasy:
   - "5"

@@ -10,9 +10,8 @@ from docx.shared import Inches, Pt
 import yaml
 
 FOLDER_PRZEBIEGOW_INPUT = "Definicje serii"
-FOLDER_WYNIKOWY = "Wygenerowane pakiety"
-FOLDER_ODPOWIEDZI = "Odpowiedzi"
-FOLDER_DLA_UCZNIOW = "Dla uczniów"
+FOLDER_ODPOWIEDZI = "Odpowiedzi - tylko dla nauczyciela"
+FOLDER_DLA_UCZNIOW = "Dla uczniów - do skopiowania na chmurę"
 FOLDER_PLIKOW_POSREDNICH = "Pliki pośrednie"
 SZABLON_PRZYDZIALOW = "Przydzialy/przydzialy_klasa_{klasa}.txt"
 
@@ -511,18 +510,23 @@ def przygotuj_materialy(
 
 def glowna_funkcja():
     konfiguracja = wczytaj_konfiguracje(".przebiegi rytmiczne.yml")
+    folder_wejsciowy = konfiguracja.get(
+        "folder_wejsciowy", FOLDER_PRZEBIEGOW_INPUT
+    )
     folder_input = os.path.abspath(
-        os.path.join(
-            KATALOG_SKRYPTU, FOLDER_PRZEBIEGOW_INPUT
-        )
+        os.path.join(KATALOG_SKRYPTU, folder_wejsciowy)
     )
     if not os.path.isdir(folder_input):
         raise FileNotFoundError(f"Nie znaleziono folderu wejściowego: {folder_input}")
 
     path_input = wybierz_serie(folder_input)
-    nazwa_serii = os.path.basename(path_input)
+    folder_wynikowy = konfiguracja.get("folder_wynikowy", "Wyniki")
     path_output = os.path.abspath(
-        os.path.join(KATALOG_SKRYPTU, FOLDER_WYNIKOWY, nazwa_serii)
+        os.path.join(
+            KATALOG_SKRYPTU,
+            folder_wynikowy,
+            os.path.basename(os.path.normpath(path_input)),
+        )
     )
     if not ostrzez_o_nadpisaniu(path_output):
         print("Przerwano działanie skryptu.")
