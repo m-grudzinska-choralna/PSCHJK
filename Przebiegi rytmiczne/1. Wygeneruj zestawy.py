@@ -1,6 +1,5 @@
 import glob
 import os
-import random
 from collections import Counter
 import yaml
 
@@ -25,47 +24,43 @@ def wczytaj_uczniow_z_pliku(sciezka_pliku):
     return uczniowie
 
 
-def generuj_zestaw_unikalny(
-    liczba_uczniow, min_val, max_val, wykorzystane_pary
-):
+def generuj_zestaw_rownomierny(liczba_uczniow, min_val, max_val):
+    """
+    Deterministycznie i idealnie równomiernie przydziela numery z zakresu min_val..max_val.
+    Gwarantuje, że różnica w liczbie wystąpień między jakimikolwiek dwoma numerami
+    nie przekroczy 1.
+    """
     zakres = list(range(min_val, max_val + 1))
+    len_z = len(zakres)
 
-    for proby_calosci in range(100):
-        lokalne_wykorzystane = set(wykorzystane_pary)
-        zestawy = []
-        licznik = Counter({num: 0 for num in zakres})
-        sukces = True
+    wymagane_numery = liczba_uczniow * 2
+    sekwencja_numerow = [zakres[i % len_z] for i in range(wymagane_numery)]
 
-        for _ in range(liczba_uczniow):
-            znaleziono = False
-            podejscia = 0
+    zestawy = []
+    uzyte_pary = set()
 
-            while not znaleziono and podejscia < 200:
-                podejscia += 1
-                najrzadsze = sorted(
-                    zakres, key=lambda x: (licznik[x], random.random())
+    for i in range(liczba_uczniow):
+        l1 = sekwencja_numerow[2 * i]
+        l2 = sekwencja_numerow[2 * i + 1]
+
+        if l1 == l2 or tuple(sorted((l1, l2))) in uzyte_pary:
+            offset = 1
+            while (l1 == l2 or tuple(sorted((l1, l2))) in uzyte_pary) and (
+                2 * i + 1 + offset
+            ) < len(sekwencja_numerow):
+                idx_alt = 2 * i + 1 + offset
+                sekwencja_numerow[2 * i + 1], sekwencja_numerow[idx_alt] = (
+                    sekwencja_numerow[idx_alt],
+                    sekwencja_numerow[2 * i + 1],
                 )
-                l1, l2 = najrzadsze[0], najrzadsze[1]
-                para = tuple(sorted((l1, l2)))
+                l2 = sekwencja_numerow[2 * i + 1]
+                offset += 1
 
-                if para not in lokalne_wykorzystane and l1 != l2:
-                    lokalne_wykorzystane.add(para)
-                    licznik[l1] += 1
-                    licznik[l2] += 1
-                    zestawy.append([l1, l2])
-                    znaleziono = True
+        para = tuple(sorted((l1, l2)))
+        uzyte_pary.add(para)
+        zestawy.append([l1, l2])
 
-            if not znaleziono:
-                sukces = False
-                break
-
-        if sukces:
-            wykorzystane_pary.update(lokalne_wykorzystane)
-            return zestawy
-
-    raise ValueError(
-        f"Nie można wygenerować unikalnej pary z zakresu {min_val}-{max_val}."
-    )
+    return zestawy
 
 
 def przydziel_numery_dla_klas(konfiguracja):
@@ -105,17 +100,11 @@ def przydziel_numery_dla_klas(konfiguracja):
 
         n = len(uczniowie)
 
-        wykorzystane_pary_A = set()
-        wykorzystane_pary_B = set()
-
-        zestawy_A = generuj_zestaw_unikalny(
-            n, 1, polowa, wykorzystane_pary_A
-        )
-        zestawy_B = generuj_zestaw_unikalny(
-            n, polowa + 1, liczba_przebiegow, wykorzystane_pary_B
-        )
+        zestawy_A = generuj_zestaw_rownomierny(n, 1, polowa)
+        zestawy_B = generuj_zestaw_rownomierny(n, polowa + 1, liczba_przebiegow)
 
         zawartosc_pliku = []
+        licznik_numerow = Counter()
 
         for idx, uczeń in enumerate(uczniowie, start=1):
             A = zestawy_A[idx - 1]
@@ -126,14 +115,16 @@ def przydziel_numery_dla_klas(konfiguracja):
             else:
                 wynikowe = [B[0], A[0], B[1], A[1]]
 
+            licznik_numerow.update(wynikowe)
+
             sformatowane_liczby = [f"{num:02d}" for num in wynikowe]
             ciag_liczb = ", ".join(sformatowane_liczby)
 
-            # Wyrównanie imienia i nazwiska do szerokości 50 znaków z dwukropkiem
             uczen_format = f"{uczeń}:".ljust(35)
             linia = f"{uczen_format}{ciag_liczb}"
             zawartosc_pliku.append(linia)
 
+        # Zapis samej listy uczniów do pliku
         nazwa_pliku_wyjsciowego = f"przydzialy_{nazwa_pliku_bez_ext}.txt"
         sciezka_pliku_wynikowego = os.path.join(
             folder_wynikowy, nazwa_pliku_wyjsciowego
@@ -142,9 +133,15 @@ def przydziel_numery_dla_klas(konfiguracja):
         with open(sciezka_pliku_wynikowego, "w", encoding="utf-8") as f:
             f.write("\n".join(zawartosc_pliku))
 
-        print(
-            f"Przetworzono '{nazwa_pliku_bez_ext}' ({n} uczniów) -> Zapisano w '{sciezka_pliku_wynikowego}'"
-        )
+        # Wyświetlenie raportu na ekranie (w konsoli)
+        print(f"\nPrzetworzono '{nazwa_pliku_bez_ext}' ({n} uczniów) -> Zapisano w '{sciezka_pliku_wynikowego}'")
+        print("=" * 50)
+        print(f"RAPORT CZĘSTOTLIWOŚCI NUMERÓW DLA KLASY: {nazwa_pliku_bez_ext}")
+        print("=" * 50)
+        for num in range(1, liczba_przebiegow + 1):
+            ilosc = licznik_numerow.get(num, 0)
+            print(f"Numer {num:02d}: {ilosc} os.")
+        print("-" * 50)
 
 
 if __name__ == "__main__":
