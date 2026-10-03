@@ -74,13 +74,15 @@ def wczytaj_uczniow_z_pliku(sciezka_pliku):
     return uczniowie
 
 
-def generuj_zestaw_rownomierny(liczba_uczniow, min_val, max_val):
+def generuj_zestaw_rownomierny(liczba_uczniow, numery_przebiegow):
     """
-    Deterministycznie i idealnie równomiernie przydziela numery z zakresu min_val..max_val.
+    Deterministycznie i równomiernie przydziela podane numery przebiegów.
     Gwarantuje, że różnica w liczbie wystąpień między jakimikolwiek dwoma numerami
     nie przekroczy 1.
     """
-    zakres = list(range(min_val, max_val + 1))
+    zakres = list(numery_przebiegow)
+    if not zakres:
+        raise ValueError("Nie można wygenerować przydziałów bez numerów przebiegów.")
     len_z = len(zakres)
 
     wymagane_numery = liczba_uczniow * 2
@@ -133,7 +135,8 @@ def znajdz_plik_klasy(folder_klas, nazwa_klasy):
 
 
 def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
-    liczba_przebiegow = konfiguracja["liczba_przebiegow"]
+    numery_przebiegow = konfiguracja["numery_przebiegow"]
+    liczba_przebiegow = len(numery_przebiegow)
 
     rel_folder_klas = konfiguracja.get("folder_klas", "../Listy uczniow")
     folder_klas = os.path.abspath(
@@ -170,11 +173,14 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
 
         n = len(uczniowie)
 
-        zestawy_A = generuj_zestaw_rownomierny(n, 1, polowa)
-        zestawy_B = generuj_zestaw_rownomierny(n, polowa + 1, liczba_przebiegow)
+        zestawy_A = generuj_zestaw_rownomierny(
+            n, numery_przebiegow[:polowa]
+        )
+        zestawy_B = generuj_zestaw_rownomierny(
+            n, numery_przebiegow[polowa:]
+        )
 
         zawartosc_pliku = []
-        licznik_numerow = Counter()
 
         for idx, uczeń in enumerate(uczniowie, start=1):
             A = zestawy_A[idx - 1]
@@ -184,8 +190,6 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
                 wynikowe = [A[0], B[0], A[1], B[1]]
             else:
                 wynikowe = [B[0], A[0], B[1], A[1]]
-
-            licznik_numerow.update(wynikowe)
 
             sformatowane_liczby = [f"{num:02d}" for num in wynikowe]
             ciag_liczb = ", ".join(sformatowane_liczby)
@@ -210,19 +214,59 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
             (sciezka_pliku_wynikowego, f"Klasa_{czysta_nazwa_klasy}")
         )
 
-        # Raport w konsoli
         print(
             f"\nPrzetworzono klasę '{czysta_nazwa_klasy}' ({n} uczniów) -> Zapisano w '{sciezka_pliku_wynikowego}'"
         )
-        print("=" * 50)
-        print(f"RAPORT CZĘSTOTLIWOŚCI NUMERÓW DLA KLASY: {czysta_nazwa_klasy}")
-        print("=" * 50)
-        for num in range(1, liczba_przebiegow + 1):
-            ilosc = licznik_numerow.get(num, 0)
-            print(f"Numer {num:02d}: {ilosc} os.")
-        print("-" * 50)
 
     return pliki_przydzialow
+
+
+def wypisz_raport_koncowy(
+    numery_przebiegow, pliki_klas, folder_dla_uczniow
+):
+    """Wyświetla wyłącznie statystyki przebiegów i przydziałów klas."""
+    raport = [
+        "STATYSTYKI KOŃCOWE",
+        f"Liczba przebiegów: {len(numery_przebiegow)}",
+        f"Pliki do skopiowania dla uczniów: {folder_dla_uczniow}",
+    ]
+
+    for sciezka_txt, nazwa_klasy in pliki_klas:
+        if len(raport) > 2:
+            raport.append("")
+        with open(sciezka_txt, "r", encoding="utf-8") as file:
+            linie = [line.strip() for line in file if line.strip()]
+
+        liczba_uczniow = 0
+        licznik_numerow = Counter()
+        for linia in linie:
+            if ":" not in linia:
+                continue
+            _, numery_str = linia.split(":", 1)
+            numery = [
+                int(value.strip())
+                for value in numery_str.split(",")
+                if value.strip().isdigit()
+            ]
+            liczba_uczniow += 1
+            licznik_numerow.update(numery)
+
+        raport.append(nazwa_klasy)
+        raport.append(f"  Uczniów: {liczba_uczniow}")
+        licznik_czestotliwosci = Counter(
+            licznik_numerow.get(numer, 0) for numer in numery_przebiegow
+        )
+        grupy_rozkładu = []
+        for ile_razy, liczba_numerow in sorted(
+            licznik_czestotliwosci.items()
+        ):
+            grupy_rozkładu.append(
+                f"    {liczba_numerow} przebiegów {ile_razy} razy powtórzonych"
+            )
+        raport.append("  Częstotliwość:")
+        raport.extend(grupy_rozkładu)
+
+    print(f"\033[92m{'\n'.join(raport)}\033[0m")
 
 
 def znajdz_plik_word(path_input):
@@ -248,62 +292,93 @@ def znajdz_plik_word(path_input):
     return pliki_docx[0]
 
 
-def pobierz_sciezki_obrazow_word(sciezka_docx):
-    """Zwraca unikalne obrazy osadzone w dokumencie Word, w kolejności użycia."""
+def pobierz_przebiegi_word(sciezka_docx):
+    """Odczytuje numery przebiegów z pierwszej kolumny tabel i obrazy z drugiej."""
     doc = Document(sciezka_docx)
-    xml_str = doc.part.element.xml
-    image_rids_in_order = re.findall(r'r:embed="(rId\d+)"', xml_str)
-
-    unique_rids = list(dict.fromkeys(image_rids_in_order))
     rid_to_path = {
         rel.rId: rel.target_ref
         for rel in doc.part.rels.values()
         if "image" in rel.target_ref
     }
-    images_paths = []
-    for rid in unique_rids:
-        if rid in rid_to_path:
-            target = rid_to_path[rid]
+    przebiegi = []
+    uzyte_numery = set()
+
+    for numer_tabeli, table in enumerate(doc.tables, start=1):
+        for numer_wiersza, row in enumerate(table.rows, start=1):
+            if len(row.cells) < 2:
+                continue
+            image_rids = row.cells[1]._tc.xpath(".//a:blip/@r:embed")
+            dopasowanie = re.search(r"\d+", row.cells[0].text)
+            if not dopasowanie:
+                if image_rids:
+                    raise ValueError(
+                        f"W tabeli {numer_tabeli}, wierszu {numer_wiersza} "
+                        "znaleziono zapis nutowy bez numeru przebiegu "
+                        "w pierwszej kolumnie."
+                    )
+                continue
+
+            numer = int(dopasowanie.group())
+            if numer in uzyte_numery:
+                raise ValueError(
+                    f"Powtórzony numer przebiegu w dokumencie Word: {numer}."
+                )
+
+            if not image_rids:
+                raise ValueError(
+                    f"Brak obrazu w drugim polu dla przebiegu {numer}."
+                )
+
+            target = rid_to_path.get(image_rids[0])
+            if not target:
+                raise ValueError(
+                    f"Nie można odczytać obrazu dla przebiegu {numer}."
+                )
             if not target.startswith("word/"):
                 target = "word/" + target
-            images_paths.append(target)
 
-    if not images_paths:
+            przebiegi.append((numer, target))
+            uzyte_numery.add(numer)
+
+    if not przebiegi:
         raise ValueError(
-            f"Nie znaleziono obrazów przebiegów w dokumencie: {sciezka_docx}"
+            f"Nie znaleziono numerowanych przebiegów w tabelach dokumentu: {sciezka_docx}"
         )
 
-    return images_paths
+    return przebiegi
 
 
-def wyodrebnij_obrazy_przebiegow(sciezka_docx, path_przebiegi_img, images_paths):
+def wyodrebnij_obrazy_przebiegow(sciezka_docx, path_przebiegi_img, przebiegi):
     """Wypakowuje przekazane obrazy przebiegów z dokumentu Word."""
     os.makedirs(path_przebiegi_img, exist_ok=True)
     print(f"Przetwarzanie pliku z obrazami przebiegów: {sciezka_docx}")
     with zipfile.ZipFile(sciezka_docx, "r") as archive:
-        for idx, img_path in enumerate(images_paths, start=1):
+        for numer, img_path in przebiegi:
             ext = os.path.splitext(img_path)[1]
-            out_filename = os.path.join(path_przebiegi_img, f"{idx}{ext}")
+            out_filename = os.path.join(
+                path_przebiegi_img, f"{numer:02d}{ext}"
+            )
             with open(out_filename, "wb") as output_file:
                 output_file.write(archive.read(img_path))
             print(
-                f"  [Nutowe] Przebieg {idx:02d} -> wyciągnięto obraz: "
+                f"  [Nutowe] Przebieg {numer:02d} -> wyciągnięto obraz: "
                 f"{os.path.basename(img_path)}"
             )
 
-    print(f"Wyodrębniono {len(images_paths)} obrazów przebiegów.")
-    return len(images_paths)
+    print(f"Wyodrębniono {len(przebiegi)} obrazów przebiegów.")
+    return len(przebiegi)
 
 
-def znajdz_pliki_audio(path_input, liczba_przebiegow):
+def znajdz_pliki_audio(path_input, numery_przebiegow):
     """Wyszukuje nagrania i sprawdza kompletność przed rozpoczęciem generowania."""
     audio_map = {}
+    numery_do_wyszukania = set(numery_przebiegow)
 
     def rozpoznaj_numer(nazwa_pliku):
         nazwa_bez_ext = os.path.splitext(nazwa_pliku)[0]
         if nazwa_bez_ext.strip().isdigit():
             numer = int(nazwa_bez_ext.strip())
-            if 1 <= numer <= liczba_przebiegow:
+            if numer in numery_do_wyszukania:
                 return numer
 
         dopasowanie = re.search(
@@ -313,12 +388,12 @@ def znajdz_pliki_audio(path_input, liczba_przebiegow):
         )
         if dopasowanie:
             numer = int(dopasowanie.group(1))
-            if 1 <= numer <= liczba_przebiegow:
+            if numer in numery_do_wyszukania:
                 return numer
 
         for numer_str in re.findall(r"\d+", nazwa_bez_ext):
             numer = int(numer_str)
-            if 1 <= numer <= liczba_przebiegow:
+            if numer in numery_do_wyszukania:
                 return numer
         return None
 
@@ -329,7 +404,7 @@ def znajdz_pliki_audio(path_input, liczba_przebiegow):
             sciezka = os.path.join(root, nazwa_pliku)
             if ext == ".mp3":
                 numer = rozpoznaj_numer(nazwa_pliku)
-                if numer and numer not in audio_map:
+                if numer is not None and numer not in audio_map:
                     audio_map[numer] = ("plik", sciezka, nazwa_pliku)
             elif ext == ".zip":
                 try:
@@ -339,7 +414,7 @@ def znajdz_pliki_audio(path_input, liczba_przebiegow):
                                 continue
                             nazwa_audio = os.path.basename(member)
                             numer = rozpoznaj_numer(nazwa_audio)
-                            if numer and numer not in audio_map:
+                            if numer is not None and numer not in audio_map:
                                 audio_map[numer] = (
                                     "zip",
                                     sciezka,
@@ -350,9 +425,7 @@ def znajdz_pliki_audio(path_input, liczba_przebiegow):
                     print(f"Błąd podczas odczytu ZIP {nazwa_pliku}: {error}")
 
     brakujace_numery = [
-        numer
-        for numer in range(1, liczba_przebiegow + 1)
-        if numer not in audio_map
+        numer for numer in numery_przebiegow if numer not in audio_map
     ]
     if brakujace_numery:
         lista_brakujacych = ", ".join(
@@ -363,7 +436,10 @@ def znajdz_pliki_audio(path_input, liczba_przebiegow):
             "Przerywam bez generowania wyników."
         )
 
-    print(f"Znaleziono komplet nagrań: {liczba_przebiegow}/{liczba_przebiegow}.\n")
+    print(
+        f"Znaleziono komplet nagrań: "
+        f"{len(audio_map)}/{len(numery_przebiegow)}.\n"
+    )
     return audio_map
 
 
@@ -458,6 +534,12 @@ def przetworz_klasy(
                 f" Uczeń: {nazwa_ucznia} -> przekopiowano "
                 f"{kopiowane_audio_count}/{len(numery)} plików audio."
             )
+            if len(numery) != 4 or kopiowane_audio_count != 4:
+                raise ValueError(
+                    f"Uczeń '{nazwa_ucznia}' ({nazwa_klasy}): "
+                    f"skopiowano {kopiowane_audio_count}/4 plików audio "
+                    f"przy {len(numery)} przypisanych numerach."
+                )
 
             doc.add_heading(nazwa_ucznia, level=2)
             table = doc.add_table(rows=0, cols=2)
@@ -554,11 +636,11 @@ def przygotuj_materialy(
     konfiguracja,
     pliki_klas,
     zrodla_audio,
+    przebiegi_word,
     path_input,
-    path_output,
+                path_output,
     folder_wersji,
     sciezka_docx,
-    images_paths,
 ):
     """Uruchamia etap obrazów, audio i dokumentów po wygenerowaniu przydziałów."""
     liczba_przebiegow = konfiguracja["liczba_przebiegow"]
@@ -576,7 +658,7 @@ def przygotuj_materialy(
     os.makedirs(path_output, exist_ok=True)
 
     sukces = wyodrebnij_obrazy_przebiegow(
-        sciezka_docx, path_przebiegi_img, images_paths
+        sciezka_docx, path_przebiegi_img, przebiegi_word
     )
     przygotuj_pliki_audio(zrodla_audio, path_przebiegi_audio)
     if sukces:
@@ -647,15 +729,17 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
         return
 
     sciezka_docx = znajdz_plik_word(path_input)
-    images_paths = pobierz_sciezki_obrazow_word(sciezka_docx)
-    konfiguracja["liczba_przebiegow"] = len(images_paths)
+    przebiegi_word = pobierz_przebiegi_word(sciezka_docx)
+    numery_przebiegow = [numer for numer, _ in przebiegi_word]
+    konfiguracja["numery_przebiegow"] = numery_przebiegow
+    konfiguracja["liczba_przebiegow"] = len(numery_przebiegow)
     print(
         f"Liczba przebiegów odczytana z dokumentu Word: "
         f"{konfiguracja['liczba_przebiegow']}"
     )
 
     zrodla_audio = znajdz_pliki_audio(
-        path_input, konfiguracja["liczba_przebiegow"]
+        path_input, numery_przebiegow
     )
     folder_wersji = utworz_folder_nowej_wersji(path_output)
     sciezka_logu = os.path.join(folder_wersji, "Log.txt")
@@ -673,14 +757,19 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
                 konfiguracja,
                 wygenerowane_przydzialy,
                 zrodla_audio,
+                przebiegi_word,
                 path_input,
                 path_output,
                 folder_wersji,
                 sciezka_docx,
-                images_paths,
             )
             skopiuj_wejscie_i_wyjscie_do_wersji(
                 path_input, path_output, folder_wersji
+            )
+            wypisz_raport_koncowy(
+                numery_przebiegow,
+                wygenerowane_przydzialy,
+                os.path.join(path_output, FOLDER_DLA_UCZNIOW),
             )
         except Exception as error:
             wypisz_blad_na_czerwono(error)
