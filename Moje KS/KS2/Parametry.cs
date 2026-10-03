@@ -16,16 +16,17 @@ namespace KS2
 
         public static class Ograniczenie
         {
-            /*
+            
             public static string edycjaProgramu = "uczniowie";
             public static int max_rok = 2030;
             public static int max_miesiac = 11;
-            */
-
             
+
+            /*
             public static string edycjaProgramu = "";
             public static int max_rok = 2400;
             public static int max_miesiac = 11;
+            */
             
         }
 
