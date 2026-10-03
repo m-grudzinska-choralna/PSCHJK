@@ -1,6 +1,3 @@
-# Maksymalna liczba w zakresie (zostanie podzielona na pół: 1..N/2 oraz N/2+1..N)
-liczba_przebiegow: 20
-
 # Ścieżka do folderu z listami uczniów (.txt)
 folder_klas: "../Listy uczniow"
 

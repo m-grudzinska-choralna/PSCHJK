@@ -94,7 +94,7 @@ def znajdz_plik_klasy(folder_klas, nazwa_klasy):
 
 
 def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy):
-    liczba_przebiegow = konfiguracja.get("liczba_przebiegow", 20)
+    liczba_przebiegow = konfiguracja["liczba_przebiegow"]
 
     rel_folder_klas = konfiguracja.get("folder_klas", "../Listy uczniow")
     folder_klas = os.path.abspath(
@@ -190,12 +190,8 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy):
     return pliki_przydzialow
 
 
-def wyodrebnij_obrazy_przebiegow(
-    path_input, path_przebiegi_img, liczba_przebiegow
-):
-    """Wypakowuje obrazy przebiegów w kolejności występowania w dokumencie."""
-    os.makedirs(path_przebiegi_img, exist_ok=True)
-
+def znajdz_plik_word(path_input):
+    """Zwraca jedyny plik DOCX w serii i zgłasza błąd dla kilku plików."""
     pliki_docx = []
     for root, dirs, files in os.walk(path_input):
         for nazwa_pliku in files:
@@ -210,11 +206,15 @@ def wyodrebnij_obrazy_przebiegow(
         )
 
     if not pliki_docx:
-        print(f"Brak plików .docx z przebiegami w folderze '{path_input}'!")
-        return False
+        raise FileNotFoundError(
+            f"Nie znaleziono pliku Word (.docx) w serii: {path_input}"
+        )
 
-    sciezka_docx = pliki_docx[0]
-    print(f"Przetwarzanie pliku z obrazami przebiegów: {sciezka_docx}")
+    return pliki_docx[0]
+
+
+def pobierz_sciezki_obrazow_word(sciezka_docx):
+    """Zwraca unikalne obrazy osadzone w dokumencie Word, w kolejności użycia."""
     doc = Document(sciezka_docx)
     xml_str = doc.part.element.xml
     image_rids_in_order = re.findall(r'r:embed="(rId\d+)"', xml_str)
@@ -234,10 +234,17 @@ def wyodrebnij_obrazy_przebiegow(
             images_paths.append(target)
 
     if not images_paths:
-        print("Nie znaleziono obrazów w dokumencie Word!")
-        return False
+        raise ValueError(
+            f"Nie znaleziono obrazów przebiegów w dokumencie: {sciezka_docx}"
+        )
 
-    images_paths = images_paths[:liczba_przebiegow]
+    return images_paths
+
+
+def wyodrebnij_obrazy_przebiegow(sciezka_docx, path_przebiegi_img, images_paths):
+    """Wypakowuje przekazane obrazy przebiegów z dokumentu Word."""
+    os.makedirs(path_przebiegi_img, exist_ok=True)
+    print(f"Przetwarzanie pliku z obrazami przebiegów: {sciezka_docx}")
     with zipfile.ZipFile(sciezka_docx, "r") as archive:
         for idx, img_path in enumerate(images_paths, start=1):
             ext = os.path.splitext(img_path)[1]
@@ -250,7 +257,7 @@ def wyodrebnij_obrazy_przebiegow(
             )
 
     print(f"Wyodrębniono {len(images_paths)} obrazów przebiegów.")
-    return True
+    return len(images_paths)
 
 
 def przygotuj_pliki_audio(path_input, path_przebiegi_audio, liczba_przebiegow):
@@ -442,9 +449,11 @@ def wybierz_serie(path_input):
         print(f"Nieprawidłowa nazwa serii. Wybierz jedną z: {', '.join(serie)}")
 
 
-def przygotuj_materialy(konfiguracja, pliki_klas, path_input, path_output):
+def przygotuj_materialy(
+    konfiguracja, pliki_klas, path_input, path_output, sciezka_docx, images_paths
+):
     """Uruchamia etap obrazów, audio i dokumentów po wygenerowaniu przydziałów."""
-    liczba_przebiegow = konfiguracja.get("liczba_przebiegow", 20)
+    liczba_przebiegow = konfiguracja["liczba_przebiegow"]
     folder_plikow_posrednich = os.path.join(
         path_output, FOLDER_PLIKOW_POSREDNICH
     )
@@ -462,7 +471,7 @@ def przygotuj_materialy(konfiguracja, pliki_klas, path_input, path_output):
     os.makedirs(path_output, exist_ok=True)
 
     sukces = wyodrebnij_obrazy_przebiegow(
-        path_input, path_przebiegi_img, liczba_przebiegow
+        sciezka_docx, path_przebiegi_img, images_paths
     )
     przygotuj_pliki_audio(
         path_input, path_przebiegi_audio, liczba_przebiegow
@@ -489,11 +498,24 @@ def glowna_funkcja():
         os.path.join(KATALOG_SKRYPTU, FOLDER_WYNIKOWY, nazwa_serii)
     )
 
+    sciezka_docx = znajdz_plik_word(path_input)
+    images_paths = pobierz_sciezki_obrazow_word(sciezka_docx)
+    konfiguracja["liczba_przebiegow"] = len(images_paths)
+    print(
+        f"Liczba przebiegów odczytana z dokumentu Word: "
+        f"{konfiguracja['liczba_przebiegow']}"
+    )
+
     wygenerowane_przydzialy = przydziel_numery_dla_klas(
         konfiguracja, path_output
     )
     przygotuj_materialy(
-        konfiguracja, wygenerowane_przydzialy, path_input, path_output
+        konfiguracja,
+        wygenerowane_przydzialy,
+        path_input,
+        path_output,
+        sciezka_docx,
+        images_paths,
     )
 
 
