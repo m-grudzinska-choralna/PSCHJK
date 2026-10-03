@@ -1,0 +1,167 @@
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\KS2.Ekran.resources
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS2\KS2\obj\Debug\Program Moje KS.pdb
+D:\KS2\KS2\bin\Debug\Program Moje KS.exe.config
+D:\KS2\KS2\bin\Debug\Program Moje KS.exe
+D:\KS2\KS2\bin\Debug\Program Moje KS.pdb
+D:\KS2\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\KS2\KS2\obj\Debug\KS2.Ekran.resources
+D:\KS2\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\KS2\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+D:\KS2\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\KS2\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\KS2\KS2\obj\Debug\Program Moje KS.exe
+D:\KS2\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS3\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\przemyslawgr\Desktop\KS3\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS3\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\KS2.Ekran.resources
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.cache
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS3\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\KS2.Ekran.resources
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.cache
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS\KS3\KS2\obj\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS3\KS2\obj\Debug\KS2.OknoGlowne.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\KS2.OknoGlowne.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\KS2.ZakresNutDialog.resources
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS\KS4\KS2\obj\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\KS2.OknoGlowne.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4.1\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.cache
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS4.1\KS2\obj\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\KS2.OknoGlowne.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS4.2\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS5\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS5\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\przemyslawgr\Desktop\KS5\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS5\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\przemyslawgr\Desktop\KS5\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS6\KS6\KS2\obj\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.exe.config
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.pdb
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\KS2.OknoGlowne.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\KS2.Properties.Resources.resources
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.exe
+C:\Users\MartaPrzemek\OneDrive\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.exe.config
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\bin\Debug\Program Moje KS.pdb
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csprojResolveAssemblyReference.cache
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\KS2.OknoGlowne.resources
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\KS2.Properties.Resources.resources
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csproj.GenerateResource.Cache
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.csproj.CoreCompileInputs.cache
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.exe
+D:\Programowanie\Ksztalcenie sluchu\KS7\KS7\KS2\obj\Debug\Program Moje KS.pdb
