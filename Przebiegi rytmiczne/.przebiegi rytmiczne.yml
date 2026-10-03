@@ -1,0 +1,20 @@
+# Maksymalna liczba w zakresie (zostanie podzielona na pół: 1..N/2 oraz N/2+1..N)
+liczba_przebiegow: 20
+
+# Ścieżka do folderu z listami uczniów (.txt)
+folder_klas: "../Listy uczniow"
+
+# Główny folder, w którym będą umieszczane wszystkie pliki wynikowe
+folder_wynikowy: "Wyniki"
+
+# Wzorzec/nazwa pliku dla poszczególnych rodzajów wyników
+pliki_wynikowe:
+  przydzialy_przebiegow_do_uczniow: "przydzialy_klasa_{klasa}.txt"
+  # Tutaj w przyszłości dodasz nazwy dla kolejnych modułów, np.:
+  # raport_zbiorczy: "raport_klasa_{klasa}.txt"
+  # zestawienie_ocen: "oceny_klasa_{klasa}.txt"
+
+# Lista klas (nazwy plików .txt bez rozszerzenia) do przetworzenia
+klasy:
+  - "5"
+  - "6"
