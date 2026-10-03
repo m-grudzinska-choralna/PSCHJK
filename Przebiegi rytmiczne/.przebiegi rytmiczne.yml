@@ -4,6 +4,9 @@ liczba_przebiegow: 20
 # Ścieżka do folderu z listami uczniów (.txt)
 folder_klas: "../Listy uczniow"
 
+# Folder wejściowy zawierający przebiegi i ich nagrania pogrupowane w foldery serii
+folder_przebiegow_input: "INPUT"
+
 # Główny folder, w którym będą umieszczane wszystkie pliki wynikowe
 folder_wynikowy: "Wyniki"
 
