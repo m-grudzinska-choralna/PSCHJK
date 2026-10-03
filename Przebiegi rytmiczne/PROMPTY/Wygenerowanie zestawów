@@ -1,0 +1,29 @@
+Napisz skrypt w języku Python do deterministycznego i zrównoważonego przydzielania numerów zestawów dla uczniów na podstawie podanej konfiguracji i list klas.
+
+Wymagania i zachowanie programu:
+
+1. Konfiguracja (YAML):
+   - Wczytaj konfigurację z pliku `.przebiegi rytmiczne.yml`.
+   - Plik zawiera parametry: `liczba_przebiegow` (domyślnie 20), `folder_klas` (domyślnie "../Listy uczniow"), `folder_wynikowy` (domyślnie "Wyniki").
+
+2. Wczytywanie danych:
+   - Skrypt powinien odczytać wszystkie pliki `.txt` z wskazanego folderu klas.
+   - Każdy plik tekstowy zawiera listę uczniów (jeden uczeń w nowej linii). Puste linie należy pomijać.
+
+3. Logika przydziału numerów:
+   - Zakres numerów podziel na dwie równe połówki: Zestaw A (od 1 do liczba_przebiegow // 2) oraz Zestaw B (od liczba_przebiegow // 2 + 1 do liczba_przebiegow).
+   - Każdy uczeń musi otrzymać dokładnie 4 numery: 2 z grupy A oraz 2 z grupy B.
+   - Algorytm MUSI działać całkowicie deterministycznie (BEZ użycia biblioteki `random`).
+   - Przydział musi być idealnie równomierny – różnica w liczbie wystąpień między jakimikolwiek dwoma numerami w klasie może wynosić maksymalnie 1.
+   - Numery są dobierane rotacyjnie (round-robin). Jeśli w ramach przydziału dla jednego ucznia trafią się dwa takie same numery lub para, która została już użyta, algorytm ma dokonać deterministycznej zamiany elementu z kolejnym w sekwencji.
+
+4. Formatowanie wyników dla ucznia:
+   - Dla uczniów na nieparzystych pozycjach (1, 3, 5...) kolejność numerów w linii to: [A1, B1, A2, B2].
+   - Dla uczniów na parzystych pozycjach (2, 4, 6...) kolejność numerów w linii to: [B1, A1, B2, A2].
+   - Numery muszą być sformatowane jako dwucyfrowe (z zerem wiodącym, np. 01, 02).
+   - Imię i nazwisko ucznia wraz z dwukropkiem powinno być wyrównane do lewej na szerokość 35 znaków, np.:
+     `Jan Kowalski:                       01, 11, 02, 12`
+
+5. Zapis i raportowanie:
+   - Wyniki przydziału zapisz do folderu wynikowego w plikach o nazwie `przydzialy_<nazwa_klasy>.txt`. Plik powinien zawierać WYŁĄCZNIE listę uczniów z przypisanymi ciągami liczb.
+   - Po wygenerowaniu pliku dla danej klasy, wyświetl w konsoli (na ekranie) raport podsumowujący częstotliwość wystąpień każdego numeru z całego zakresu (od 1 do liczba_przebiegow), informujący, ile osób dostało dany numer.
