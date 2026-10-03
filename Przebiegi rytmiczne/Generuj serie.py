@@ -3,7 +3,6 @@ import os
 import re
 import shutil
 import sys
-import traceback
 import zipfile
 from collections import Counter
 from docx import Document
@@ -47,6 +46,14 @@ class StrumienKonsoliZLogiem:
 
     def isatty(self):
         return self.strumien_ekranu.isatty()
+
+
+def wypisz_blad_na_czerwono(error):
+    print(
+        f"\033[91mNie udało się wygenerować materiałów. "
+        f"Szczegóły: {error}\033[0m",
+        file=sys.stderr,
+    )
 
 
 def wczytaj_konfiguracje(nazwa_pliku=".przebiegi rytmiczne.yml"):
@@ -288,9 +295,8 @@ def wyodrebnij_obrazy_przebiegow(sciezka_docx, path_przebiegi_img, images_paths)
     return len(images_paths)
 
 
-def przygotuj_pliki_audio(path_input, path_przebiegi_audio, liczba_przebiegow):
-    """Kopiuje nagrania MP3 z folderu wejściowego, także z archiwów ZIP."""
-    os.makedirs(path_przebiegi_audio, exist_ok=True)
+def znajdz_pliki_audio(path_input, liczba_przebiegow):
+    """Wyszukuje nagrania i sprawdza kompletność przed rozpoczęciem generowania."""
     audio_map = {}
 
     def rozpoznaj_numer(nazwa_pliku):
@@ -316,7 +322,7 @@ def przygotuj_pliki_audio(path_input, path_przebiegi_audio, liczba_przebiegow):
                 return numer
         return None
 
-    print("\n--- Skanowanie plików audio MP3 ---")
+    print("\n--- Sprawdzanie kompletności nagrań audio MP3 ---")
     for root, dirs, files in os.walk(path_input):
         for nazwa_pliku in files:
             ext = os.path.splitext(nazwa_pliku)[1].lower()
@@ -324,12 +330,7 @@ def przygotuj_pliki_audio(path_input, path_przebiegi_audio, liczba_przebiegow):
             if ext == ".mp3":
                 numer = rozpoznaj_numer(nazwa_pliku)
                 if numer and numer not in audio_map:
-                    sciezka_docelowa = os.path.join(
-                        path_przebiegi_audio, f"{numer:02d}.mp3"
-                    )
-                    shutil.copy(sciezka, sciezka_docelowa)
-                    audio_map[numer] = sciezka_docelowa
-                    print(f"  [Audio] Przebieg {numer:02d} -> '{nazwa_pliku}'")
+                    audio_map[numer] = ("plik", sciezka, nazwa_pliku)
             elif ext == ".zip":
                 try:
                     with zipfile.ZipFile(sciezka, "r") as archive:
@@ -339,23 +340,54 @@ def przygotuj_pliki_audio(path_input, path_przebiegi_audio, liczba_przebiegow):
                             nazwa_audio = os.path.basename(member)
                             numer = rozpoznaj_numer(nazwa_audio)
                             if numer and numer not in audio_map:
-                                sciezka_docelowa = os.path.join(
-                                    path_przebiegi_audio, f"{numer:02d}.mp3"
-                                )
-                                with open(sciezka_docelowa, "wb") as output_file:
-                                    output_file.write(archive.read(member))
-                                audio_map[numer] = sciezka_docelowa
-                                print(
-                                    f"  [Audio ZIP] Przebieg {numer:02d} "
-                                    f"-> '{nazwa_audio}'"
+                                audio_map[numer] = (
+                                    "zip",
+                                    sciezka,
+                                    member,
+                                    nazwa_audio,
                                 )
                 except Exception as error:
                     print(f"Błąd podczas odczytu ZIP {nazwa_pliku}: {error}")
 
-    print(
-        f"Przygotowano {len(audio_map)}/{liczba_przebiegow} nagrań audio.\n"
-    )
+    brakujace_numery = [
+        numer
+        for numer in range(1, liczba_przebiegow + 1)
+        if numer not in audio_map
+    ]
+    if brakujace_numery:
+        lista_brakujacych = ", ".join(
+            f"{numer:02d}" for numer in brakujace_numery
+        )
+        raise FileNotFoundError(
+            f"Brak nagrań MP3 dla przebiegów: {lista_brakujacych}. "
+            "Przerywam bez generowania wyników."
+        )
+
+    print(f"Znaleziono komplet nagrań: {liczba_przebiegow}/{liczba_przebiegow}.\n")
     return audio_map
+
+
+def przygotuj_pliki_audio(audio_map, path_przebiegi_audio):
+    """Kopiuje wcześniej zweryfikowane nagrania do folderu wersji."""
+    os.makedirs(path_przebiegi_audio, exist_ok=True)
+    for numer, zrodlo in sorted(audio_map.items()):
+        sciezka_docelowa = os.path.join(
+            path_przebiegi_audio, f"{numer:02d}.mp3"
+        )
+        if zrodlo[0] == "plik":
+            shutil.copy(zrodlo[1], sciezka_docelowa)
+            nazwa_audio = zrodlo[2]
+            typ_zrodla = "Audio"
+        else:
+            with zipfile.ZipFile(zrodlo[1], "r") as archive:
+                with open(sciezka_docelowa, "wb") as output_file:
+                    output_file.write(archive.read(zrodlo[2]))
+            nazwa_audio = zrodlo[3]
+            typ_zrodla = "Audio ZIP"
+        print(
+            f"  [{typ_zrodla}] Przebieg {numer:02d} -> '{nazwa_audio}'"
+        )
+    print(f"Przygotowano {len(audio_map)} nagrań audio.\n")
 
 
 def przetworz_klasy(
@@ -521,6 +553,7 @@ def utworz_folder_nowej_wersji(path_output):
 def przygotuj_materialy(
     konfiguracja,
     pliki_klas,
+    zrodla_audio,
     path_input,
     path_output,
     folder_wersji,
@@ -545,9 +578,7 @@ def przygotuj_materialy(
     sukces = wyodrebnij_obrazy_przebiegow(
         sciezka_docx, path_przebiegi_img, images_paths
     )
-    przygotuj_pliki_audio(
-        path_input, path_przebiegi_audio, liczba_przebiegow
-    )
+    przygotuj_pliki_audio(zrodla_audio, path_przebiegi_audio)
     if sukces:
         przetworz_klasy(
             pliki_klas, path_output, path_przebiegi_img, path_przebiegi_audio
@@ -565,7 +596,7 @@ def skopiuj_wejscie_i_wyjscie_do_wersji(path_input, path_output, folder_wersji):
             return [FOLDER_WERSJI] if FOLDER_WERSJI in nazwy else []
         return []
 
-    shutil.copytree(S
+    shutil.copytree(
         path_output,
         sciezka_kopii_output,
         ignore=pomin_folder_wersji,
@@ -584,6 +615,8 @@ def glowna_funkcja():
         wykonaj_glowna_funkcje(
             bufor_logu, strumien_stdout, strumien_stderr
         )
+    except Exception as error:
+        wypisz_blad_na_czerwono(error)
     finally:
         sys.stdout = oryginalne_stdout
         sys.stderr = oryginalne_stderr
@@ -621,6 +654,9 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
         f"{konfiguracja['liczba_przebiegow']}"
     )
 
+    zrodla_audio = znajdz_pliki_audio(
+        path_input, konfiguracja["liczba_przebiegow"]
+    )
     folder_wersji = utworz_folder_nowej_wersji(path_output)
     sciezka_logu = os.path.join(folder_wersji, "Log.txt")
     with open(sciezka_logu, "w", encoding="utf-8") as plik_logu:
@@ -636,6 +672,7 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
             przygotuj_materialy(
                 konfiguracja,
                 wygenerowane_przydzialy,
+                zrodla_audio,
                 path_input,
                 path_output,
                 folder_wersji,
@@ -645,9 +682,8 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
             skopiuj_wejscie_i_wyjscie_do_wersji(
                 path_input, path_output, folder_wersji
             )
-        except Exception:
-            traceback.print_exc()
-            raise SystemExit(1)
+        except Exception as error:
+            wypisz_blad_na_czerwono(error)
 
 
 if __name__ == "__main__":
