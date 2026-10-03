@@ -12,7 +12,7 @@ import yaml
 FOLDER_PRZEBIEGOW_INPUT = "Definicje serii"
 FOLDER_ODPOWIEDZI = "Odpowiedzi - tylko dla nauczyciela"
 FOLDER_DLA_UCZNIOW = "Dla uczniów - do skopiowania na chmurę"
-FOLDER_PLIKOW_POSREDNICH = "Pliki pośrednie"
+FOLDER_WERSJI = "Wersje"
 SZABLON_PRZYDZIALOW = "Przydzialy/przydzialy_klasa_{klasa}.txt"
 
 KATALOG_SKRYPTU = os.path.dirname(os.path.abspath(__file__))
@@ -94,16 +94,12 @@ def znajdz_plik_klasy(folder_klas, nazwa_klasy):
     return None
 
 
-def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy):
+def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
     liczba_przebiegow = konfiguracja["liczba_przebiegow"]
 
     rel_folder_klas = konfiguracja.get("folder_klas", "../Listy uczniow")
     folder_klas = os.path.abspath(
         os.path.join(KATALOG_SKRYPTU, rel_folder_klas)
-    )
-
-    folder_plikow_posrednich = os.path.join(
-        folder_wynikowy, FOLDER_PLIKOW_POSREDNICH
     )
 
     klasy = konfiguracja.get("klasy", [])
@@ -165,7 +161,7 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy):
             klasa=czysta_nazwa_klasy
         )
         sciezka_pliku_wynikowego = os.path.abspath(
-            os.path.join(folder_plikow_posrednich, wzgledna_sciezka_wynikowa)
+            os.path.join(folder_wersji, wzgledna_sciezka_wynikowa)
         )
 
         os.makedirs(os.path.dirname(sciezka_pliku_wynikowego), exist_ok=True)
@@ -475,19 +471,38 @@ def ostrzez_o_nadpisaniu(path_output):
     return True
 
 
+def utworz_folder_nowej_wersji(path_output):
+    folder_wersji = os.path.join(path_output, FOLDER_WERSJI)
+    os.makedirs(folder_wersji, exist_ok=True)
+
+    numery_wersji = []
+    for nazwa in os.listdir(folder_wersji):
+        dopasowanie = re.fullmatch(r"Wersja (\d+)", nazwa)
+        if dopasowanie and os.path.isdir(os.path.join(folder_wersji, nazwa)):
+            numery_wersji.append(int(dopasowanie.group(1)))
+
+    nastepna_wersja = max(numery_wersji, default=0) + 1
+    sciezka_wersji = os.path.join(folder_wersji, f"Wersja {nastepna_wersja}")
+    os.makedirs(sciezka_wersji)
+    return sciezka_wersji
+
+
 def przygotuj_materialy(
-    konfiguracja, pliki_klas, path_input, path_output, sciezka_docx, images_paths
+    konfiguracja,
+    pliki_klas,
+    path_input,
+    path_output,
+    folder_wersji,
+    sciezka_docx,
+    images_paths,
 ):
     """Uruchamia etap obrazów, audio i dokumentów po wygenerowaniu przydziałów."""
     liczba_przebiegow = konfiguracja["liczba_przebiegow"]
-    folder_plikow_posrednich = os.path.join(
-        path_output, FOLDER_PLIKOW_POSREDNICH
-    )
     path_przebiegi_img = os.path.join(
-        folder_plikow_posrednich, "Rozbicie przebiegów"
+        folder_wersji, "Rozbicie przebiegów"
     )
     path_przebiegi_audio = os.path.join(
-        folder_plikow_posrednich, "Rozbicie przebiegów audio"
+        folder_wersji, "Rozbicie przebiegów audio"
     )
 
     if not os.path.isdir(path_input):
@@ -506,6 +521,24 @@ def przygotuj_materialy(
         przetworz_klasy(
             pliki_klas, path_output, path_przebiegi_img, path_przebiegi_audio
         )
+
+
+def skopiuj_wejscie_i_wyjscie_do_wersji(path_input, path_output, folder_wersji):
+    """Zapisuje kopie wejścia i wygenerowanego wyjścia w folderze wersji."""
+    shutil.copytree(path_input, os.path.join(folder_wersji, "Input"))
+
+    sciezka_kopii_output = os.path.join(folder_wersji, "Output")
+
+    def pomin_folder_wersji(sciezka, nazwy):
+        if os.path.abspath(sciezka) == os.path.abspath(path_output):
+            return [FOLDER_WERSJI] if FOLDER_WERSJI in nazwy else []
+        return []
+
+    shutil.copytree(
+        path_output,
+        sciezka_kopii_output,
+        ignore=pomin_folder_wersji,
+    )
 
 
 def glowna_funkcja():
@@ -540,16 +573,21 @@ def glowna_funkcja():
         f"{konfiguracja['liczba_przebiegow']}"
     )
 
+    folder_wersji = utworz_folder_nowej_wersji(path_output)
     wygenerowane_przydzialy = przydziel_numery_dla_klas(
-        konfiguracja, path_output
+        konfiguracja, path_output, folder_wersji
     )
     przygotuj_materialy(
         konfiguracja,
         wygenerowane_przydzialy,
         path_input,
         path_output,
+        folder_wersji,
         sciezka_docx,
         images_paths,
+    )
+    skopiuj_wejscie_i_wyjscie_do_wersji(
+        path_input, path_output, folder_wersji
     )
 
 
