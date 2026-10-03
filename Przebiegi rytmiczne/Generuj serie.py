@@ -9,6 +9,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Inches, Pt
 import yaml
 
+FOLDER_PRZEBIEGOW_INPUT = "INPUT"
+FOLDER_WYNIKOWY = "OUTPUT"
+FOLDER_PLIKOW_POSREDNICH = "Pliki pośrednie"
+SZABLON_PRZYDZIALOW = "Przydzialy/przydzialy_klasa_{klasa}.txt"
+
 KATALOG_SKRYPTU = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -88,7 +93,7 @@ def znajdz_plik_klasy(folder_klas, nazwa_klasy):
     return None
 
 
-def przydziel_numery_dla_klas(konfiguracja):
+def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy):
     liczba_przebiegow = konfiguracja.get("liczba_przebiegow", 20)
 
     rel_folder_klas = konfiguracja.get("folder_klas", "../Listy uczniow")
@@ -96,15 +101,8 @@ def przydziel_numery_dla_klas(konfiguracja):
         os.path.join(KATALOG_SKRYPTU, rel_folder_klas)
     )
 
-    rel_folder_wynikowy = konfiguracja.get("folder_wynikowy", "Wyniki")
-    folder_wynikowy = os.path.abspath(
-        os.path.join(KATALOG_SKRYPTU, rel_folder_wynikowy)
-    )
-
-    pliki_wynikowe_cfg = konfiguracja.get("pliki_wynikowe", {})
-    szablon_przydzialow = pliki_wynikowe_cfg.get(
-        "przydzialy_przebiegow_do_uczniow",
-        "przydzialy_klasa_{klasa}.txt",
+    folder_plikow_posrednich = os.path.join(
+        folder_wynikowy, FOLDER_PLIKOW_POSREDNICH
     )
 
     klasy = konfiguracja.get("klasy", [])
@@ -162,11 +160,11 @@ def przydziel_numery_dla_klas(konfiguracja):
             zawartosc_pliku.append(linia)
 
         # Tworzenie ścieżki docelowej z podstawieniem czystej nazwy klasy (np. "5")
-        wzgledna_sciezka_wynikowa = szablon_przydzialow.replace("\\", "/").format(
+        wzgledna_sciezka_wynikowa = SZABLON_PRZYDZIALOW.replace("\\", "/").format(
             klasa=czysta_nazwa_klasy
         )
         sciezka_pliku_wynikowego = os.path.abspath(
-            os.path.join(folder_wynikowy, wzgledna_sciezka_wynikowa)
+            os.path.join(folder_plikow_posrednich, wzgledna_sciezka_wynikowa)
         )
 
         os.makedirs(os.path.dirname(sciezka_pliku_wynikowego), exist_ok=True)
@@ -198,19 +196,24 @@ def wyodrebnij_obrazy_przebiegow(
     """Wypakowuje obrazy przebiegów w kolejności występowania w dokumencie."""
     os.makedirs(path_przebiegi_img, exist_ok=True)
 
-    sciezka_docx = None
+    pliki_docx = []
     for root, dirs, files in os.walk(path_input):
         for nazwa_pliku in files:
             if nazwa_pliku.lower().endswith(".docx") and not nazwa_pliku.startswith("~$"):
-                sciezka_docx = os.path.join(root, nazwa_pliku)
-                break
-        if sciezka_docx:
-            break
+                pliki_docx.append(os.path.join(root, nazwa_pliku))
 
-    if not sciezka_docx:
+    if len(pliki_docx) >= 2:
+        lista_plikow = "\n".join(pliki_docx)
+        raise ValueError(
+            f"Błąd: znaleziono {len(pliki_docx)} pliki Word (.docx) w serii "
+            f"'{path_input}'. Maksymalna liczba to 1:\n{lista_plikow}"
+        )
+
+    if not pliki_docx:
         print(f"Brak plików .docx z przebiegami w folderze '{path_input}'!")
         return False
 
+    sciezka_docx = pliki_docx[0]
     print(f"Przetwarzanie pliku z obrazami przebiegów: {sciezka_docx}")
     doc = Document(sciezka_docx)
     xml_str = doc.part.element.xml
@@ -413,27 +416,49 @@ def przetworz_klasy(
         print(f"Pomyślnie wygenerowano komplet dla klasy: {nazwa_klasy}")
 
 
-def przygotuj_materialy(konfiguracja, pliki_klas):
+def wybierz_serie(path_input):
+    """Pyta o serię i zwraca ścieżkę do wybranego podfolderu."""
+    serie = [
+        nazwa
+        for nazwa in os.listdir(path_input)
+        if os.path.isdir(os.path.join(path_input, nazwa))
+    ]
+    serie.sort(
+        key=lambda nazwa: (0, int(nazwa))
+        if nazwa.isdecimal()
+        else (1, nazwa.casefold())
+    )
+
+    if not serie:
+        raise FileNotFoundError(
+            f"Nie znaleziono folderów serii w katalogu: {path_input}"
+        )
+
+    print(f"Dostępne serie: {', '.join(serie)}")
+    while True:
+        wybor = input("Którą serię przetworzyć? Podaj jej nazwę: ").strip()
+        if wybor in serie:
+            return os.path.join(path_input, wybor)
+        print(f"Nieprawidłowa nazwa serii. Wybierz jedną z: {', '.join(serie)}")
+
+
+def przygotuj_materialy(konfiguracja, pliki_klas, path_input, path_output):
     """Uruchamia etap obrazów, audio i dokumentów po wygenerowaniu przydziałów."""
     liczba_przebiegow = konfiguracja.get("liczba_przebiegow", 20)
-    path_input = os.path.abspath(
-        os.path.join(
-            KATALOG_SKRYPTU,
-            konfiguracja.get("folder_przebiegow_input", "INPUT"),
-        )
+    folder_plikow_posrednich = os.path.join(
+        path_output, FOLDER_PLIKOW_POSREDNICH
     )
-    path_output = os.path.abspath(
-        os.path.join(
-            KATALOG_SKRYPTU, konfiguracja.get("folder_wynikowy", "Wyniki")
-        )
+    path_przebiegi_img = os.path.join(
+        folder_plikow_posrednich, "Rozbicie przebiegów"
     )
-    path_przebiegi_img = os.path.join(path_output, "Rozbicie przebiegów")
     path_przebiegi_audio = os.path.join(
-        path_output, "Rozbicie przebiegów audio"
+        folder_plikow_posrednich, "Rozbicie przebiegów audio"
     )
 
     if not os.path.isdir(path_input):
-        raise FileNotFoundError(f"Nie znaleziono folderu wejściowego: {path_input}")
+        raise FileNotFoundError(
+            f"Nie znaleziono folderu wybranej serii: {path_input}"
+        )
     os.makedirs(path_output, exist_ok=True)
 
     sukces = wyodrebnij_obrazy_przebiegow(
@@ -450,8 +475,26 @@ def przygotuj_materialy(konfiguracja, pliki_klas):
 
 def glowna_funkcja():
     konfiguracja = wczytaj_konfiguracje(".przebiegi rytmiczne.yml")
-    wygenerowane_przydzialy = przydziel_numery_dla_klas(konfiguracja)
-    przygotuj_materialy(konfiguracja, wygenerowane_przydzialy)
+    folder_input = os.path.abspath(
+        os.path.join(
+            KATALOG_SKRYPTU, FOLDER_PRZEBIEGOW_INPUT
+        )
+    )
+    if not os.path.isdir(folder_input):
+        raise FileNotFoundError(f"Nie znaleziono folderu wejściowego: {folder_input}")
+
+    path_input = wybierz_serie(folder_input)
+    nazwa_serii = os.path.basename(path_input)
+    path_output = os.path.abspath(
+        os.path.join(KATALOG_SKRYPTU, FOLDER_WYNIKOWY, nazwa_serii)
+    )
+
+    wygenerowane_przydzialy = przydziel_numery_dla_klas(
+        konfiguracja, path_output
+    )
+    przygotuj_materialy(
+        konfiguracja, wygenerowane_przydzialy, path_input, path_output
+    )
 
 
 if __name__ == "__main__":

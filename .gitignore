@@ -3,4 +3,5 @@
 **/.vs/
 Listy uczniow/**
 OLD/**
-**/Wyniki/**
+**/OUTPUT/**
+__pycache__/
