@@ -589,7 +589,7 @@
             // 
             // interwaly_okreslanie_liczebnosci_panel
             // 
-            this.interwaly_okreslanie_liczebnosci_panel.BackColor = System.Drawing.Color.LightGreen;
+            this.interwaly_okreslanie_liczebnosci_panel.BackColor = System.Drawing.Color.Moccasin;
             this.interwaly_okreslanie_liczebnosci_panel.Location = new System.Drawing.Point(12, 542);
             this.interwaly_okreslanie_liczebnosci_panel.Name = "interwaly_okreslanie_liczebnosci_panel";
             this.interwaly_okreslanie_liczebnosci_panel.Size = new System.Drawing.Size(995, 20);
@@ -687,7 +687,7 @@
             // 
             // Wstecz_button
             // 
-            this.Wstecz_button.BackColor = System.Drawing.Color.PaleGreen;
+            this.Wstecz_button.BackColor = System.Drawing.Color.Bisque;
             this.Wstecz_button.Location = new System.Drawing.Point(6, 4);
             this.Wstecz_button.Name = "Wstecz_button";
             this.Wstecz_button.Size = new System.Drawing.Size(75, 23);
@@ -698,7 +698,7 @@
             // 
             // dalej_button
             // 
-            this.dalej_button.BackColor = System.Drawing.Color.LightGreen;
+            this.dalej_button.BackColor = System.Drawing.Color.Moccasin;
             this.dalej_button.Location = new System.Drawing.Point(121, 6);
             this.dalej_button.Name = "dalej_button";
             this.dalej_button.Size = new System.Drawing.Size(75, 23);
@@ -1049,7 +1049,7 @@
             // 
             // kopiuj_button
             // 
-            this.kopiuj_button.BackColor = System.Drawing.Color.PaleGreen;
+            this.kopiuj_button.BackColor = System.Drawing.Color.Bisque;
             this.kopiuj_button.Location = new System.Drawing.Point(875, 10);
             this.kopiuj_button.Name = "kopiuj_button";
             this.kopiuj_button.Size = new System.Drawing.Size(75, 23);
@@ -1062,7 +1062,7 @@
             // 
             this.panel1.AutoScroll = true;
             this.panel1.AutoScrollMinSize = new System.Drawing.Size(0, 100);
-            this.panel1.BackColor = System.Drawing.Color.Turquoise;
+            this.panel1.BackColor = System.Drawing.Color.PeachPuff;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 322);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
@@ -1078,7 +1078,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScrollMargin = new System.Drawing.Size(0, 2000);
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.Linen;
             this.ClientSize = new System.Drawing.Size(1017, 767);
             this.Controls.Add(this.glowny_groupBox);
             this.Controls.Add(this.panel1);
