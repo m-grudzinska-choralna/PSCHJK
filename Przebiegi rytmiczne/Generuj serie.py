@@ -239,6 +239,7 @@ def wypisz_raport_koncowy(
 
         liczba_uczniow = 0
         licznik_numerow = Counter()
+        liczniki_pozycji = [Counter() for _ in range(4)]
         for linia in linie:
             if ":" not in linia:
                 continue
@@ -250,6 +251,8 @@ def wypisz_raport_koncowy(
             ]
             liczba_uczniow += 1
             licznik_numerow.update(numery)
+            for pozycja, numer in enumerate(numery[:4]):
+                liczniki_pozycji[pozycja][numer] += 1
 
         raport.append(nazwa_klasy)
         raport.append(f"  Uczniów: {liczba_uczniow}")
@@ -265,6 +268,28 @@ def wypisz_raport_koncowy(
             )
         raport.append("  Częstotliwość:")
         raport.extend(grupy_rozkładu)
+        raport.append(
+            "  Numery występujące u więcej niż jednego ucznia "
+            "na tej samej pozycji:"
+        )
+        for pozycja, licznik_pozycji in enumerate(liczniki_pozycji, start=1):
+            powtarzajace_sie_numery = sorted(
+                numer
+                for numer, liczba_wystapien in licznik_pozycji.items()
+                if liczba_wystapien > 1
+            )
+            lista_numerow = (
+                ", ".join(
+                    f"{numer:02d}" for numer in powtarzajace_sie_numery
+                )
+                if powtarzajace_sie_numery
+                else "brak"
+            )
+            raport.append(
+                f"    Pozycja {pozycja}: "
+                f"{len(powtarzajace_sie_numery)} powtarzających się numerów "
+                f"({lista_numerow})"
+            )
 
     print(f"\033[92m{'\n'.join(raport)}\033[0m")
 
