@@ -2,11 +2,11 @@
 # GenerowanieLinkowGoogleDriveDlaUczniow.ps1
 #
 # Przyklad:
-# .\GenerowanieLinkowGoogleDriveDlaUczniow.ps1 -Klasa Klasa_5
+# .\GenerowanieLinkowGoogleDriveDlaUczniow.ps1 -FolderPath "PSCHJK-dla uczniow\Klasa_5"
 # ============================================================
 
 param(
-    [string]$Klasa = "Klasa_5",
+    [string]$FolderPath = "PSCHJK-dla uczniow\Klasa_5",
     [string]$AccessToken = "" 
 )
 
@@ -17,6 +17,10 @@ param(
 if ([string]::IsNullOrWhiteSpace($AccessToken)) {
     Write-Host ""
     Write-Host "Brak podanego Access Tokenu dla Google Drive API." -ForegroundColor Yellow
+    Write-Host "Otworz Google OAuth 2.0 Playground: https://developers.google.com/oauthplayground/" -ForegroundColor Cyan
+    Write-Host "W kroku 1 wybierz zakres: https://www.googleapis.com/auth/drive" -ForegroundColor White
+    Write-Host "Zaloguj sie na konto Google, zatwierdz dostep, a w kroku 2 kliknij 'Exchange authorization code for tokens'." -ForegroundColor White
+    Write-Host "Skopiuj wartosc Access token (token wygasa po okolo godzinie)." -ForegroundColor White
     $AccessToken = Read-Host "Wklej swoj Google Drive Access Token (OAuth 2.0)"
     
     if ([string]::IsNullOrWhiteSpace($AccessToken)) {
@@ -31,36 +35,45 @@ $headers = @{
 }
 
 # ============================================================
-# 2. Nazwa i sciezka do folderu klasy
+# 2. Sciezka do folderu klasy
 # ============================================================
-
-$targetFolderName = $Klasa
 
 Write-Host ""
 Write-Host "==============================================" -ForegroundColor Cyan
 Write-Host "FOLDER KLASY" -ForegroundColor Cyan
 Write-Host "==============================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "Szukanie folderu: $targetFolderName" -ForegroundColor White
+Write-Host "Sciezka folderu: $FolderPath" -ForegroundColor White
 Write-Host ""
 
 # ============================================================
-# 3. Pobranie informacji o folderze klasy
+# 3. Odszukanie folderu po sciezce
 # ============================================================
 
 try {
-    $q = "name = '$targetFolderName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
-    $encodedQ = [System.Uri]::EscapeDataString($q)
-    
-    $uri = "https://www.googleapis.com/drive/v3/files?q=$encodedQ&fields=files(id,name)"
-    
-    $parentResponse = Invoke-RestMethod -Method Get -Uri $uri -Headers $headers
-
-    if ($null -eq $parentResponse.files -or $parentResponse.files.Count -eq 0) {
-        throw "Nie znaleziono folderu o nazwie: $targetFolderName"
+    $pathParts = @($FolderPath -split '[\\/]' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    if ($pathParts.Count -eq 0) {
+        throw "Sciezka folderu jest pusta."
     }
 
-    $parentFolder = $parentResponse.files[0]
+    $parentId = "root"
+    foreach ($pathPart in $pathParts) {
+        $escapedName = $pathPart.Replace('\', '\\').Replace("'", "\'")
+        $q = "'$parentId' in parents and name = '$escapedName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        $encodedQ = [System.Uri]::EscapeDataString($q)
+        $uri = "https://www.googleapis.com/drive/v3/files?q=$encodedQ&fields=files(id,name)&pageSize=100"
+        $folderResponse = Invoke-RestMethod -Method Get -Uri $uri -Headers $headers
+
+        if ($null -eq $folderResponse.files -or $folderResponse.files.Count -eq 0) {
+            throw "Nie znaleziono folderu '$pathPart' w sciezce: $FolderPath"
+        }
+        if ($folderResponse.files.Count -gt 1) {
+            throw "Sciezka jest niejednoznaczna: znaleziono kilka folderow o nazwie '$pathPart'."
+        }
+
+        $parentFolder = $folderResponse.files[0]
+        $parentId = $parentFolder.id
+    }
 }
 catch {
     Write-Host ""
@@ -68,7 +81,7 @@ catch {
     Write-Host "BLED" -ForegroundColor Red
     Write-Host "==============================================" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Nie znaleziono folderu: $targetFolderName" -ForegroundColor Yellow
+    Write-Host "Nie udalo sie odnalezc folderu ze sciezki: $FolderPath" -ForegroundColor Yellow
     Write-Host "Szczegoly bledu:" -ForegroundColor Yellow
     Write-Host $_.Exception.Message -ForegroundColor Red
     Write-Host ""
@@ -106,7 +119,7 @@ catch {
 
 if ($null -eq $subfolders -or $subfolders.Count -eq 0) {
     Write-Host ""
-    Write-Host "W folderze: $targetFolderName nie znaleziono zadnych podfolderow." -ForegroundColor Yellow
+    Write-Host "W folderze: $($parentFolder.name) nie znaleziono zadnych podfolderow." -ForegroundColor Yellow
     Write-Host ""
     return
 }
