@@ -18,7 +18,7 @@ oraz generuje dokument dla nauczyciela z zapisami nutowymi.
 
 ## Dane wejściowe
 
-Program odczytuje ustawienia z pliku `.przebiegi rytmiczne.yml`. Konfiguracja
+Program odczytuje ustawienia z pliku `.Generuj serie.yml`. Konfiguracja
 wskazuje:
 
 - folder z seriami wejściowymi;

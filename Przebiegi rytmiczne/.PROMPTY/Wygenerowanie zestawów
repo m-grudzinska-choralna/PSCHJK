@@ -3,7 +3,7 @@ Napisz skrypt w języku Python do deterministycznego i zrównoważonego przydzie
 Wymagania i zachowanie programu:
 
 1. Konfiguracja (YAML):
-   - Wczytaj konfigurację z pliku `.przebiegi rytmiczne.yml`.
+   - Wczytaj konfigurację z pliku `.Generuj serie.yml`.
    - Plik zawiera parametry: `liczba_przebiegow` (domyślnie 20), `folder_klas` (domyślnie "../Listy uczniow"), `folder_wynikowy` (domyślnie "Wyniki").
 
 2. Wczytywanie danych:

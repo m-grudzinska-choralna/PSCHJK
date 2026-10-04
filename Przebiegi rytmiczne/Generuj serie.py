@@ -56,7 +56,7 @@ def wypisz_blad_na_czerwono(error):
     )
 
 
-def wczytaj_konfiguracje(nazwa_pliku=".przebiegi rytmiczne.yml"):
+def wczytaj_konfiguracje(nazwa_pliku=".Generuj serie.yml"):
     sciezka_pliku = os.path.join(KATALOG_SKRYPTU, nazwa_pliku)
 
     if not os.path.exists(sciezka_pliku):
@@ -735,7 +735,7 @@ def glowna_funkcja():
 
 
 def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
-    konfiguracja = wczytaj_konfiguracje(".przebiegi rytmiczne.yml")
+    konfiguracja = wczytaj_konfiguracje(".Generuj serie.yml")
     folder_wejsciowy = konfiguracja.get(
         "folder_wejsciowy", FOLDER_PRZEBIEGOW_INPUT
     )
