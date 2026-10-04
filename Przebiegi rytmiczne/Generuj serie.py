@@ -74,144 +74,51 @@ def wczytaj_uczniow_z_pliku(sciezka_pliku):
     return uczniowie
 
 
-def generuj_zestaw_rownomierny(liczba_uczniow, numery_przebiegow):
-    """
-    Deterministycznie i równomiernie przydziela podane numery przebiegów.
-    Gwarantuje, że różnica w liczbie wystąpień między jakimikolwiek dwoma numerami
-    nie przekroczy 1.
-    """
+def wybierz_liczbe_przebiegow_na_ucznia(liczba_dostepnych):
+    """Pyta o liczbę numerów na ucznia; Enter wybiera dotychczasowe 4."""
+    liczba_domyslna = min(4, liczba_dostepnych)
+    while True:
+        wybor = input(
+            f"Ile przebiegów ma dostać każdy uczeń? [{liczba_domyslna}] "
+            f"(dostępnych: {liczba_dostepnych}): "
+        ).strip()
+        if not wybor:
+            return liczba_domyslna
+        try:
+            liczba = int(wybor)
+        except ValueError:
+            print("Podaj liczbę całkowitą.")
+            continue
+        if 1 <= liczba <= liczba_dostepnych:
+            return liczba
+        print(
+            f"Podaj liczbę od 1 do {liczba_dostepnych} "
+            "(każdy uczeń dostaje różne numery)."
+        )
+
+
+def generuj_zestawy_rownomiernie(
+    liczba_uczniow, numery_przebiegow, liczba_na_ucznia
+):
+    """Przydziela różne numery, równoważąc łączną i pozycyjną częstotliwość."""
     zakres = list(numery_przebiegow)
     if not zakres:
         raise ValueError("Nie można wygenerować przydziałów bez numerów przebiegów.")
-    len_z = len(zakres)
-
-    wymagane_numery = liczba_uczniow * 2
-    sekwencja_numerow = [zakres[i % len_z] for i in range(wymagane_numery)]
-
-    zestawy = []
-    uzyte_pary = set()
-
-    for i in range(liczba_uczniow):
-        l1 = sekwencja_numerow[2 * i]
-        l2 = sekwencja_numerow[2 * i + 1]
-
-        if l1 == l2 or tuple(sorted((l1, l2))) in uzyte_pary:
-            offset = 1
-            while (l1 == l2 or tuple(sorted((l1, l2))) in uzyte_pary) and (
-                2 * i + 1 + offset
-            ) < len(sekwencja_numerow):
-                idx_alt = 2 * i + 1 + offset
-                sekwencja_numerow[2 * i + 1], sekwencja_numerow[idx_alt] = (
-                    sekwencja_numerow[idx_alt],
-                    sekwencja_numerow[2 * i + 1],
-                )
-                l2 = sekwencja_numerow[2 * i + 1]
-                offset += 1
-
-        para = tuple(sorted((l1, l2)))
-        uzyte_pary.add(para)
-        zestawy.append([l1, l2])
-
-    return zestawy
-
-
-def minimalizuj_powtorzenia_na_pozycjach(zestawy_A, zestawy_B):
-    """Łączy pary przebiegów, ograniczając powtórzenia w tych samych pozycjach."""
-    if len(zestawy_A) != len(zestawy_B):
-        raise ValueError("Liczba zestawów A i B musi być taka sama.")
-
-    def warianty(A, B):
-        return (
-            (A[0], B[0], A[1], B[1]),
-            (A[1], B[0], A[0], B[1]),
-            (A[0], B[1], A[1], B[0]),
-            (A[1], B[1], A[0], B[0]),
-            (B[0], A[0], B[1], A[1]),
-            (B[1], A[0], B[0], A[1]),
-            (B[0], A[1], B[1], A[0]),
-            (B[1], A[1], B[0], A[0]),
+    if not 1 <= liczba_na_ucznia <= len(zakres):
+        raise ValueError(
+            "Liczba przebiegów na ucznia musi być od 1 do liczby dostępnych przebiegów."
         )
 
-    def ocena(zestawy):
-        liczniki = [Counter() for _ in range(4)]
-        for zestaw in zestawy:
-            for pozycja, numer in enumerate(zestaw):
-                liczniki[pozycja][numer] += 1
-        return (
-            sum(
-                liczba_numerow > 1
-                for licznik in liczniki
-                for liczba_numerow in licznik.values()
-            ),
-            sum(
-                max(0, liczba_numerow - 1)
-                for licznik in liczniki
-                for liczba_numerow in licznik.values()
-            ),
-            sum(
-                liczba_numerow**2
-                for licznik in liczniki
-                for liczba_numerow in licznik.values()
-            ),
-        )
-
-    bazowe = []
-    for idx, (A, B) in enumerate(zip(zestawy_A, zestawy_B)):
-        if idx % 2 == 0:
-            bazowe.append((A[0], B[0], A[1], B[1]))
-        else:
-            bazowe.append((B[0], A[0], B[1], A[1]))
-
-    pozostale_A = list(enumerate(zestawy_A))
-    pozostale_B = list(enumerate(zestawy_B))
-    liczniki_pozycji = [Counter() for _ in range(4)]
-    zoptymalizowane = []
-
-    while pozostale_A:
-        najlepszy = None
-        najlepsza_ocena = None
-
-        for indeks_A, A in pozostale_A:
-            for indeks_B, B in pozostale_B:
-                for wariant in warianty(A, B):
-                    ocena_kandydata = (
-                        sum(
-                            liczniki_pozycji[pozycja][numer] > 0
-                            for pozycja, numer in enumerate(wariant)
-                        ),
-                        sum(
-                            liczniki_pozycji[pozycja][numer]
-                            for pozycja, numer in enumerate(wariant)
-                        ),
-                        sum(
-                            2 * liczniki_pozycji[pozycja][numer] + 1
-                            for pozycja, numer in enumerate(wariant)
-                        ),
-                    )
-                    klucz = (
-                        ocena_kandydata,
-                        indeks_A,
-                        indeks_B,
-                        wariant,
-                    )
-                    if najlepsza_ocena is None or klucz < najlepsza_ocena:
-                        najlepsza_ocena = klucz
-                        najlepszy = (indeks_A, indeks_B, wariant)
-
-        indeks_A, indeks_B, zestaw = najlepszy
-        pozostale_A = [
-            element for element in pozostale_A if element[0] != indeks_A
+    return [
+        [
+            zakres[
+                (indeks_ucznia + (pozycja * len(zakres)) // liczba_na_ucznia)
+                % len(zakres)
+            ]
+            for pozycja in range(liczba_na_ucznia)
         ]
-        pozostale_B = [
-            element for element in pozostale_B if element[0] != indeks_B
-        ]
-        zoptymalizowane.append(zestaw)
-        for pozycja, numer in enumerate(zestaw):
-            liczniki_pozycji[pozycja][numer] += 1
-
-    if ocena(zoptymalizowane) < ocena(bazowe):
-        return zoptymalizowane
-    return bazowe
+        for indeks_ucznia in range(liczba_uczniow)
+    ]
 
 
 def znajdz_plik_klasy(folder_klas, nazwa_klasy):
@@ -235,8 +142,6 @@ def znajdz_plik_klasy(folder_klas, nazwa_klasy):
 
 def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
     numery_przebiegow = konfiguracja["numery_przebiegow"]
-    liczba_przebiegow = len(numery_przebiegow)
-
     rel_folder_klas = konfiguracja.get("folder_klas", "../Listy uczniow")
     folder_klas = os.path.abspath(
         os.path.join(KATALOG_SKRYPTU, rel_folder_klas)
@@ -247,7 +152,7 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
         print("Brak zdefiniowanych klas w pliku konfiguracyjnym (sekcja 'klasy').")
         return []
 
-    polowa = liczba_przebiegow // 2
+    liczba_na_ucznia = konfiguracja["liczba_przebiegow_na_ucznia"]
     pliki_przydzialow = []
 
     for nazwa_klasy in klasy:
@@ -272,13 +177,9 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
 
         n = len(uczniowie)
 
-        zestawy_A = generuj_zestaw_rownomierny(
-            n, numery_przebiegow[:polowa]
+        zestawy = generuj_zestawy_rownomiernie(
+            n, numery_przebiegow, liczba_na_ucznia
         )
-        zestawy_B = generuj_zestaw_rownomierny(
-            n, numery_przebiegow[polowa:]
-        )
-        zestawy = minimalizuj_powtorzenia_na_pozycjach(zestawy_A, zestawy_B)
 
         zawartosc_pliku = []
 
@@ -331,7 +232,7 @@ def wypisz_raport_koncowy(
 
         liczba_uczniow = 0
         licznik_numerow = Counter()
-        liczniki_pozycji = [Counter() for _ in range(4)]
+        liczniki_pozycji = []
         for linia in linie:
             if ":" not in linia:
                 continue
@@ -343,7 +244,9 @@ def wypisz_raport_koncowy(
             ]
             liczba_uczniow += 1
             licznik_numerow.update(numery)
-            for pozycja, numer in enumerate(numery[:4]):
+            while len(liczniki_pozycji) < len(numery):
+                liczniki_pozycji.append(Counter())
+            for pozycja, numer in enumerate(numery):
                 liczniki_pozycji[pozycja][numer] += 1
 
         raport.append(nazwa_klasy)
@@ -584,7 +487,11 @@ def przygotuj_pliki_audio(audio_map, path_przebiegi_audio):
 
 
 def przetworz_klasy(
-    pliki_klas, path_output, path_przebiegi_img, path_przebiegi_audio
+    pliki_klas,
+    path_output,
+    path_przebiegi_img,
+    path_przebiegi_audio,
+    liczba_na_ucznia,
 ):
     """Tworzy dokumenty klas oraz foldery uczniów z przypisanymi nagraniami."""
     if not pliki_klas:
@@ -651,11 +558,14 @@ def przetworz_klasy(
                 f" Uczeń: {nazwa_ucznia} -> przekopiowano "
                 f"{kopiowane_audio_count}/{len(numery)} plików audio."
             )
-            if len(numery) != 4 or kopiowane_audio_count != 4:
+            if (
+                len(numery) != liczba_na_ucznia
+                or kopiowane_audio_count != liczba_na_ucznia
+            ):
                 raise ValueError(
                     f"Uczeń '{nazwa_ucznia}' ({nazwa_klasy}): "
-                    f"skopiowano {kopiowane_audio_count}/4 plików audio "
-                    f"przy {len(numery)} przypisanych numerach."
+                    f"skopiowano {kopiowane_audio_count}/{liczba_na_ucznia} "
+                    f"plików audio przy {len(numery)} przypisanych numerach."
                 )
 
             doc.add_heading(nazwa_ucznia, level=2)
@@ -760,7 +670,6 @@ def przygotuj_materialy(
     sciezka_docx,
 ):
     """Uruchamia etap obrazów, audio i dokumentów po wygenerowaniu przydziałów."""
-    liczba_przebiegow = konfiguracja["liczba_przebiegow"]
     path_przebiegi_img = os.path.join(
         folder_wersji, "Rozbicie przebiegów"
     )
@@ -780,7 +689,11 @@ def przygotuj_materialy(
     przygotuj_pliki_audio(zrodla_audio, path_przebiegi_audio)
     if sukces:
         przetworz_klasy(
-            pliki_klas, path_output, path_przebiegi_img, path_przebiegi_audio
+            pliki_klas,
+            path_output,
+            path_przebiegi_img,
+            path_przebiegi_audio,
+            konfiguracja["liczba_przebiegow_na_ucznia"],
         )
 
 
@@ -853,6 +766,13 @@ def wykonaj_glowna_funkcje(bufor_logu, strumien_stdout, strumien_stderr):
     print(
         f"Liczba przebiegów odczytana z dokumentu Word: "
         f"{konfiguracja['liczba_przebiegow']}"
+    )
+    konfiguracja["liczba_przebiegow_na_ucznia"] = (
+        wybierz_liczbe_przebiegow_na_ucznia(len(numery_przebiegow))
+    )
+    print(
+        f"Liczba przebiegów na ucznia: "
+        f"{konfiguracja['liczba_przebiegow_na_ucznia']}"
     )
 
     zrodla_audio = znajdz_pliki_audio(
