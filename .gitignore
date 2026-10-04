@@ -1,3 +1,7 @@
 **/obj/**
 **/bin/**
 **/.vs/
+Listy uczniow/**
+OLD/**
+**/OUTPUT/**
+__pycache__/

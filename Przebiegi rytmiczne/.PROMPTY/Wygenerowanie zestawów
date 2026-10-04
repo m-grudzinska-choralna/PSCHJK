@@ -1,0 +1,30 @@
+Napisz skrypt w języku Python do deterministycznego i zrównoważonego przydzielania numerów zestawów dla uczniów na podstawie podanej konfiguracji i list klas.
+
+Wymagania i zachowanie programu:
+
+1. Konfiguracja (YAML):
+   - Wczytaj konfigurację z pliku `.Generuj serie.yml`.
+   - Plik zawiera parametry: `liczba_przebiegow` (domyślnie 20), `folder_klas` (domyślnie "../Listy uczniow"), `folder_wynikowy` (domyślnie "Wyniki").
+
+2. Wczytywanie danych:
+   - Skrypt powinien odczytać wszystkie pliki `.txt` z wskazanego folderu klas.
+   - Każdy plik tekstowy zawiera listę uczniów (jeden uczeń w nowej linii). Puste linie należy pomijać.
+
+3. Logika przydziału numerów:
+   - Na początku zapytaj, ile różnych przebiegów ma dostać każdy uczeń; Enter oznacza 4.
+   - Liczba przebiegów na ucznia musi być dodatnia i nie większa niż liczba przebiegów w serii.
+   - Przydzielaj numery z całego zakresu, bez dzielenia ich na grupy A i B.
+   - Algorytm MUSI działać całkowicie deterministycznie (BEZ użycia biblioteki `random`).
+   - Każdy uczeń musi otrzymać różne numery.
+   - Równomiernie rozkładaj łączną liczbę wystąpień numerów oraz minimalizuj powtórzenia tego samego numeru na tej samej pozycji w zestawie u różnych uczniów.
+
+4. Formatowanie wyników dla ucznia:
+   - Zachowaj wygenerowaną kolejność numerów; kolejność pozycji jest uwzględniana przy równoważeniu powtórzeń.
+   - Numery muszą być sformatowane jako dwucyfrowe (z zerem wiodącym, np. 01, 02).
+   - Imię i nazwisko ucznia wraz z dwukropkiem powinno być wyrównane do lewej na szerokość 35 znaków, np.:
+     `Jan Kowalski:                       01, 11, 02, 12`
+
+5. Zapis i raportowanie:
+   - Wyniki przydziału zapisz do folderu wynikowego w plikach o nazwie `przydzialy_<nazwa_klasy>.txt`. Plik powinien zawierać WYŁĄCZNIE listę uczniów z przypisanymi ciągami liczb.
+   - Po wygenerowaniu pliku dla danej klasy, wyświetl w konsoli (na ekranie) raport podsumowujący częstotliwość wystąpień każdego numeru z całego zakresu (od 1 do liczba_przebiegow), informujący, ile osób dostało dany numer.
+   - W raporcie podaj też dla każdej pozycji liczbę i numery przebiegów, które występują u więcej niż jednego ucznia.

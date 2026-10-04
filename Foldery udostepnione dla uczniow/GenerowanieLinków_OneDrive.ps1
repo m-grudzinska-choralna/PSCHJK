@@ -1,10 +1,17 @@
-﻿# 1. Połączenie z z kontem (jeśli sesja jeszcze trwa, przejdzie od razu)
+﻿Uwaga trzeba to uruchomic w Powershell ISE
+
+# Użycie: .\GenerowanieLinkówOneDriveDlaUczniów.ps1 -Klasa Klasa_5
+param(
+    [string]$Klasa = "Klasa_5"
+)
+
+# 1. Połączenie z z kontem (jeśli sesja jeszcze trwa, przejdzie od razu)
 Connect-MgGraph -Scopes "Files.ReadWrite.All" -UseDeviceAuthentication
 
 # 2. Ścieżka do docelowego folderu
-$folderPath = "Udostępnione dla innych w chmurze/PSCHJK-dla uczniow/Klasa_6"
+$folderPath = "Udostępnione dla innych w chmurze/PSCHJK-dla uczniow/$Klasa"
 
-# 3. Pobranie informacji o folderze Klasa_5
+# 3. Pobranie informacji o folderze klasy
 try {
     $parentFolder = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/v1.0/me/drive/root:/$($folderPath)"
 } catch {
@@ -12,7 +19,7 @@ try {
     return
 }
 
-# 4. Pobranie podfolderów znajdujących się wewnątrz Klasa_5
+# 4. Pobranie podfolderów znajdujących się wewnątrz klasy
 $subfoldersResponse = Invoke-MgGraphRequest -Method GET -Uri "https://graph.microsoft.com/v1.0/me/drive/items/$($parentFolder.id)/children?`$select=id,name,folder"
 $subfolders = $subfoldersResponse.value | Where-Object { $_.folder -ne $null }
 
@@ -41,10 +48,3 @@ $results = foreach ($folder in $subfolders) {
 
 # 6. Wyświetlenie wyników w konsoli
 $results | Format-Table -AutoSize
-
-# 7. Zapisanie do pliku CSV na Pulpicie
-$outputPath = "$env:USERPROFILE\Desktop\Linki_Klasa_5.csv"
-$results | Export-Csv -Path $outputPath -NoTypeInformation -Encoding UTF8
-
-Write-Host "`nSukces! Wygenerowane linki zostały zapisane na Pulpicie w pliku:" -ForegroundColor Green
-Write-Host $outputPath -ForegroundColor Yellow
