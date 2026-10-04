@@ -115,6 +115,105 @@ def generuj_zestaw_rownomierny(liczba_uczniow, numery_przebiegow):
     return zestawy
 
 
+def minimalizuj_powtorzenia_na_pozycjach(zestawy_A, zestawy_B):
+    """Łączy pary przebiegów, ograniczając powtórzenia w tych samych pozycjach."""
+    if len(zestawy_A) != len(zestawy_B):
+        raise ValueError("Liczba zestawów A i B musi być taka sama.")
+
+    def warianty(A, B):
+        return (
+            (A[0], B[0], A[1], B[1]),
+            (A[1], B[0], A[0], B[1]),
+            (A[0], B[1], A[1], B[0]),
+            (A[1], B[1], A[0], B[0]),
+            (B[0], A[0], B[1], A[1]),
+            (B[1], A[0], B[0], A[1]),
+            (B[0], A[1], B[1], A[0]),
+            (B[1], A[1], B[0], A[0]),
+        )
+
+    def ocena(zestawy):
+        liczniki = [Counter() for _ in range(4)]
+        for zestaw in zestawy:
+            for pozycja, numer in enumerate(zestaw):
+                liczniki[pozycja][numer] += 1
+        return (
+            sum(
+                liczba_numerow > 1
+                for licznik in liczniki
+                for liczba_numerow in licznik.values()
+            ),
+            sum(
+                max(0, liczba_numerow - 1)
+                for licznik in liczniki
+                for liczba_numerow in licznik.values()
+            ),
+            sum(
+                liczba_numerow**2
+                for licznik in liczniki
+                for liczba_numerow in licznik.values()
+            ),
+        )
+
+    bazowe = []
+    for idx, (A, B) in enumerate(zip(zestawy_A, zestawy_B)):
+        if idx % 2 == 0:
+            bazowe.append((A[0], B[0], A[1], B[1]))
+        else:
+            bazowe.append((B[0], A[0], B[1], A[1]))
+
+    pozostale_A = list(enumerate(zestawy_A))
+    pozostale_B = list(enumerate(zestawy_B))
+    liczniki_pozycji = [Counter() for _ in range(4)]
+    zoptymalizowane = []
+
+    while pozostale_A:
+        najlepszy = None
+        najlepsza_ocena = None
+
+        for indeks_A, A in pozostale_A:
+            for indeks_B, B in pozostale_B:
+                for wariant in warianty(A, B):
+                    ocena_kandydata = (
+                        sum(
+                            liczniki_pozycji[pozycja][numer] > 0
+                            for pozycja, numer in enumerate(wariant)
+                        ),
+                        sum(
+                            liczniki_pozycji[pozycja][numer]
+                            for pozycja, numer in enumerate(wariant)
+                        ),
+                        sum(
+                            2 * liczniki_pozycji[pozycja][numer] + 1
+                            for pozycja, numer in enumerate(wariant)
+                        ),
+                    )
+                    klucz = (
+                        ocena_kandydata,
+                        indeks_A,
+                        indeks_B,
+                        wariant,
+                    )
+                    if najlepsza_ocena is None or klucz < najlepsza_ocena:
+                        najlepsza_ocena = klucz
+                        najlepszy = (indeks_A, indeks_B, wariant)
+
+        indeks_A, indeks_B, zestaw = najlepszy
+        pozostale_A = [
+            element for element in pozostale_A if element[0] != indeks_A
+        ]
+        pozostale_B = [
+            element for element in pozostale_B if element[0] != indeks_B
+        ]
+        zoptymalizowane.append(zestaw)
+        for pozycja, numer in enumerate(zestaw):
+            liczniki_pozycji[pozycja][numer] += 1
+
+    if ocena(zoptymalizowane) < ocena(bazowe):
+        return zoptymalizowane
+    return bazowe
+
+
 def znajdz_plik_klasy(folder_klas, nazwa_klasy):
     """
     Szuka pliku z listą uczniów w folderze klas.
@@ -179,18 +278,11 @@ def przydziel_numery_dla_klas(konfiguracja, folder_wynikowy, folder_wersji):
         zestawy_B = generuj_zestaw_rownomierny(
             n, numery_przebiegow[polowa:]
         )
+        zestawy = minimalizuj_powtorzenia_na_pozycjach(zestawy_A, zestawy_B)
 
         zawartosc_pliku = []
 
-        for idx, uczeń in enumerate(uczniowie, start=1):
-            A = zestawy_A[idx - 1]
-            B = zestawy_B[idx - 1]
-
-            if idx % 2 != 0:
-                wynikowe = [A[0], B[0], A[1], B[1]]
-            else:
-                wynikowe = [B[0], A[0], B[1], A[1]]
-
+        for uczeń, wynikowe in zip(uczniowie, zestawy):
             sformatowane_liczby = [f"{num:02d}" for num in wynikowe]
             ciag_liczb = ", ".join(sformatowane_liczby)
 
