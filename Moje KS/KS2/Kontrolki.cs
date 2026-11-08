@@ -12,6 +12,7 @@ namespace KS2
 {
     public partial class OknoGlowne
     {
+        private bool dynamiczneKontrolkiUtworzone;
 
         private void glowny_groupBox_Paint(object sender, PaintEventArgs e)
         {
@@ -24,6 +25,7 @@ namespace KS2
         public OknoGlowne()
         {
             InitializeComponent();
+            Load += (sender, e) => UstawPojedynczeKontrolki();
 
             SetDoubleBuffered(this);
             foreach (Control control in this.Controls) SetDoubleBuffered(control);
@@ -465,6 +467,8 @@ namespace KS2
 
             if (Parametry.Ogolne.kopiowanie) KopiujDoSchowka();
             Zeruj();
+            dynamiczneKontrolkiUtworzone = true;
+            UstawCheckboxes();
 
 
         }
@@ -634,8 +638,9 @@ namespace KS2
 
             //################# POJEDYNCZE KONTROLKI #####################################
             UstawPojedynczeKontrolki();            
-            UstawCheckboxes();
-            UstawTonacjeSekcje();
+
+            if (dynamiczneKontrolkiUtworzone)
+                UstawCheckboxes();
         }
 
         void UstawPojedynczeKontrolki()
@@ -713,9 +718,9 @@ namespace KS2
             }
 
    
-            if (Parametry.Tryb.tryb + "_" + Parametry.Tryb.rodzaj_cwiczen == "rozpoznawanie_symbole")
-                znaki_chromatyczne_panel.Controls["brak"].Visible = false;
-            else znaki_chromatyczne_panel.Controls["brak"].Visible = true;
+            Control brakKontrolka = znaki_chromatyczne_panel.Controls["brak"];
+            if (brakKontrolka != null)
+                brakKontrolka.Visible = Parametry.Tryb.tryb + "_" + Parametry.Tryb.rodzaj_cwiczen != "rozpoznawanie_symbole";
 
 
             if (Parametry.Tryb.tryb + "_" + Parametry.Tryb.rodzaj_cwiczen == "generowanie_interwaly")
@@ -724,11 +729,15 @@ namespace KS2
                 foreach (Interwal interwal in Interwal.interwaly)
                 {
 
-                    Label lbl_zakres = (Label)(interwaly_okreslanie_liczebnosci_panel.Controls["interwal_lbl_zakres" + interwal.kod]);
+                    Label lbl_zakres = interwaly_okreslanie_liczebnosci_panel.Controls["interwal_lbl_zakres" + interwal.kod] as Label;
+                    if (lbl_zakres == null)
+                        continue;
                     int ile_wszystkich = (int)(Parametry.Interwaly.ile_wszystkich_interwalow[interwal.kod]);
                     int ile_do_wylosowania = (int)(Parametry.LiczebnoscInterwalow.ile_interwalow_do_losowania[interwal.kod]);
                     lbl_zakres.Text = "(" + ile_wszystkich.ToString() + ")";
-                    NumericUpDown numericUpDown = (NumericUpDown)(interwaly_okreslanie_liczebnosci_panel.Controls["interwal_numericupdown_" + interwal.kod]);
+                    NumericUpDown numericUpDown = interwaly_okreslanie_liczebnosci_panel.Controls["interwal_numericupdown_" + interwal.kod] as NumericUpDown;
+                    if (numericUpDown == null)
+                        continue;
                     if (ile_do_wylosowania > ile_wszystkich)
                         numericUpDown.BackColor = Color.Red;
                     else
@@ -752,7 +761,9 @@ namespace KS2
 
                     //GeneratorElementow generator = new GeneratorElementow("interwal", Parametry.ZakresNut.klucz, interwal.kod);                                        
                     //int ile_wszystkich = generator.wszystkie_mozliwe_elementy.Count(); //(int)(Parametry.LiczebnoscInterwalow.ile_wszystkich_interwalow[interwal.kod]);                    
-                    Button btn = (Button)(interwaly_zaznaczanie_panel.Controls["interwal_btn" + interwal.kod]);
+                    Button btn = interwaly_zaznaczanie_panel.Controls["interwal_btn" + interwal.kod] as Button;
+                    if (btn == null)
+                        continue;
                     int ile_wszystkich = (int)(Parametry.Interwaly.ile_wszystkich_interwalow[interwal.kod]);
                     int czy_zaznaczony = (int)(Parametry.ZaznaczanieInterwalow.zaznaczenie_interwalow[interwal.kod]);
                     btn.Text = interwal.symbol + "  (" + ile_wszystkich.ToString() + ")";
