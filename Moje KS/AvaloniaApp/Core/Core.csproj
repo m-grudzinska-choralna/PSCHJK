@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+	<TargetFramework>net8.0-windows</TargetFramework>
+	<UseWindowsForms>true</UseWindowsForms>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+	<PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+	<Compile Include="..\..\KS2\Arkusz.cs" Link="Arkusz.cs" />
+	<Compile Include="..\..\KS2\Dane.cs" Link="Dane.cs" />
+	<!-- Edytor.cs is WinForms-UI-coupled; keep it in the original WinForms project. Do not include here to avoid UI coupling. -->
+	<Compile Include="..\..\KS2\Klawiatura.cs" Link="Klawiatura.cs" />
+	<Compile Include="..\..\KS2\ObrobkaGrafiki.cs" Link="ObrobkaGrafiki.cs" />
+	<Compile Include="..\..\KS2\Parametry.cs" Link="Parametry.cs" />
+	<Compile Include="..\..\KS2\Nuta.cs" Link="Nuta.cs" />
+	<Compile Include="..\..\KS2\Rysowanie.cs" Link="Rysowanie.cs" />
+	<Compile Include="..\..\KS2\Symbol.cs" Link="Symbol.cs" />
+	<Compile Include="..\..\KS2\Zawartosc.cs" Link="Zawartosc.cs" />
+  </ItemGroup>
+</Project>

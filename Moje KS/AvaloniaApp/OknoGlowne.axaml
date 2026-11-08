@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="clr-namespace:MojeKS.AvaloniaApp"
+			 x:Class="MojeKS.AvaloniaApp.OknoGlowne">
+
+  <DockPanel>
+	<Menu DockPanel.Dock="Top">
+	  <MenuItem Header="Plik">
+		<MenuItem Header="Rozpoznawanie nut" />
+		<MenuItem Header="Rozpoznawanie symboli" />
+		<MenuItem Header="Rozpoznawanie klawiszy" />
+	  </MenuItem>
+	  <MenuItem Header="Materiały">
+		<MenuItem Header="Tonacje" />
+		<MenuItem Header="Nuty" />
+		<MenuItem Header="Interwały" />
+	  </MenuItem>
+	  <MenuItem Header="Edytor">
+		<MenuItem Header="Edytor nut" />
+	  </MenuItem>
+	</Menu>
+
+	<Grid Margin="8">
+	  <Grid.ColumnDefinitions>
+		<ColumnDefinition Width="300" />
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="250" />
+	  </Grid.ColumnDefinitions>
+
+	  <!-- Left parameter panel (approximation of parametry_cwiczenia_panel) -->
+	  <StackPanel Grid.Column="0" Margin="4" Spacing="6">
+		<TextBlock Text="Parametry ćwiczenia" FontWeight="Bold" />
+		<ComboBox Name="parametry_cwiczenia_nazwy_comboBox" />
+		<CheckBox Name="parametry_cwiczenia_kolejne_checkBox" Content="Kolejne" />
+		<CheckBox Name="odpowiedzi_checkBox" Content="Pokaż odpowiedzi" />
+
+		<Border BorderBrush="Gray" BorderThickness="1" Padding="6">
+		  <StackPanel>
+			<TextBlock Text="Tonacje" FontWeight="Bold" />
+			<ComboBox Name="parametry_materialy_tonacje_lista_tonacji_comboBox" />
+			<CheckBox Name="parametry_materialy_tonacje_podpisy_nut_checkbox" Content="Podpisy nut" />
+		  </StackPanel>
+		</Border>
+	  </StackPanel>
+
+	  <!-- Center drawing / main area -->
+		<Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="4">
+		<Grid>
+		  <local:StaffControl Height="220" Interline="14" />
+		</Grid>
+	  </Border>
+
+	  <!-- Right side controls (approximation of rundy_panel, pauzy_panel) -->
+	  <StackPanel Grid.Column="2" Margin="4" Spacing="6">
+		<TextBlock Text="Nawigacja" FontWeight="Bold" />
+		<StackPanel Orientation="Horizontal" Spacing="6">
+		  <Button Name="Wstecz_button" Content="Wstecz" />
+		  <Button Name="dalej_button" Content="Dalej" />
+		</StackPanel>
+		<Border BorderBrush="Gray" BorderThickness="1" Padding="6">
+		  <StackPanel>
+			<TextBlock Text="Informacje" FontWeight="Bold" />
+			<TextBlock Name="basowy_alert_label" Text="" />
+			<TextBlock Name="wiolowy_alert_label" Text="" />
+		  </StackPanel>
+		</Border>
+	  </StackPanel>
+	</Grid>
+  </DockPanel>
+
+</UserControl>
