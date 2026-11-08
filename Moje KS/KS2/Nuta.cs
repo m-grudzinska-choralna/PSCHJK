@@ -473,7 +473,6 @@ namespace KS2
 
         public static int getLiczbaPoltonow(string p_kod)
         {
-            Interwal interwal = null;
             int wynik = -1;
 
             foreach (Interwal i in interwaly)

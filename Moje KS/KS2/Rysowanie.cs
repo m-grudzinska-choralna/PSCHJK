@@ -384,7 +384,6 @@ namespace KS2
         public int poczatek_a;
         public int szerokosc_a;
         public int srodek_a;
-        public float nr_linii_l;
         public int przesuniecie_pionowe_w_wirtualnej_linii_a;
         public RysunekObiektuNutowego(ObiektNutowy p_obiektNutowy, int p_poczatek_a, int p_szerokosc_a, int p_przesuniecie_pionowe_w_wirtualnej_linii_a)
         {
@@ -1171,7 +1170,6 @@ namespace KS2
             Arkusz arkusz = new Arkusz();            
             WierszArkusza wierszArkusza=null;
             WierszNutowy wierszNutowy = new WierszNutowy();
-            WierszKlawiaturowy wierszKlawiaturowy = null;
             string oktawa_wiol = "mała";
             Tonacja tonacja = new Tonacja("ais-moll");
             Interwal[] schemat = Tonacja.schemat_gamy_mollowej_melodycznej;

@@ -3,12 +3,13 @@
   "operationId": "fb804db1-309d-473e-b895-ea69365a3456",
   "description": "Upgrade .NET projects to newer .NET versions, including guidance on current release status, support lifecycle (LTS/STS), and recommended upgrade targets.",
   "startTime": "2026-11-08T17:24:08.6526001Z",
-  "lastUpdateTime": "2026-11-08T19:35:58.9259681Z",
+  "lastUpdateTime": "2026-11-08T19:39:16.6985776Z",
   "properties": {
     "UpgradeTargetFramework": "net8.0",
     "taskStates": {
       "01-prerequisites": "Completed",
-      "02-sdk-style-conversion": "Completed"
+      "02-sdk-style-conversion": "Completed",
+      "03-net8-windows-migration": "Completed"
     }
   },
   "folderPath": ""

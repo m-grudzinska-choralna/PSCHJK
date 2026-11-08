@@ -52,8 +52,6 @@ namespace KS2
 
 
 
-        int x = 0;
-
         private void panel1_arkusz_wygeneruj()
         {
             panel1_arkusz = null;
@@ -351,8 +349,6 @@ namespace KS2
 
             }
             */
-            int x = 0;
-
             if (uruchomione)
             {
                 Parametry.AutoScrollPosition_Y = panel1.AutoScrollPosition.Y;
@@ -520,7 +516,6 @@ namespace KS2
 
             if (e.KeyCode == Keys.F12)
             {
-                int x = 0;
                 OdswiezPanel();
             }
 

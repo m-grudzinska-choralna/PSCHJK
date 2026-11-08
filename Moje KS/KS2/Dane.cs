@@ -74,7 +74,6 @@ namespace KS2
                 }
             }
 
-            int x = 1;
         }
 
         public GeneratorElementow(string p_rodzaj_cwiczen, string p_klucz, string p_interwal_kod = null)
