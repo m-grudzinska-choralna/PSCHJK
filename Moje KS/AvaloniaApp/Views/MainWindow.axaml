@@ -89,6 +89,7 @@
                     <Separator />
                     <TextBlock Text="Aktualny tryb" FontWeight="Bold" />
                     <TextBlock Text="{Binding SelectedExercise}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding CurrentRound, StringFormat='Runda: {0}'}" />
                     <TextBlock Text="{Binding StatusMessage}" Foreground="#475569" TextWrapping="Wrap" />
                 </StackPanel>
             </Border>

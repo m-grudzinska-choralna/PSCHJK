@@ -1,14 +1,17 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using AvaloniaApp.Models;
 
 namespace AvaloniaApp.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    private readonly ExerciseSession _session;
+
     public MainViewModel()
     {
-        ExerciseModes = new ObservableCollection<string>
+        var exerciseModes = new[]
         {
             "Rozpoznawanie nut",
             "Rozpoznawanie symboli",
@@ -21,7 +24,10 @@ public partial class MainViewModel : ViewModelBase
             "Edytor interwałów"
         };
 
-        SelectedExercise = ExerciseModes[0];
+        _session = new ExerciseSession(exerciseModes);
+        ExerciseModes = new ObservableCollection<string>(_session.ExerciseModes);
+        SelectedExercise = _session.SelectedExercise;
+        CurrentRound = _session.CurrentRound;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
     }
 
@@ -37,6 +43,9 @@ public partial class MainViewModel : ViewModelBase
     private bool _showAnswers;
 
     [ObservableProperty]
+    private int _currentRound;
+
+    [ObservableProperty]
     private bool _isParameterPanelExpanded = true;
 
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
@@ -44,20 +53,25 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void SelectExercise(string exercise)
     {
-        SelectedExercise = exercise;
+        _session.SelectExercise(exercise);
+        SelectedExercise = _session.SelectedExercise;
+        CurrentRound = _session.CurrentRound;
+        ShowAnswers = _session.ShowAnswers;
         StatusMessage = $"Wybrano tryb: {exercise}. Logika ćwiczenia zostanie podłączona w kolejnych krokach.";
     }
 
     [RelayCommand]
     private void GoPrevious()
     {
-        StatusMessage = "Poprzedni ekran — nawigacja zostanie podłączona do sesji ćwiczenia.";
+        _session.Previous();
+        RefreshSessionState("Poprzedni ekran sesji ćwiczenia.");
     }
 
     [RelayCommand]
     private void GoNext()
     {
-        StatusMessage = "Następny ekran — nawigacja zostanie podłączona do sesji ćwiczenia.";
+        _session.Next();
+        RefreshSessionState("Następny ekran sesji ćwiczenia.");
     }
 
     [RelayCommand]
@@ -69,5 +83,18 @@ public partial class MainViewModel : ViewModelBase
     partial void OnSelectedExerciseChanged(string value)
     {
         OnPropertyChanged(nameof(WindowTitle));
+    }
+
+    partial void OnShowAnswersChanged(bool value)
+    {
+        _session.SetShowAnswers(value);
+        StatusMessage = value ? "Odpowiedzi są widoczne." : "Odpowiedzi są ukryte.";
+    }
+
+    private void RefreshSessionState(string message)
+    {
+        CurrentRound = _session.CurrentRound;
+        ShowAnswers = _session.ShowAnswers;
+        StatusMessage = $"{message} Runda: {CurrentRound}.";
     }
 }
