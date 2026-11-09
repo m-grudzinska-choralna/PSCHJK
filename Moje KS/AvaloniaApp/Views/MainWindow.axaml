@@ -3,11 +3,15 @@
         xmlns:vm="using:AvaloniaApp.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        d:DesignWidth="1200"
+        d:DesignHeight="760"
         x:Class="AvaloniaApp.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="AvaloniaApp">
+        Title="{Binding WindowTitle}"
+        MinWidth="900"
+        MinHeight="600">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,8 +19,84 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Rozpoznawanie">
+                <MenuItem Header="Nut" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie nut" />
+                <MenuItem Header="Symboli" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie symboli" />
+                <MenuItem Header="Klawiszy" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie klawiszy" />
+                <MenuItem Header="Interwałów" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie interwałów" />
+            </MenuItem>
+            <MenuItem Header="Materiały">
+                <MenuItem Header="Tonacje" Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje" />
+            </MenuItem>
+            <MenuItem Header="Losowe">
+                <MenuItem Header="Nuty" Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty" />
+                <MenuItem Header="Interwały" Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe interwały" />
+            </MenuItem>
+            <MenuItem Header="Edytor">
+                <MenuItem Header="Nut" Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut" />
+                <MenuItem Header="Interwałów" Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor interwałów" />
+            </MenuItem>
+        </Menu>
+
+        <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="280,*,260" Margin="12">
+            <Border Grid.Row="0" Grid.ColumnSpan="3" Background="#EAF2FF" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel>
+                        <TextBlock Text="Moje KS" FontSize="22" FontWeight="Bold" />
+                        <TextBlock Text="Interfejs Avalonia — baza migracji" Foreground="#475569" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="{Binding IsParameterPanelExpanded, StringFormat='Panel parametrów: {0}'}"
+                            Command="{Binding ToggleParameterPanelCommand}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsParameterPanelExpanded}"
+                    BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,12,0">
+                <ScrollViewer>
+                    <StackPanel Spacing="10">
+                        <TextBlock Text="Parametry ćwiczenia" FontSize="18" FontWeight="Bold" />
+                        <TextBlock Text="Tryb" />
+                        <ComboBox ItemsSource="{Binding ExerciseModes}" SelectedItem="{Binding SelectedExercise}" />
+                        <CheckBox Content="Pokaż odpowiedzi" IsChecked="{Binding ShowAnswers}" />
+                        <CheckBox Content="Kolejne pytania" />
+                        <Separator />
+                        <TextBlock Text="Ustawienia zostaną podłączone do modelu domenowego w kolejnych krokach."
+                                   TextWrapping="Wrap" Foreground="#64748B" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="1" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="20">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                    <TextBlock Text="Obszar arkusza muzycznego" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
+                    <TextBlock Text="Renderer pięciolinii zostanie dodany po wydzieleniu modelu domenowego."
+                               TextWrapping="Wrap" MaxWidth="480" HorizontalAlignment="Center" TextAlignment="Center" />
+                    <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="24" CornerRadius="6">
+                        <TextBlock Text="Podgląd renderowania Avalonia" Foreground="#64748B" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1" Grid.Column="2" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="12" Margin="12,0,0,0">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Nawigacja" FontSize="18" FontWeight="Bold" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="Wstecz" Command="{Binding GoPreviousCommand}" />
+                        <Button Content="Dalej" Command="{Binding GoNextCommand}" />
+                    </StackPanel>
+                    <Separator />
+                    <TextBlock Text="Aktualny tryb" FontWeight="Bold" />
+                    <TextBlock Text="{Binding SelectedExercise}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="#475569" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2" Grid.ColumnSpan="3" Background="#F8FAFC" Padding="10" Margin="0,12,0,0">
+                <TextBlock Text="{Binding StatusMessage}" Foreground="#475569" />
+            </Border>
+        </Grid>
+    </DockPanel>
 
 </Window>
