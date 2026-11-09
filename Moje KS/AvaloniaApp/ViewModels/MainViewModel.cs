@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,6 +9,7 @@ namespace AvaloniaApp.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly ExerciseSession _session;
+    private readonly NoteRangeSettings _noteRange;
 
     public MainViewModel()
     {
@@ -25,13 +27,23 @@ public partial class MainViewModel : ViewModelBase
         };
 
         _session = new ExerciseSession(exerciseModes);
+        _noteRange = new NoteRangeSettings();
         ExerciseModes = new ObservableCollection<string>(_session.ExerciseModes);
+        Clefs = new ObservableCollection<string>(NoteRangeSettings.Clefs);
+        Notes = new ObservableCollection<string>(NoteRangeSettings.Notes);
         SelectedExercise = _session.SelectedExercise;
         CurrentRound = _session.CurrentRound;
+        SelectedClef = _noteRange.Clef;
+        TrebleFrom = _noteRange.TrebleFrom;
+        TrebleTo = _noteRange.TrebleTo;
+        BassFrom = _noteRange.BassFrom;
+        BassTo = _noteRange.BassTo;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
     }
 
     public ObservableCollection<string> ExerciseModes { get; }
+    public ObservableCollection<string> Clefs { get; }
+    public ObservableCollection<string> Notes { get; }
 
     [ObservableProperty]
     private string _selectedExercise;
@@ -48,7 +60,24 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isParameterPanelExpanded = true;
 
+    [ObservableProperty]
+    private string _selectedClef;
+
+    [ObservableProperty]
+    private string _trebleFrom;
+
+    [ObservableProperty]
+    private string _trebleTo;
+
+    [ObservableProperty]
+    private string _bassFrom;
+
+    [ObservableProperty]
+    private string _bassTo;
+
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
+
+    public string NoteRangeStatus => $"Klucz: {SelectedClef}; wiolinowy: {TrebleFrom}–{TrebleTo}; basowy: {BassFrom}–{BassTo}";
 
     [RelayCommand]
     private void SelectExercise(string exercise)
@@ -61,11 +90,32 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void ApplyNoteRange()
+    {
+        try
+        {
+            _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo);
+            OnPropertyChanged(nameof(NoteRangeStatus));
+            StatusMessage = "Zakres nut został zapisany w sesji.";
+        }
+        catch (ArgumentException exception)
+        {
+            StatusMessage = exception.Message;
+        }
+    }
+
+    [RelayCommand]
     private void GoPrevious()
     {
         _session.Previous();
         RefreshSessionState("Poprzedni ekran sesji ćwiczenia.");
     }
+
+    partial void OnSelectedClefChanged(string value) => OnPropertyChanged(nameof(NoteRangeStatus));
+    partial void OnTrebleFromChanged(string value) => OnPropertyChanged(nameof(NoteRangeStatus));
+    partial void OnTrebleToChanged(string value) => OnPropertyChanged(nameof(NoteRangeStatus));
+    partial void OnBassFromChanged(string value) => OnPropertyChanged(nameof(NoteRangeStatus));
+    partial void OnBassToChanged(string value) => OnPropertyChanged(nameof(NoteRangeStatus));
 
     [RelayCommand]
     private void GoNext()

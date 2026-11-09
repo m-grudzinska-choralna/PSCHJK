@@ -62,6 +62,21 @@
                         <CheckBox Content="Pokaż odpowiedzi" IsChecked="{Binding ShowAnswers}" />
                         <CheckBox Content="Kolejne pytania" />
                         <Separator />
+                        <TextBlock Text="Zakres nut" FontSize="16" FontWeight="Bold" />
+                        <ComboBox ItemsSource="{Binding Clefs}" SelectedItem="{Binding SelectedClef}" />
+                        <TextBlock Text="Wiolinowy: od — do" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ComboBox Width="85" ItemsSource="{Binding Notes}" SelectedItem="{Binding TrebleFrom}" />
+                            <ComboBox Width="85" ItemsSource="{Binding Notes}" SelectedItem="{Binding TrebleTo}" />
+                        </StackPanel>
+                        <TextBlock Text="Basowy: od — do" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ComboBox Width="85" ItemsSource="{Binding Notes}" SelectedItem="{Binding BassFrom}" />
+                            <ComboBox Width="85" ItemsSource="{Binding Notes}" SelectedItem="{Binding BassTo}" />
+                        </StackPanel>
+                        <Button Content="Zastosuj zakres" Command="{Binding ApplyNoteRangeCommand}" />
+                        <TextBlock Text="{Binding NoteRangeStatus}" TextWrapping="Wrap" Foreground="#475569" />
+                        <Separator />
                         <TextBlock Text="Ustawienia zostaną podłączone do modelu domenowego w kolejnych krokach."
                                    TextWrapping="Wrap" Foreground="#64748B" />
                     </StackPanel>
