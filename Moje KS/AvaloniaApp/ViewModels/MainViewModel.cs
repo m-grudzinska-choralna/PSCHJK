@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AvaloniaApp.Models;
@@ -10,6 +11,7 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly ExerciseSession _session;
     private readonly NoteRangeSettings _noteRange;
+    private bool _isUpdatingExerciseSelection;
 
     public MainViewModel()
     {
@@ -83,10 +85,7 @@ public partial class MainViewModel : ViewModelBase
     private void SelectExercise(string exercise)
     {
         _session.SelectExercise(exercise);
-        SelectedExercise = _session.SelectedExercise;
-        CurrentRound = _session.CurrentRound;
-        ShowAnswers = _session.ShowAnswers;
-        StatusMessage = $"Wybrano tryb: {exercise}. Logika ćwiczenia zostanie podłączona w kolejnych krokach.";
+        RefreshSessionState($"Wybrano tryb: {exercise}.");
     }
 
     [RelayCommand]
@@ -133,6 +132,14 @@ public partial class MainViewModel : ViewModelBase
     partial void OnSelectedExerciseChanged(string value)
     {
         OnPropertyChanged(nameof(WindowTitle));
+
+        if (!_isUpdatingExerciseSelection && _session.ExerciseModes.Contains(value, StringComparer.Ordinal))
+        {
+            _session.SelectExercise(value);
+            CurrentRound = _session.CurrentRound;
+            ShowAnswers = _session.ShowAnswers;
+            StatusMessage = $"Wybrano tryb: {value}.";
+        }
     }
 
     partial void OnShowAnswersChanged(bool value)
