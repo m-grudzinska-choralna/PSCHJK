@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApp.ViewModels"
+        xmlns:controls="using:AvaloniaApp.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -84,13 +85,15 @@
             </Border>
 
             <Border Grid.Row="1" Grid.Column="1" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="20">
-                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                <StackPanel Spacing="12">
                     <TextBlock Text="Obszar arkusza muzycznego" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
-                    <TextBlock Text="Renderer pięciolinii zostanie dodany po wydzieleniu modelu domenowego."
-                               TextWrapping="Wrap" MaxWidth="480" HorizontalAlignment="Center" TextAlignment="Center" />
-                    <Border Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Padding="24" CornerRadius="6">
-                        <TextBlock Text="Podgląd renderowania Avalonia" Foreground="#64748B" />
-                    </Border>
+                    <controls:StaffCanvas Clef="{Binding SelectedClef}"
+                                           FromNote="{Binding TrebleFrom}"
+                                           ToNote="{Binding TrebleTo}"
+                                           ShowAnswers="{Binding ShowAnswers}"
+                                           HorizontalAlignment="Stretch" />
+                    <TextBlock Text="Zakres nut jest renderowany przez natywny kontroler Avalonia."
+                               TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center" />
                 </StackPanel>
             </Border>
 

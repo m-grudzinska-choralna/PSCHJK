@@ -11,7 +11,6 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly ExerciseSession _session;
     private readonly NoteRangeSettings _noteRange;
-    private bool _isUpdatingExerciseSelection;
 
     public MainViewModel()
     {
@@ -133,7 +132,7 @@ public partial class MainViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(WindowTitle));
 
-        if (!_isUpdatingExerciseSelection && _session.ExerciseModes.Contains(value, StringComparer.Ordinal))
+        if (_session.ExerciseModes.Contains(value, StringComparer.Ordinal))
         {
             _session.SelectExercise(value);
             CurrentRound = _session.CurrentRound;
