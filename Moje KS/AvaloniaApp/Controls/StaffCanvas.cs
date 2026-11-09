@@ -21,6 +21,12 @@ public sealed class StaffCanvas : Control
     public static readonly StyledProperty<string> ToNoteProperty =
         AvaloniaProperty.Register<StaffCanvas, string>(nameof(ToNote), "C5");
 
+    public static readonly StyledProperty<string> NoteProperty =
+        AvaloniaProperty.Register<StaffCanvas, string>(nameof(Note), "C4");
+
+    public static readonly StyledProperty<string> AnswerProperty =
+        AvaloniaProperty.Register<StaffCanvas, string>(nameof(Answer), "C4");
+
     public static readonly StyledProperty<bool> ShowAnswersProperty =
         AvaloniaProperty.Register<StaffCanvas, bool>(nameof(ShowAnswers));
 
@@ -28,6 +34,18 @@ public sealed class StaffCanvas : Control
     {
         get => GetValue(ClefProperty);
         set => SetValue(ClefProperty, value);
+    }
+
+    public string Note
+    {
+        get => GetValue(NoteProperty);
+        set => SetValue(NoteProperty, value);
+    }
+
+    public string Answer
+    {
+        get => GetValue(AnswerProperty);
+        set => SetValue(AnswerProperty, value);
     }
 
     public string FromNote
@@ -50,7 +68,7 @@ public sealed class StaffCanvas : Control
 
     public StaffCanvas()
     {
-        AffectsRender<StaffCanvas>(ClefProperty, FromNoteProperty, ToNoteProperty, ShowAnswersProperty);
+        AffectsRender<StaffCanvas>(ClefProperty, FromNoteProperty, ToNoteProperty, NoteProperty, AnswerProperty, ShowAnswersProperty);
         ClipToBounds = true;
         MinHeight = 260;
     }
@@ -77,9 +95,9 @@ public sealed class StaffCanvas : Control
         var glyph = new FormattedText(clefText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 64, Brushes.Black);
         context.DrawText(glyph, new Point(12, centerY - 43));
 
-        var notes = GetNotes();
+        var notes = new[] { Note };
         var notePen = new Pen(Brushes.Black, 2);
-        for (var index = 0; index < notes.Count; index++)
+        for (var index = 0; index < notes.Length; index++)
         {
             var x = left + 75 + (index * 72);
             if (x > right - 20)
@@ -93,20 +111,10 @@ public sealed class StaffCanvas : Control
 
             if (ShowAnswers)
             {
-                var label = new FormattedText(notes[index], CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 14, Brushes.Black);
+                var label = new FormattedText(Answer, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 14, Brushes.Black);
                 context.DrawText(label, new Point(x - 12, centerY + 92));
             }
         }
-    }
-
-    private IReadOnlyList<string> GetNotes()
-    {
-        if (FromNote == ToNote)
-        {
-            return new[] { FromNote };
-        }
-
-        return new[] { FromNote, ToNote };
     }
 
     private static double GetStaffOffset(string note, double spacing)

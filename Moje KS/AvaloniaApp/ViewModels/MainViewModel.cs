@@ -11,6 +11,7 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly ExerciseSession _session;
     private readonly NoteRangeSettings _noteRange;
+    private readonly NoteQuestionGenerator _questionGenerator = new();
 
     public MainViewModel()
     {
@@ -39,6 +40,7 @@ public partial class MainViewModel : ViewModelBase
         TrebleTo = _noteRange.TrebleTo;
         BassFrom = _noteRange.BassFrom;
         BassTo = _noteRange.BassTo;
+        CurrentQuestion = _questionGenerator.Create(_noteRange);
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
     }
 
@@ -80,10 +82,17 @@ public partial class MainViewModel : ViewModelBase
 
     public string NoteRangeStatus => $"Klucz: {SelectedClef}; wiolinowy: {TrebleFrom}–{TrebleTo}; basowy: {BassFrom}–{BassTo}";
 
+    [ObservableProperty]
+    private NoteQuestion _currentQuestion;
+
     [RelayCommand]
     private void SelectExercise(string exercise)
     {
         _session.SelectExercise(exercise);
+        if (exercise == "Rozpoznawanie nut")
+        {
+            CurrentQuestion = _questionGenerator.Create(_noteRange);
+        }
         RefreshSessionState($"Wybrano tryb: {exercise}.");
     }
 
@@ -93,6 +102,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo);
+            CurrentQuestion = _questionGenerator.Create(_noteRange);
             OnPropertyChanged(nameof(NoteRangeStatus));
             StatusMessage = "Zakres nut został zapisany w sesji.";
         }
@@ -106,6 +116,7 @@ public partial class MainViewModel : ViewModelBase
     private void GoPrevious()
     {
         _session.Previous();
+        CurrentQuestion = _questionGenerator.Create(_noteRange);
         RefreshSessionState("Poprzedni ekran sesji ćwiczenia.");
     }
 
@@ -119,6 +130,7 @@ public partial class MainViewModel : ViewModelBase
     private void GoNext()
     {
         _session.Next();
+        CurrentQuestion = _questionGenerator.Create(_noteRange);
         RefreshSessionState("Następny ekran sesji ćwiczenia.");
     }
 

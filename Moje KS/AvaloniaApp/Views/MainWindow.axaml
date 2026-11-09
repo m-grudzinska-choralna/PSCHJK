@@ -87,9 +87,9 @@
             <Border Grid.Row="1" Grid.Column="1" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="20">
                 <StackPanel Spacing="12">
                     <TextBlock Text="Obszar arkusza muzycznego" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" />
-                    <controls:StaffCanvas Clef="{Binding SelectedClef}"
-                                           FromNote="{Binding TrebleFrom}"
-                                           ToNote="{Binding TrebleTo}"
+                    <controls:StaffCanvas Clef="{Binding CurrentQuestion.Clef}"
+                                           Note="{Binding CurrentQuestion.Note}"
+                                           Answer="{Binding CurrentQuestion.Answer}"
                                            ShowAnswers="{Binding ShowAnswers}"
                                            HorizontalAlignment="Stretch" />
                     <TextBlock Text="Zakres nut jest renderowany przez natywny kontroler Avalonia."
