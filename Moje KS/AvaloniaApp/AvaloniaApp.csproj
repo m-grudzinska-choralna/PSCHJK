@@ -6,8 +6,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
+  <Target Name="SignAvaloniaBinary" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)' == 'Debug'">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)SignApp.ps1&quot; &quot;$(TargetDir)$(TargetFileName.Replace('.dll', '.exe'))&quot;" />
+  </Target>
+
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
