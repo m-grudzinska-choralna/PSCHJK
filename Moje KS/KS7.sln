@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12224.181 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Program Moje KS", "KS2\Program Moje KS.csproj", "{016442B4-20C5-44B0-968C-DDA525E95D24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApp", "AvaloniaApp\AvaloniaApp.csproj", "{8C9F3661-CA61-303A-8D68-4CC704101EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{016442B4-20C5-44B0-968C-DDA525E95D24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{016442B4-20C5-44B0-968C-DDA525E95D24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{016442B4-20C5-44B0-968C-DDA525E95D24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C9F3661-CA61-303A-8D68-4CC704101EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C9F3661-CA61-303A-8D68-4CC704101EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C9F3661-CA61-303A-8D68-4CC704101EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C9F3661-CA61-303A-8D68-4CC704101EA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
