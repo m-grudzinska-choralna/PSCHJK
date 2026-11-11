@@ -12,89 +12,126 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding WindowTitle}"
         MinWidth="900"
-        MinHeight="600">
+        MinHeight="600"
+        Background="#EFF6FF">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Rozpoznawanie">
-                <MenuItem Header="Nut" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie nut" />
-                <MenuItem Header="Symboli" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie symboli" />
-                <MenuItem Header="Klawiszy" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie klawiszy" />
-                <MenuItem Header="Interwałów" Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie interwałów" />
-            </MenuItem>
-            <MenuItem Header="Materiały">
-                <MenuItem Header="Tonacje" Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje" />
-            </MenuItem>
-            <MenuItem Header="Losowe">
-                <MenuItem Header="Nuty" Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty" />
-                <MenuItem Header="Interwały" Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe interwały" />
-            </MenuItem>
-            <MenuItem Header="Edytor">
-                <MenuItem Header="Nut" Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut" />
-                <MenuItem Header="Interwałów" Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor interwałów" />
-            </MenuItem>
-        </Menu>
-
-        <Grid RowDefinitions="Auto,*" ColumnDefinitions="280,*" Margin="12">
-            <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#EAF2FF" CornerRadius="6" Padding="12" Margin="0,0,0,12">
-                <StackPanel>
-                    <TextBlock Text="Moje KS" FontSize="22" FontWeight="Bold" />
-                    <TextBlock Text="Ćwiczenia muzyczne" Foreground="#475569" />
+    <Grid RowDefinitions="112,64,*" Margin="14">
+        <Border Grid.Row="0" CornerRadius="22" Padding="24,12" ClipToBounds="True">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                    <GradientStop Color="#EAF3FF" Offset="0" />
+                    <GradientStop Color="#C8DEFF" Offset="0.58" />
+                    <GradientStop Color="#F5F9FF" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid ColumnDefinitions="Auto,*">
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.72">
+                    <TextBlock Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Foreground="#75A9EC" FontSize="19" />
+                    <TextBlock Text="   ♪                      ♫                    ♪" Foreground="#1556A5" FontFamily="Segoe UI Symbol" FontSize="30" Margin="14,-9,0,0" />
+                    <TextBlock Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Foreground="#8BB8F0" FontSize="19" Margin="0,-11,0,0" />
                 </StackPanel>
-            </Border>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
+                    <TextBlock Text="𝄞" FontFamily="Segoe UI Symbol" FontSize="64" Foreground="#123C75" VerticalAlignment="Center" />
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Moje KS" FontSize="30" FontWeight="Bold" Foreground="#102A50" />
+                        <TextBlock Text="Ćwiczenia muzyczne" FontSize="16" Foreground="#263B59" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-            <Border Grid.Row="1" Grid.Column="0"
-                    BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,12,0">
-                <ScrollViewer>
-                    <StackPanel Spacing="10">
-                        <CheckBox Content="Pokaż odpowiedzi" IsChecked="{Binding ShowAnswers}" />
-                        <CheckBox Content="Kolejne pytania" />
-                        <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" Margin="4,0">
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie nut"
+                    Content="⌂   Rozpoznawanie" FontSize="16" FontWeight="SemiBold" Foreground="White"
+                    Background="#1257A8" BorderBrush="#1257A8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje"
+                    Content="▣   Materiały" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty"
+                    Content="⚄   Losowe" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut"
+                    Content="✎   Edytor" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnDefinitions="286,*" Margin="4,4,0,0">
+            <Border Grid.Column="0" Margin="0,0,14,0" Background="#FBFCFF" BorderBrush="#DFE9F7" BorderThickness="1"
+                    CornerRadius="22" Padding="18" BoxShadow="0 5 14 0 #304B78">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="11">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Border Width="38" Height="38" CornerRadius="19" Background="#E5EFFD">
+                                <TextBlock Text="⚙" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#164D90"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Opcje ćwiczenia" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <CheckBox Content="Pokaż odpowiedź" IsChecked="{Binding ShowAnswers}" FontSize="16" Margin="4,0" />
+                        <CheckBox Content="Kolejne pytania" FontSize="16" Margin="4,0" />
+
+                        <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
                             <RadioButton Content="Wiolinowy" GroupName="ExerciseClef"
-                                         IsChecked="{Binding IsTrebleClefSelected, Mode=TwoWay}" />
+                                         IsChecked="{Binding IsTrebleClefSelected, Mode=TwoWay}" FontSize="16" />
                             <RadioButton Content="Basowy" GroupName="ExerciseClef"
-                                         IsChecked="{Binding IsBassClefSelected, Mode=TwoWay}" />
+                                         IsChecked="{Binding IsBassClefSelected, Mode=TwoWay}" FontSize="16" />
                         </StackPanel>
-                        <Separator />
-                        <TextBlock Text="Zakres nut" FontSize="16" FontWeight="Bold" />
-                        <StackPanel IsVisible="{Binding IsTrebleClefSelected}" Spacing="4">
-                            <TextBlock Text="Wiolinowy: od — do" />
+
+                        <Separator Margin="0,2" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Border Width="38" Height="38" CornerRadius="19" Background="#E5EFFD">
+                                <TextBlock Text="☾" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#164D90"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <TextBlock Text="Zakres nut" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsTrebleClefSelected}" Spacing="6">
+                            <TextBlock Text="Wiolinowy: od — do" FontSize="15" />
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <ComboBox Width="125" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleFrom}" />
                                 <ComboBox Width="125" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleTo}" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel IsVisible="{Binding IsBassClefSelected}" Spacing="4">
-                            <TextBlock Text="Basowy: od — do" />
+                        <StackPanel IsVisible="{Binding IsBassClefSelected}" Spacing="6">
+                            <TextBlock Text="Basowy: od — do" FontSize="15" />
                             <StackPanel Orientation="Horizontal" Spacing="6">
                                 <ComboBox Width="125" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassFrom}" />
                                 <ComboBox Width="125" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassTo}" />
                             </StackPanel>
                         </StackPanel>
+
+                        <Separator Margin="0,2" />
+                        <Button Command="{Binding GenerateNewNoteCommand}" Content="▶   Rozpocznij"
+                                FontSize="18" FontWeight="SemiBold" Foreground="White" Background="#0868C8"
+                                BorderBrush="#0868C8" BorderThickness="1" CornerRadius="28" Padding="16,12" />
+                        <TextBlock Text="♫   ♬" FontFamily="Segoe UI Symbol" FontSize="25" Foreground="#438FE4"
+                                   HorizontalAlignment="Right" Margin="0,0,6,0" />
                     </StackPanel>
                 </ScrollViewer>
             </Border>
 
-            <Border Grid.Row="1" Grid.Column="1" Background="White" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Padding="20">
+            <Border Grid.Column="1" Background="#FFFEFC" BorderBrush="#C7DDFB" BorderThickness="2"
+                    CornerRadius="24" Padding="22" BoxShadow="0 6 16 0 #405A86">
                 <Grid>
                     <controls:StaffCanvas Clef="{Binding CurrentQuestion.Clef}"
-                                           Note="{Binding CurrentQuestion.Note}"
-                                           Answer="{Binding CurrentQuestion.Answer}"
-                                           ShowAnswers="{Binding ShowAnswers}"
-                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-                    <TextBlock Text="{Binding SymbolicNote}" FontSize="72" FontWeight="Bold" Foreground="Blue"
-                               HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,36,64,0" />
+                                          Note="{Binding CurrentQuestion.Note}"
+                                          Answer="{Binding CurrentQuestion.Answer}"
+                                          ShowAnswers="{Binding ShowAnswers}"
+                                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0"
+                            Background="#DFECFF" CornerRadius="24" Padding="18,6">
+                        <TextBlock Text="{Binding SymbolicNote}" FontSize="48" FontWeight="Bold" Foreground="#123F7D" />
+                    </Border>
                 </Grid>
             </Border>
-
         </Grid>
-    </DockPanel>
-
+    </Grid>
 </Window>
