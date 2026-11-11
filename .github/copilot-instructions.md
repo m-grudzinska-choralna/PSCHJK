@@ -4,6 +4,9 @@
 - Po zakończeniu migracji .NET 8 użytkownik wybrał jako następny etap naprawę podpisywania aplikacji i weryfikację jej uruchomienia.
 - Fix for Avalonia .NET 8: Do NOT include XAML files as AvaloniaResource with wildcard patterns (e.g., `<AvaloniaResource Include="**/*.axaml" />`). This causes "Duplicate x:Class directive" errors in Avalonia 11.2.0+ with .NET 8. Solution: Only include static assets (`<AvaloniaResource Include="Assets/**" />`). XAML files are automatically loaded at runtime via AvaloniaXamlLoader.Load(this) in code-behind files.
 
+## Visual Design Preferences
+- For the music-themed header, use cheerful, lively-looking wavy staff lines and musical notes, avoiding a subdued or overly formal treatment.
+
 ## General Instructions
 - When the user has already provided screenshots as the specification, inspect those and the relevant project source instead of asking them to restate the ranges or inferring values from incomplete data.
 
@@ -26,3 +29,4 @@
 
 ## UI Design Guidelines
 - When adapting UI to a reference image, ensure graphics are vivid and visually prominent, rather than understated or represented by simple text glyphs.
+- The exercise-options card should have a decorative light-blue wave along its bottom-left corner, with small music notes near the lower-right end, matching the provided reference.

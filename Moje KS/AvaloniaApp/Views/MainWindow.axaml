@@ -11,6 +11,7 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding WindowTitle}"
+        SystemDecorations="BorderOnly"
         Width="1370"
         Height="770"
         MinWidth="900"
@@ -22,7 +23,8 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="112,64,*" Margin="14">
-        <Border Grid.Row="0" CornerRadius="22" Padding="24,12" ClipToBounds="True">
+        <Border Grid.Row="0" CornerRadius="22" Padding="24,12" ClipToBounds="True"
+                PointerPressed="OnTitleBarPointerPressed">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                     <GradientStop Color="#EAF3FF" Offset="0" />
@@ -31,6 +33,10 @@
                 </LinearGradientBrush>
             </Border.Background>
             <Grid ColumnDefinitions="Auto,*">
+                <Canvas Grid.ColumnSpan="2" Height="112" VerticalAlignment="Center" IsHitTestVisible="False" ClipToBounds="True">
+                    <Path Data="M 0,0 H 1300 V 39 C 1185,7 1110,52 1005,27 S 820,51 700,25 S 500,47 382,20 S 170,47 0,18 Z" Fill="#E7F1FF" />
+                    <Path Data="M 0,76 C 122,52 205,112 352,85 S 568,72 707,96 S 921,85 1056,108 S 1212,82 1300,101 V 112 H 0 Z" Fill="#D6E8FF" Opacity="0.8" />
+                </Canvas>
                 <Canvas Grid.Column="1" Width="760" Height="112" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True">
                     <Path Data="M 0,66 C 135,-7 216,98 360,51 S 610,-3 760,42" Stroke="#70A9F5" StrokeThickness="3" />
                     <Path Data="M 0,77 C 135,4 216,109 360,62 S 610,8 760,53" Stroke="#397FD3" StrokeThickness="2.5" />
@@ -49,6 +55,18 @@
                         <TextBlock Text="Moje KS" FontSize="30" FontWeight="Bold" Foreground="#102A50" />
                         <TextBlock Text="Ćwiczenia muzyczne" FontSize="16" Foreground="#263B59" />
                     </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="2"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-5,0,0">
+                    <Button Click="OnMinimizeClick" Content="—" ToolTip.Tip="Minimalizuj"
+                            Width="36" Height="30" Padding="0" FontSize="18" Foreground="#183B6A"
+                            Background="Transparent" BorderThickness="0" />
+                    <Button Click="OnMaximizeClick" Content="□" ToolTip.Tip="Maksymalizuj"
+                            Width="36" Height="30" Padding="0" FontSize="17" Foreground="#183B6A"
+                            Background="Transparent" BorderThickness="0" />
+                    <Button Click="OnCloseClick" Content="×" ToolTip.Tip="Zamknij"
+                            Width="36" Height="30" Padding="0" FontSize="22" Foreground="#183B6A"
+                            Background="Transparent" BorderThickness="0" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -139,15 +157,15 @@
                         <StackPanel IsVisible="{Binding IsTrebleClefSelected}" Spacing="6">
                             <TextBlock Text="Wiolinowy: od — do" FontSize="15" />
                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                <ComboBox Width="125" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleFrom}" />
-                                <ComboBox Width="125" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleTo}" />
+                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleFrom}" />
+                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleTo}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel IsVisible="{Binding IsBassClefSelected}" Spacing="6">
                             <TextBlock Text="Basowy: od — do" FontSize="15" />
                             <StackPanel Orientation="Horizontal" Spacing="6">
-                                <ComboBox Width="125" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassFrom}" />
-                                <ComboBox Width="125" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassTo}" />
+                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassFrom}" />
+                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassTo}" />
                             </StackPanel>
                         </StackPanel>
 
