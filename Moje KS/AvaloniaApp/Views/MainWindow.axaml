@@ -11,6 +11,8 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding WindowTitle}"
+        Width="1370"
+        Height="770"
         MinWidth="900"
         MinHeight="600"
         Background="#EFF6FF">
@@ -29,13 +31,20 @@
                 </LinearGradientBrush>
             </Border.Background>
             <Grid ColumnDefinitions="Auto,*">
-                <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.72">
-                    <TextBlock Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Foreground="#75A9EC" FontSize="19" />
-                    <TextBlock Text="   ♪                      ♫                    ♪" Foreground="#1556A5" FontFamily="Segoe UI Symbol" FontSize="30" Margin="14,-9,0,0" />
-                    <TextBlock Text="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" Foreground="#8BB8F0" FontSize="19" Margin="0,-11,0,0" />
-                </StackPanel>
+                <Canvas Grid.Column="1" Width="760" Height="112" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True">
+                    <Path Data="M 0,66 C 135,-7 216,98 360,51 S 610,-3 760,42" Stroke="#70A9F5" StrokeThickness="3" />
+                    <Path Data="M 0,77 C 135,4 216,109 360,62 S 610,8 760,53" Stroke="#397FD3" StrokeThickness="2.5" />
+                    <Path Data="M 0,88 C 135,15 216,120 360,73 S 610,19 760,64" Stroke="#70A9F5" StrokeThickness="2.5" />
+                    <Path Data="M 0,99 C 135,26 216,131 360,84 S 610,30 760,75" Stroke="#397FD3" StrokeThickness="2.5" />
+                    <Path Data="M 0,110 C 135,37 216,142 360,95 S 610,41 760,86" Stroke="#70A9F5" StrokeThickness="2.5" />
+                    <TextBlock Canvas.Left="150" Canvas.Top="30" Text="♫" FontFamily="Segoe UI Symbol" FontSize="39" FontWeight="Bold" Foreground="#123F7D" />
+                    <TextBlock Canvas.Left="280" Canvas.Top="61" Text="♪" FontFamily="Segoe UI Symbol" FontSize="36" FontWeight="Bold" Foreground="#1556A5" />
+                    <TextBlock Canvas.Left="426" Canvas.Top="18" Text="♫" FontFamily="Segoe UI Symbol" FontSize="42" FontWeight="Bold" Foreground="#123F7D" />
+                    <TextBlock Canvas.Left="580" Canvas.Top="0" Text="♪" FontFamily="Segoe UI Symbol" FontSize="40" FontWeight="Bold" Foreground="#1556A5" />
+                    <TextBlock Canvas.Left="680" Canvas.Top="35" Text="♪" FontFamily="Segoe UI Symbol" FontSize="36" FontWeight="Bold" Foreground="#1556A5" />
+                </Canvas>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
-                    <TextBlock Text="𝄞" FontFamily="Segoe UI Symbol" FontSize="64" Foreground="#123C75" VerticalAlignment="Center" />
+                    <Image Source="avares://AvaloniaApp/Assets/klucz__g.png" Width="52" Height="82" Stretch="Uniform" />
                     <StackPanel VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Moje KS" FontSize="30" FontWeight="Bold" Foreground="#102A50" />
                         <TextBlock Text="Ćwiczenia muzyczne" FontSize="16" Foreground="#263B59" />
@@ -46,17 +55,51 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center" Margin="4,0">
             <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Rozpoznawanie nut"
-                    Content="⌂   Rozpoznawanie" FontSize="16" FontWeight="SemiBold" Foreground="White"
-                    Background="#1257A8" BorderBrush="#1257A8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+                    FontSize="16" FontWeight="SemiBold" Foreground="White"
+                    Background="#1257A8" BorderBrush="#1257A8" BorderThickness="1" CornerRadius="28" Padding="22,11">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Path Width="26" Height="26" Fill="White" Data="M 12,2 L 1,12 H 4 V 22 H 9 V 15 H 15 V 22 H 20 V 12 H 23 Z" />
+                    <TextBlock Text="Rozpoznawanie" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
             <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje"
-                    Content="▣   Materiały" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
-                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+                    FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Grid Width="27" Height="26">
+                        <Path Data="M 2,4 C 6,2 10,3 13,6 C 16,3 20,2 25,4 V 22 C 20,20 16,20 13,23 C 10,20 6,20 2,22 Z"
+                              Stroke="#183B6A" StrokeThickness="2.4" StrokeLineCap="Round" />
+                        <Path Data="M 13,6 V 23" Stroke="#183B6A" StrokeThickness="2.2" />
+                    </Grid>
+                    <TextBlock Text="Materiały" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
             <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty"
-                    Content="⚄   Losowe" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
-                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+                    FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Grid Width="27" Height="27">
+                        <Border CornerRadius="5" BorderBrush="#183B6A" BorderThickness="2.5" />
+                        <Canvas>
+                            <Ellipse Canvas.Left="5" Canvas.Top="5" Width="5" Height="5" Fill="#183B6A" />
+                            <Ellipse Canvas.Left="17" Canvas.Top="5" Width="5" Height="5" Fill="#183B6A" />
+                            <Ellipse Canvas.Left="11" Canvas.Top="11" Width="5" Height="5" Fill="#183B6A" />
+                            <Ellipse Canvas.Left="5" Canvas.Top="17" Width="5" Height="5" Fill="#183B6A" />
+                            <Ellipse Canvas.Left="17" Canvas.Top="17" Width="5" Height="5" Fill="#183B6A" />
+                        </Canvas>
+                    </Grid>
+                    <TextBlock Text="Losowe" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
             <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut"
-                    Content="✎   Edytor" FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
-                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11" />
+                    FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
+                    Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Path Width="26" Height="26" Fill="#183B6A"
+                          Data="M 3,18 L 17,4 L 22,9 L 8,23 L 2,24 Z M 15,6 L 20,11" />
+                    <TextBlock Text="Edytor" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <Grid Grid.Row="2" ColumnDefinitions="286,*" Margin="4,4,0,0">

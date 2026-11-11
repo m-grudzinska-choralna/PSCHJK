@@ -23,3 +23,6 @@
 
 ## Note Display Guidelines
 - Keep staff scale fixed across all note changes by fitting to the full supported note span for the selected clef, ensuring that displayed notes outside the selected range (such as h³) remain visible.
+
+## UI Design Guidelines
+- When adapting UI to a reference image, ensure graphics are vivid and visually prominent, rather than understated or represented by simple text glyphs.
