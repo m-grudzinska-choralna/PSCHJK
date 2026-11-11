@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <Target Name="SignAvaloniaBinary" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)' == 'Debug'">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)SignApp.ps1&quot; &quot;$(TargetPath)&quot;" />
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)SignApp.ps1&quot; &quot;$(TargetDir)$(TargetFileName.Replace('.dll', '.exe'))&quot;" />
   </Target>
 
   <ItemGroup>
     <AvaloniaResource Include="Assets/**" />
+    <AvaloniaResource Include="..\KS2\Resources\klucz__g.png" Link="Assets/klucz__g.png" />
+    <AvaloniaResource Include="..\KS2\Resources\klucz_f.png" Link="Assets/klucz_f.png" />
+    <AvaloniaResource Include="..\KS2\Resources\cala_nuta.png" Link="Assets/cala_nuta.png" />
   </ItemGroup>
 
   <ItemGroup>

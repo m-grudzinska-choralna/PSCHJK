@@ -1,25 +1,23 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Media.TextFormatting;
+using Avalonia.Platform;
 using AvaloniaApp.Models;
 
 namespace AvaloniaApp.Controls;
 
 public sealed class StaffCanvas : Control
 {
+    private static readonly Bitmap TrebleClefImage = LoadImage("klucz__g.png");
+    private static readonly Bitmap BassClefImage = LoadImage("klucz_f.png");
+    private static readonly Bitmap WholeNoteImage = LoadImage("cala_nuta.png");
+
     public static readonly StyledProperty<string> ClefProperty =
         AvaloniaProperty.Register<StaffCanvas, string>(nameof(Clef), "wiolinowy");
-
-    public static readonly StyledProperty<string> FromNoteProperty =
-        AvaloniaProperty.Register<StaffCanvas, string>(nameof(FromNote), "C4");
-
-    public static readonly StyledProperty<string> ToNoteProperty =
-        AvaloniaProperty.Register<StaffCanvas, string>(nameof(ToNote), "C5");
 
     public static readonly StyledProperty<string> NoteProperty =
         AvaloniaProperty.Register<StaffCanvas, string>(nameof(Note), "C4");
@@ -48,18 +46,6 @@ public sealed class StaffCanvas : Control
         set => SetValue(AnswerProperty, value);
     }
 
-    public string FromNote
-    {
-        get => GetValue(FromNoteProperty);
-        set => SetValue(FromNoteProperty, value);
-    }
-
-    public string ToNote
-    {
-        get => GetValue(ToNoteProperty);
-        set => SetValue(ToNoteProperty, value);
-    }
-
     public bool ShowAnswers
     {
         get => GetValue(ShowAnswersProperty);
@@ -68,7 +54,7 @@ public sealed class StaffCanvas : Control
 
     public StaffCanvas()
     {
-        AffectsRender<StaffCanvas>(ClefProperty, FromNoteProperty, ToNoteProperty, NoteProperty, AnswerProperty, ShowAnswersProperty);
+        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, ShowAnswersProperty);
         ClipToBounds = true;
         MinHeight = 260;
     }
@@ -78,11 +64,30 @@ public sealed class StaffCanvas : Control
         base.Render(context);
 
         var bounds = Bounds;
-        var centerY = bounds.Height / 2;
-        var left = 54d;
-        var right = Math.Max(left + 120, bounds.Width - 30);
-        var spacing = 14d;
-        var pen = new Pen(Brushes.Black, 1.5);
+        var isBassClef = Clef == "basowy";
+        var middleLineNoteNumber = isBassClef ? 17 : 29;
+        var noteNumber = NoteRangeSettings.NoteNumber(Note);
+        if (noteNumber < 0)
+        {
+            noteNumber = NoteRangeSettings.NoteNumber("C4");
+        }
+
+        var supportedNotes = isBassClef ? NoteRangeSettings.BassNotes : NoteRangeSettings.TrebleNotes;
+        var lowestNoteNumber = NoteRangeSettings.NoteNumber(supportedNotes[0]);
+        var highestNoteNumber = NoteRangeSettings.NoteNumber(supportedNotes[^1]);
+        var lowestNoteStep = (lowestNoteNumber - middleLineNoteNumber) / 2d;
+        var highestNoteStep = (highestNoteNumber - middleLineNoteNumber) / 2d;
+        var clefHeightFactor = isBassClef ? 3.05 : 8;
+        var clefLineOffset = isBassClef ? 5 : 7.3;
+        var clefTopExtent = clefLineOffset - 3;
+        var clefBottomExtent = 3 - clefLineOffset + clefHeightFactor;
+        var topExtent = Math.Max(2, Math.Max(clefTopExtent, highestNoteStep + 0.55)) + 0.5;
+        var bottomExtent = Math.Max(2, Math.Max(clefBottomExtent, -lowestNoteStep + 0.55)) + 0.5;
+        var spacing = Math.Max(6, Math.Min((bounds.Width - 40) / 18, bounds.Height / (topExtent + bottomExtent)));
+        var centerY = topExtent * spacing + Math.Max(0, bounds.Height - (topExtent + bottomExtent) * spacing) / 2;
+        var left = spacing * 0.2;
+        var right = Math.Max(left + spacing * 10, bounds.Width - spacing * 0.2);
+        var pen = new Pen(Brushes.Black, Math.Max(1, spacing * 0.09));
 
         for (var line = 0; line < 5; line++)
         {
@@ -90,36 +95,78 @@ public sealed class StaffCanvas : Control
             context.DrawLine(pen, new Point(left, y), new Point(right, y));
         }
 
-        var typeface = new Typeface("Segoe UI Symbol");
-        var clefText = Clef == "basowy" ? "𝄢" : "𝄞";
-        var glyph = new FormattedText(clefText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, 64, Brushes.Black);
-        context.DrawText(glyph, new Point(12, centerY - 43));
+        var clefImage = isBassClef ? BassClefImage : TrebleClefImage;
+        var clefHeight = spacing * clefHeightFactor;
+        var clefWidth = clefImage.Size.Width / clefImage.Size.Height * clefHeight;
+        DrawImage(context, clefImage, new Rect(left, centerY + (3 - clefLineOffset) * spacing, clefWidth, clefHeight));
 
         var notes = new[] { Note };
-        var notePen = new Pen(Brushes.Black, 2);
+        var notePen = new Pen(Brushes.Black, Math.Max(1, spacing * 0.12));
         for (var index = 0; index < notes.Length; index++)
         {
-            var x = left + 75 + (index * 72);
-            if (x > right - 20)
+            var x = left + spacing * 6.3 + (index * spacing * 5.5);
+            if (x > right - spacing)
             {
                 break;
             }
 
-            var y = centerY - GetStaffOffset(notes[index], spacing);
-            context.DrawEllipse(Brushes.Black, notePen, new Point(x, y), 9, 6);
-            context.DrawLine(notePen, new Point(x + 8, y), new Point(x + 8, y - 48));
+            var y = centerY - GetStaffOffset(noteNumber, Clef, spacing);
+            DrawLedgerLines(context, x, noteNumber, Clef, centerY, spacing, notePen);
+            var noteHeight = spacing * 5.08;
+            var noteWidth = WholeNoteImage.Size.Width / WholeNoteImage.Size.Height * noteHeight;
+            DrawImage(context, WholeNoteImage, new Rect(x - noteWidth / 2, y - spacing * 4.44, noteWidth, noteHeight));
 
             if (ShowAnswers)
             {
-                var label = new FormattedText(Answer, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), 14, Brushes.Black);
-                context.DrawText(label, new Point(x - 12, centerY + 92));
+                var label = new FormattedText(NoteRangeSettings.ToSymbolicName(Answer), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), spacing, Brushes.Black);
+                context.DrawText(label, new Point(x - spacing, centerY + spacing * 6.5));
             }
         }
     }
 
-    private static double GetStaffOffset(string note, double spacing)
+    private static Bitmap LoadImage(string fileName)
     {
-        var index = Array.IndexOf(NoteRangeSettings.Notes.ToArray(), note);
-        return (index - 7) * (spacing / 2);
+        using var stream = AssetLoader.Open(new Uri($"avares://AvaloniaApp/Assets/{fileName}"));
+        return new Bitmap(stream);
+    }
+
+    private static void DrawImage(DrawingContext context, Bitmap image, Rect destination)
+    {
+        context.DrawImage(image, new Rect(image.Size), destination);
+    }
+
+    private static double GetStaffOffset(int noteNumber, string clef, double spacing)
+    {
+        var middleLineNoteNumber = clef == "basowy" ? 17 : 29;
+        return (noteNumber - middleLineNoteNumber) * (spacing / 2);
+    }
+
+    private static void DrawLedgerLines(
+        DrawingContext context,
+        double x,
+        int noteNumber,
+        string clef,
+        double centerY,
+        double spacing,
+        Pen pen)
+    {
+        var bottomLineNoteNumber = clef == "basowy" ? 13 : 25;
+        var topLineNoteNumber = clef == "basowy" ? 21 : 33;
+
+        for (var ledgerNoteNumber = bottomLineNoteNumber - 2;
+             ledgerNoteNumber >= noteNumber;
+             ledgerNoteNumber -= 2)
+        {
+            var y = centerY - GetStaffOffset(ledgerNoteNumber, clef, spacing);
+            context.DrawLine(pen, new Point(x - spacing * 1.3, y), new Point(x + spacing * 1.3, y));
+        }
+
+        for (var ledgerNoteNumber = topLineNoteNumber + 2;
+             ledgerNoteNumber <= noteNumber;
+             ledgerNoteNumber += 2)
+        {
+            var y = centerY - GetStaffOffset(ledgerNoteNumber, clef, spacing);
+            context.DrawLine(pen, new Point(x - spacing * 1.3, y), new Point(x + spacing * 1.3, y));
+        }
     }
 }

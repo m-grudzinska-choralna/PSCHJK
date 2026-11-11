@@ -31,11 +31,7 @@ public partial class MainWindow : Window
                 e.Handled = true;
                 break;
             case Key.Space:
-                viewModel.ShowAnswers = !viewModel.ShowAnswers;
-                e.Handled = true;
-                break;
-            case Key.F2:
-                viewModel.ToggleParameterPanelCommand.Execute(null);
+                viewModel.GenerateNewNoteCommand.Execute(null);
                 e.Handled = true;
                 break;
             case Key.Escape:
