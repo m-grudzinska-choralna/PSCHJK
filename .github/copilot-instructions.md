@@ -13,11 +13,10 @@
 
 ## Avalonia App Guidelines
 - When matching KS2 visually in the Avalonia app, omit headings/placeholders not present in KS2.
-- Use symbolic note labels instead of text prefixes like “Nuta:”. 
+- Use symbolic note labels (do/re/mi/fa/sol/la/si) instead of text prefixes like “Nuta:”. 
 - Correctly align the clef to the staff.
 - Prevent noteheads from obscuring staff lines.
 - Render ledger lines for notes such as middle C.
-- Ensure flat letter names in uppercase form are fully uppercase (e.g., CES) and the underline marker spans the full displayed note text width.
 
 ## Rendering Guidelines
 - When rendering low ledger-line notes in Avalonia, keep the full notehead visible within the staff canvas; middle C (C4) must be visible and ledger lines must be shown rather than clipping the note below the canvas.
@@ -31,4 +30,4 @@
 
 ## UI Design Guidelines
 - When adapting UI to a reference image, ensure graphics are vivid and visually prominent, rather than understated or represented by simple text glyphs.
-- The exercise-options card should have a decorative light-blue wave along its bottom-left corner, with small music notes near the lower-right end, matching the provided reference.
+- The exercise-options card should have a decorative light-blue wave along its bottom-left corner, with small music notes near the lower-right end, matching the provided reference.- The exercise-options card should have a decorative light-blue wave along its bottom-left corner, with small music notes near the lower-right end, matching the provided reference.

@@ -18,7 +18,8 @@ public sealed class NoteQuestionGenerator
         var notes = GetCandidateNotes(settings);
         var note = sequential ? GetNextSequentialNote(settings, notes) : GetNextBalancedRandomNote(settings, notes);
         var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
-        return new NoteQuestion(note, clef, note, settings.ChromaticSign);
+        var noteData = MusicNote.FromDisplayName(note, settings.ChromaticSign);
+        return new NoteQuestion(noteData, clef);
     }
 
     public void ResetSequence()

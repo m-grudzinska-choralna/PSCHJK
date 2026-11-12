@@ -172,13 +172,7 @@ public sealed class NoteRangeSettings
             return noteName + octaveSuffix;
         }
 
-        if (octaveNumber <= 2)
-        {
-            return noteName;
-        }
-
-        var solmizationSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
-        return noteName + solmizationSuffix;
+        return noteName;
     }
 
     public static string ToDisplayName(string note, string chromaticSign, NoteNameMode mode = NoteNameMode.Letter)
