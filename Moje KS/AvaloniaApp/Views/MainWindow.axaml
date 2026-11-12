@@ -181,7 +181,9 @@
                                          IsChecked="{Binding IsNoNamesSelected, Mode=TwoWay}" FontSize="16" />
                             <RadioButton Content="Nazwy literowe"
                                          IsChecked="{Binding IsLetterNamesSelected, Mode=TwoWay}" FontSize="16" />
-                            <RadioButton Content="Nazwy solmizacyjne" GroupName="NoteNames"
+                            <RadioButton Content="Nazwy pełne" GroupName="NoteNames"
+                                         IsChecked="{Binding IsFullNamesSelected, Mode=TwoWay}" FontSize="16" />
+                            <RadioButton Content="Nazwy solmizacyjne"
                                          IsChecked="{Binding IsSolmizationNamesSelected, Mode=TwoWay}" FontSize="16" />
                         </StackPanel>
 
@@ -261,7 +263,7 @@
                             Background="#DFECFF" CornerRadius="24" Padding="18,6">
                         <StackPanel Spacing="1" HorizontalAlignment="Center">
                             <Grid RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">
-                                <TextBlock Text="{Binding SymbolicNote}" FontSize="48" FontWeight="Bold" Foreground="#123F7D"
+                                <TextBlock Text="{Binding SymbolicNote}" FontSize="{Binding SymbolicNoteFontSize}"
                                            HorizontalAlignment="Center" />
                                 <Border Grid.Row="1" Height="4" CornerRadius="2" Background="#123F7D" HorizontalAlignment="Stretch"
                                         Margin="0,-7,0,0"

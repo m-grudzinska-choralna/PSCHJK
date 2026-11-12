@@ -8,7 +8,8 @@ namespace AvaloniaApp.Models;
 public enum NoteNameMode
 {
     Letter,
-    Solmization
+    Solmization,
+    Full
 }
 
 /// <summary>
@@ -201,6 +202,18 @@ public sealed class NoteRangeSettings
 
     public static string ToDisplayName(string note, string chromaticSign, NoteNameMode mode = NoteNameMode.Letter)
     {
+        if (mode == NoteNameMode.Full)
+        {
+            var fullNumber = NoteNumber(note);
+            if (fullNumber < 0)
+            {
+                return note;
+            }
+
+            var letterDisplay = ToDisplayName(note, chromaticSign, NoteNameMode.Letter);
+            return $"{letterDisplay} ({new MusicNote(fullNumber, chromaticSign).FullName})";
+        }
+
         var symbolicName = ToSymbolicName(note, mode);
         if (mode != NoteNameMode.Letter)
         {

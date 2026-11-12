@@ -163,16 +163,40 @@ public partial class MainViewModel : ViewModelBase
     {
         get
         {
-            var mode = UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization;
+            var mode = UseFullNames
+                ? NoteNameMode.Full
+                : UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization;
             return NoteRangeSettings.ToDisplayName(CurrentQuestion.Note, CurrentQuestion.Accidental, mode);
         }
     }
 
+    public double SymbolicNoteFontSize => UseFullNames ? 26 : 48;
+
     public bool HasFirstLowLine =>
-        UseLetterNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 1;
+        UseLetterNames && !UseFullNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 1;
 
     public bool HasSecondLowLine =>
-        UseLetterNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 2;
+        UseLetterNames && !UseFullNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 2;
+
+    private bool _useFullNames;
+
+    public bool UseFullNames
+    {
+        get => _useFullNames;
+        set
+        {
+            if (SetProperty(ref _useFullNames, value))
+            {
+                OnPropertyChanged(nameof(SymbolicNote));
+                OnPropertyChanged(nameof(SymbolicNoteFontSize));
+                OnPropertyChanged(nameof(HasFirstLowLine));
+                OnPropertyChanged(nameof(HasSecondLowLine));
+                OnPropertyChanged(nameof(IsLetterNamesSelected));
+                OnPropertyChanged(nameof(IsSolmizationNamesSelected));
+                OnPropertyChanged(nameof(IsFullNamesSelected));
+            }
+        }
+    }
 
     public bool UseLetterNames
     {
@@ -294,12 +318,26 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsLetterNamesSelected
     {
-        get => ShowAnswers && UseLetterNames;
+        get => ShowAnswers && UseLetterNames && !UseFullNames;
         set
         {
             if (value)
             {
+                UseFullNames = false;
                 UseLetterNames = true;
+                ShowAnswers = true;
+            }
+        }
+    }
+
+    public bool IsFullNamesSelected
+    {
+        get => ShowAnswers && UseFullNames;
+        set
+        {
+            if (value)
+            {
+                UseFullNames = true;
                 ShowAnswers = true;
             }
         }
@@ -307,11 +345,12 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsSolmizationNamesSelected
     {
-        get => ShowAnswers && !UseLetterNames;
+        get => ShowAnswers && !UseLetterNames && !UseFullNames;
         set
         {
             if (value)
             {
+                UseFullNames = false;
                 UseLetterNames = false;
                 ShowAnswers = true;
             }
