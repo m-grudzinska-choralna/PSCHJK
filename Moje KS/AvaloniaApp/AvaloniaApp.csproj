@@ -8,6 +8,10 @@
     <EnableLocalSigning Condition="'$(EnableLocalSigning)' == ''">true</EnableLocalSigning>
     <UseAppHost Condition="'$(Configuration)' == 'Debug'">false</UseAppHost>
     <UseAppHost Condition="'$(Configuration)' != 'Debug'">true</UseAppHost>
+    <PublishSingleFile Condition="'$(Configuration)' != 'Debug'">true</PublishSingleFile>
+    <SelfContained Condition="'$(Configuration)' != 'Debug'">true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
   </PropertyGroup>
 
   <Target Name="SignAvaloniaBinary" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT' and '$(Configuration)' == 'Debug' and '$(EnableLocalSigning)' == 'true'">
