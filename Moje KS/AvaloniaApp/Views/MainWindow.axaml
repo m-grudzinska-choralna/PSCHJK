@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApp.ViewModels"
         xmlns:controls="using:AvaloniaApp.Controls"
@@ -13,7 +13,8 @@
         Title="{Binding WindowTitle}"
         SystemDecorations="BorderOnly"
         Width="1370"
-        Height="770"
+        Height="980"
+        WindowStartupLocation="CenterScreen"
         MinWidth="900"
         MinHeight="600"
         Background="#EFF6FF">
@@ -161,46 +162,39 @@
                                 <TextBlock Text="⚙" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#164D90"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <TextBlock Text="Opcje ćwiczenia" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+                            <TextBlock Text="Opcje" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
                         </StackPanel>
 
-                        <CheckBox Content="Pokaż odpowiedzi" IsChecked="{Binding ShowAnswers}" FontSize="16" Margin="4,0" />
                         <CheckBox Content="Pokaż kolejno" IsChecked="{Binding ShowSequential}" FontSize="16" Margin="4,0" />
 
                         <TextBlock Text="Nazwy nut" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
-                            <RadioButton Content="Nazwy literowe" GroupName="NoteNames"
+                            <RadioButton Content="Nie pokazuj" GroupName="NoteNames"
+                                         IsChecked="{Binding IsNoNamesSelected, Mode=TwoWay}" FontSize="16" />
+                            <RadioButton Content="Nazwy literowe"
                                          IsChecked="{Binding IsLetterNamesSelected, Mode=TwoWay}" FontSize="16" />
                             <RadioButton Content="Nazwy solmizacyjne" GroupName="NoteNames"
                                          IsChecked="{Binding IsSolmizationNamesSelected, Mode=TwoWay}" FontSize="16" />
                         </StackPanel>
 
                         <TextBlock Text="Znaki chromatyczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
-                        <WrapPanel Orientation="Horizontal" ItemHeight="36" ItemWidth="36">
-                            <ToggleButton Width="36" Height="36"
-                                         IsChecked="{Binding IsNoAccidentalSelected, Mode=TwoWay}">
-                                <TextBlock Text="" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </ToggleButton>
-                            <ToggleButton Width="36" Height="36"
-                                         IsChecked="{Binding IsFlatSelected, Mode=TwoWay}">
-                                <TextBlock Text="♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </ToggleButton>
-                            <ToggleButton Width="36" Height="36"
-                                         IsChecked="{Binding IsSharpSelected, Mode=TwoWay}">
-                                <TextBlock Text="♯" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </ToggleButton>
-                            <ToggleButton Width="36" Height="36"
-                                         IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}">
-                                <TextBlock Text="♭♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </ToggleButton>
-                            <ToggleButton Width="36" Height="36"
-                                         IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}">
-                                <TextBlock Text="𝄪" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </ToggleButton>
-                        </WrapPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsNoAccidentalSelected, Mode=TwoWay}"></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsFlatSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSharpSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/podwojny_bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/podwojny_krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                        </StackPanel>
 
-                        <TextBlock Text="Warto&#347;ci rytmiczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" /><StackPanel Spacing="4"><CheckBox Content="Ca&#322;a nuta" IsChecked="{Binding IsWholeNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="P&#243;&#322;nuta" IsChecked="{Binding IsHalfNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="&#262;wier&#263;nuta" IsChecked="{Binding IsQuarterNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="&#211;semka" IsChecked="{Binding IsEighthNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="Szesnastka" IsChecked="{Binding IsSixteenthNoteSelected, Mode=TwoWay}" FontSize="16" /></StackPanel>
-                        <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
+                        <TextBlock Text="Wartości rytmiczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsWholeNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/cala_nuta.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsHalfNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/polnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsQuarterNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/cwiercnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsEighthNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/osemka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSixteenthNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/szesnastka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                        </StackPanel>
+                        <TextBlock Text="Klucz" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
                             <RadioButton Content="Wiolinowy" GroupName="ExerciseClef"
                                          IsChecked="{Binding IsTrebleClefSelected, Mode=TwoWay}" FontSize="16" />
@@ -266,8 +260,16 @@
                             </Grid>
                         </StackPanel>
                     </Border>
+                                <Canvas IsVisible="{Binding IsIntroVisible}" IsHitTestVisible="False" Background="#FFFEFC">
+                                    <TextBlock Canvas.Left="200" Canvas.Top="20" FontFamily="Arial" FontSize="18" Foreground="Red"
+                                               Text="Uwaga! Niniejszy program powstał na WYŁĄCZNY użytek Marty Grudzińskiej" />
+                                    <TextBlock Canvas.Left="200" Canvas.Top="80" FontFamily="Arial" FontSize="18" Foreground="Red"
+                                               Text=" i osób przez nią upoważnionych." />
+                                    <TextBlock Canvas.Left="200" Canvas.Top="140" FontFamily="Arial" FontSize="18" Foreground="Red"
+                                               Text=" Poznańska Szkoła Chóralna Jerzego Kurczewskiego, 2021" />
+                                </Canvas>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
-            </Border>
-        </Grid>
-    </Grid>
 </Window>

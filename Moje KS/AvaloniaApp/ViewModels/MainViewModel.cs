@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -88,6 +88,9 @@ public partial class MainViewModel : ViewModelBase
 
     private readonly HashSet<string> _chromaticSigns = new(StringComparer.Ordinal) { "none" };
     private readonly HashSet<string> _rhythmicValues = new(StringComparer.Ordinal) { "cala_nuta" };
+
+    [ObservableProperty]
+    private bool _isIntroVisible = true;
 
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
 
@@ -226,24 +229,38 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsLetterNamesSelected
     {
-        get => UseLetterNames;
+        get => ShowAnswers && UseLetterNames;
         set
         {
             if (value)
             {
                 UseLetterNames = true;
+                ShowAnswers = true;
             }
         }
     }
 
     public bool IsSolmizationNamesSelected
     {
-        get => !UseLetterNames;
+        get => ShowAnswers && !UseLetterNames;
         set
         {
             if (value)
             {
                 UseLetterNames = false;
+                ShowAnswers = true;
+            }
+        }
+    }
+
+    public bool IsNoNamesSelected
+    {
+        get => !ShowAnswers;
+        set
+        {
+            if (value)
+            {
+                ShowAnswers = false;
             }
         }
     }
@@ -284,6 +301,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void SelectExercise(string exercise)
     {
+        IsIntroVisible = false;
         _session.SelectExercise(exercise);
         if (exercise == "Rozpoznawanie nut")
         {
@@ -296,6 +314,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
+            IsIntroVisible = false;
             _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo, _chromaticSigns.ToList(), _rhythmicValues.ToList());
             CreateNewQuestion();
         }
@@ -371,6 +390,9 @@ public partial class MainViewModel : ViewModelBase
     partial void OnShowAnswersChanged(bool value)
     {
         _session.SetShowAnswers(value);
+        OnPropertyChanged(nameof(IsNoNamesSelected));
+        OnPropertyChanged(nameof(IsLetterNamesSelected));
+        OnPropertyChanged(nameof(IsSolmizationNamesSelected));
         if (!value)
         {
             IsAnswerVisible = false;
@@ -391,6 +413,7 @@ public partial class MainViewModel : ViewModelBase
 
     private void MoveQuestion(bool previous)
     {
+        IsIntroVisible = false;
         CurrentQuestion = previous
             ? _questionGenerator.Previous(_noteRange, ShowSequential, ShowAnswers)
             : _questionGenerator.Next(_noteRange, ShowSequential, ShowAnswers);
