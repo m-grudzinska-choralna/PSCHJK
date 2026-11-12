@@ -41,7 +41,7 @@ public partial class MainViewModel : ViewModelBase
         TrebleTo = _noteRange.TrebleTo;
         BassFrom = _noteRange.BassFrom;
         BassTo = _noteRange.BassTo;
-        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        CurrentQuestion = _questionGenerator.Create(_noteRange, ShowSequential);
         _isInitialized = true;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
     }
@@ -58,6 +58,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _showAnswers;
+
+    [ObservableProperty]
+    private bool _showSequential;
 
     [ObservableProperty]
     private bool _isAnswerVisible;
@@ -221,9 +224,20 @@ public partial class MainViewModel : ViewModelBase
         StatusMessage = value ? "Odpowiedzi są widoczne." : "Odpowiedzi są ukryte.";
     }
 
+    partial void OnShowSequentialChanged(bool value)
+    {
+        if (!value)
+        {
+            return;
+        }
+
+        _questionGenerator.ResetSequence();
+        CreateNewQuestion();
+    }
+
     private void CreateNewQuestion()
     {
-        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        CurrentQuestion = _questionGenerator.Create(_noteRange, ShowSequential);
         IsAnswerVisible = false;
     }
 

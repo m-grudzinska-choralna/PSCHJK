@@ -2,6 +2,12 @@
   "profiles": {
     "AvaloniaApp": {
       "commandName": "Project"
+    },
+    "AvaloniaApp (dotnet dll)": {
+      "commandName": "Executable",
+      "executablePath": "dotnet",
+      "commandLineArgs": "bin\\Debug\\net8.0\\AvaloniaApp.dll",
+      "workingDirectory": "."
     }
   }
 }

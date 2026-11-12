@@ -165,7 +165,7 @@
                         </StackPanel>
 
                         <CheckBox Content="Pokaż odpowiedzi" IsChecked="{Binding ShowAnswers}" FontSize="16" Margin="4,0" />
-                        <CheckBox Content="Pokaż kolejno" FontSize="16" Margin="4,0" />
+                        <CheckBox Content="Pokaż kolejno" IsChecked="{Binding ShowSequential}" FontSize="16" Margin="4,0" />
 
                         <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
