@@ -65,6 +65,8 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isAnswerVisible;
 
+    private bool _useLetterNames = true;
+
     [ObservableProperty]
     private int _currentRound;
 
@@ -85,7 +87,47 @@ public partial class MainViewModel : ViewModelBase
 
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
 
-    public string SymbolicNote => NoteRangeSettings.ToSymbolicName(CurrentQuestion.Note);
+    public string SymbolicNote => NoteRangeSettings.ToSymbolicName(
+        CurrentQuestion.Note,
+        UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization);
+
+    public bool UseLetterNames
+    {
+        get => _useLetterNames;
+        set
+        {
+            if (SetProperty(ref _useLetterNames, value))
+            {
+                OnPropertyChanged(nameof(SymbolicNote));
+                OnPropertyChanged(nameof(IsLetterNamesSelected));
+                OnPropertyChanged(nameof(IsSolmizationNamesSelected));
+            }
+        }
+    }
+
+    public bool IsLetterNamesSelected
+    {
+        get => UseLetterNames;
+        set
+        {
+            if (value)
+            {
+                UseLetterNames = true;
+            }
+        }
+    }
+
+    public bool IsSolmizationNamesSelected
+    {
+        get => !UseLetterNames;
+        set
+        {
+            if (value)
+            {
+                UseLetterNames = false;
+            }
+        }
+    }
     public bool IsTrebleClefSelected
     {
         get => SelectedClef == "wiolinowy";

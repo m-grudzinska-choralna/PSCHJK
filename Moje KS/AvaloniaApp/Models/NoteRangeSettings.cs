@@ -5,6 +5,12 @@ using System.Linq;
 
 namespace AvaloniaApp.Models;
 
+public enum NoteNameMode
+{
+    Letter,
+    Solmization
+}
+
 /// <summary>
 /// Framework-neutral note range settings used by the Avalonia exercise screen.
 /// </summary>
@@ -18,6 +24,7 @@ public sealed class NoteRangeSettings
     private const int BassHighestNoteNumber = 26;
 
     private static readonly string[] NoteNames = { "c", "d", "e", "f", "g", "a", "h" };
+    private static readonly string[] SolmizationNoteNames = { "do", "re", "mi", "fa", "sol", "la", "si" };
     private static readonly string[] OctaveNames =
     {
         "subkontra", "kontra", "wielkie", "małe", "razkreślne",
@@ -107,7 +114,7 @@ public sealed class NoteRangeSettings
         return -1;
     }
 
-    public static string ToSymbolicName(string note)
+    public static string ToSymbolicName(string note, NoteNameMode mode = NoteNameMode.Letter)
     {
         var number = NoteNumber(note);
         if (number < 0)
@@ -116,14 +123,19 @@ public sealed class NoteRangeSettings
         }
 
         var octaveNumber = (number + 5) / 7;
-        var letter = NoteNames[(number + 5) % 7];
+        var noteName = mode == NoteNameMode.Solmization
+            ? SolmizationNoteNames[(number + 5) % 7]
+            : NoteNames[(number + 5) % 7];
+
         if (octaveNumber <= 2)
         {
-            return letter.ToUpperInvariant();
+            return mode == NoteNameMode.Letter
+                ? noteName.ToUpperInvariant()
+                : noteName;
         }
 
         var octaveSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
-        return letter + octaveSuffix;
+        return noteName + octaveSuffix;
     }
 
     private static IReadOnlyList<string> CreateNoteList(int firstNumber, int lastNumber)

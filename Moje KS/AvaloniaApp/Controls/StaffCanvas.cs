@@ -28,6 +28,9 @@ public sealed class StaffCanvas : Control
     public static readonly StyledProperty<bool> ShowAnswersProperty =
         AvaloniaProperty.Register<StaffCanvas, bool>(nameof(ShowAnswers));
 
+    public static readonly StyledProperty<bool> UseLetterNamesProperty =
+        AvaloniaProperty.Register<StaffCanvas, bool>(nameof(UseLetterNames), true);
+
     public string Clef
     {
         get => GetValue(ClefProperty);
@@ -52,9 +55,15 @@ public sealed class StaffCanvas : Control
         set => SetValue(ShowAnswersProperty, value);
     }
 
+    public bool UseLetterNames
+    {
+        get => GetValue(UseLetterNamesProperty);
+        set => SetValue(UseLetterNamesProperty, value);
+    }
+
     public StaffCanvas()
     {
-        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, ShowAnswersProperty);
+        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, ShowAnswersProperty, UseLetterNamesProperty);
         ClipToBounds = true;
         MinHeight = 260;
     }
@@ -116,9 +125,10 @@ public sealed class StaffCanvas : Control
             var noteWidth = WholeNoteImage.Size.Width / WholeNoteImage.Size.Height * noteHeight;
             DrawImage(context, WholeNoteImage, new Rect(x - noteWidth / 2, y - spacing * 4.44, noteWidth, noteHeight));
 
-            if (ShowAnswers)
+            if (ShowAnswers && !isBassClef)
             {
-                var label = new FormattedText(NoteRangeSettings.ToSymbolicName(Answer), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), spacing, Brushes.Black);
+                var nameMode = UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization;
+                var label = new FormattedText(NoteRangeSettings.ToSymbolicName(Answer, nameMode), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), spacing, Brushes.Black);
                 context.DrawText(label, new Point(x - spacing, centerY + spacing * 6.5));
             }
         }
