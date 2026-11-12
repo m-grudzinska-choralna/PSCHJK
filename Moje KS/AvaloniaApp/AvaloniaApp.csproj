@@ -5,6 +5,7 @@
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <EnableLocalSigning Condition="'$(EnableLocalSigning)' == '' and '$(Configuration)' == 'Debug' and '$(OS)' == 'Windows_NT'">true</EnableLocalSigning>
     <EnableLocalSigning Condition="'$(EnableLocalSigning)' == ''">false</EnableLocalSigning>
     <UseAppHost Condition="'$(Configuration)' == 'Debug'">false</UseAppHost>
     <UseAppHost Condition="'$(Configuration)' != 'Debug'">true</UseAppHost>
