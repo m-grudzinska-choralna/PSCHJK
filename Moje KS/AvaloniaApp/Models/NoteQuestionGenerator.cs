@@ -6,106 +6,49 @@ namespace AvaloniaApp.Models;
 
 public sealed class NoteQuestionGenerator
 {
-    private readonly Random _random = new();
-    private int _sequentialIndex;
-    private string _sequenceKey = string.Empty;
-    private readonly Dictionary<string, int> _randomUsageCounts = new(StringComparer.Ordinal);
-    private string _randomKey = string.Empty;
-    private string _lastRandomNote = string.Empty;
+    private string _ks2SessionKey = string.Empty;
+    private Ks2RecognizeNotesData? _ks2Data;
 
     public NoteQuestion Create(NoteRangeSettings settings, bool sequential)
     {
-        var notes = GetCandidateNotes(settings);
-        var note = sequential ? GetNextSequentialNote(settings, notes) : GetNextBalancedRandomNote(settings, notes);
+        var parameters = BuildKs2Parameters(settings, sequential);
+        var key = parameters.BuildKey();
+        if (!string.Equals(_ks2SessionKey, key, StringComparison.Ordinal) || _ks2Data is null)
+        {
+            _ks2SessionKey = key;
+            _ks2Data = new Ks2RecognizeNotesData(parameters);
+        }
+
+        var screen = _ks2Data.NextScreen();
         var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
-        var noteData = MusicNote.FromDisplayName(note, settings.ChromaticSign);
-        return new NoteQuestion(noteData, clef);
+        return new NoteQuestion(screen.Element.Element, clef, screen);
     }
 
     public void ResetSequence()
     {
-        _sequentialIndex = 0;
-        _sequenceKey = string.Empty;
-        _randomUsageCounts.Clear();
-        _randomKey = string.Empty;
-        _lastRandomNote = string.Empty;
+        _ks2SessionKey = string.Empty;
+        _ks2Data = null;
     }
 
-    private string GetNextBalancedRandomNote(NoteRangeSettings settings, IReadOnlyList<string> notes)
+    private static Ks2RecognizeNotesParameters BuildKs2Parameters(NoteRangeSettings settings, bool sequential)
     {
-        var key = BuildSequenceKey(settings);
-        if (!string.Equals(_randomKey, key, StringComparison.Ordinal))
+        var notes = GetCandidateNotes(settings)
+            .Select(NoteRangeSettings.NoteNumber)
+            .Where(number => number >= 0)
+            .ToList();
+        if (notes.Count == 0)
         {
-            _randomKey = key;
-            _randomUsageCounts.Clear();
-            _lastRandomNote = string.Empty;
+            notes.Add(0);
         }
 
-        var selectableNotes = notes;
-        if (notes.Count > 1 && !string.IsNullOrEmpty(_lastRandomNote))
+        return new Ks2RecognizeNotesParameters
         {
-            selectableNotes = notes.Where(note => !string.Equals(note, _lastRandomNote, StringComparison.Ordinal)).ToList();
-        }
-
-        var minUsage = int.MaxValue;
-        foreach (var note in selectableNotes)
-        {
-            if (!_randomUsageCounts.TryGetValue(note, out var usage))
-            {
-                usage = 0;
-            }
-
-            if (usage < minUsage)
-            {
-                minUsage = usage;
-            }
-        }
-
-        var candidates = new List<string>();
-        foreach (var note in selectableNotes)
-        {
-            if (!_randomUsageCounts.TryGetValue(note, out var usage))
-            {
-                usage = 0;
-            }
-
-            if (usage == minUsage)
-            {
-                candidates.Add(note);
-            }
-        }
-
-        var selectedNote = candidates[_random.Next(candidates.Count)];
-        _randomUsageCounts[selectedNote] = minUsage + 1;
-        _lastRandomNote = selectedNote;
-        return selectedNote;
-    }
-
-    private string GetNextSequentialNote(NoteRangeSettings settings, IReadOnlyList<string> notes)
-    {
-        var key = BuildSequenceKey(settings);
-        if (!string.Equals(_sequenceKey, key, StringComparison.Ordinal))
-        {
-            _sequenceKey = key;
-            _sequentialIndex = 0;
-        }
-
-        if (_sequentialIndex >= notes.Count)
-        {
-            _sequentialIndex = 0;
-        }
-
-        var note = notes[_sequentialIndex];
-        _sequentialIndex = (_sequentialIndex + 1) % notes.Count;
-        return note;
-    }
-
-    private static string BuildSequenceKey(NoteRangeSettings settings)
-    {
-        var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
-        var from = clef == "basowy" ? settings.BassFrom : settings.TrebleFrom;
-        var to = clef == "basowy" ? settings.BassTo : settings.TrebleTo;
-        return $"{clef}:{from}:{to}:{settings.ChromaticSign}";
+            Sequential = sequential,
+            Clef = settings.Clef == "basowy" ? "bas" : "wiol",
+            NoteNumbers = notes,
+            ChromaticSigns = new[] { settings.ChromaticSign },
+            RhythmicValues = new[] { "cala_nuta", "polnuta", "cwiercnuta", "osemka", "szesnastka" }
+        };
     }
 
     private static IReadOnlyList<string> GetCandidateNotes(NoteRangeSettings settings)
