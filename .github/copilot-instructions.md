@@ -3,7 +3,6 @@
 ## Project Guidelines
 - Po zakończeniu migracji .NET 8 użytkownik wybrał jako następny etap naprawę podpisywania aplikacji i weryfikację jej uruchomienia.
 - Fix for Avalonia .NET 8: Do NOT include XAML files as AvaloniaResource with wildcard patterns (e.g., `<AvaloniaResource Include="**/*.axaml" />`). This causes "Duplicate x:Class directive" errors in Avalonia 11.2.0+ with .NET 8. Solution: Only include static assets (`<AvaloniaResource Include="Assets/**" />`). XAML files are automatically loaded at runtime via AvaloniaXamlLoader.Load(this) in code-behind files.
-- Document the Avalonia startup issue caused by local Debug code-signing being blocked by Windows Application Control (0x800711C7). Fix: disable `EnableLocalSigning` by default in `AvaloniaApp.csproj`, keeping optional signing via `/p:EnableLocalSigning=true`.
 - Always build the application after making changes to verify there are no errors.
 
 ## Visual Design Preferences
@@ -18,6 +17,7 @@
 - Correctly align the clef to the staff.
 - Prevent noteheads from obscuring staff lines.
 - Render ledger lines for notes such as middle C.
+- Ensure flat letter names in uppercase form are fully uppercase (e.g., CES) and the underline marker spans the full displayed note text width.
 
 ## Rendering Guidelines
 - When rendering low ledger-line notes in Avalonia, keep the full notehead visible within the staff canvas; middle C (C4) must be visible and ledger lines must be shown rather than clipping the note below the canvas.

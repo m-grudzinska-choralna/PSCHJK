@@ -25,6 +25,9 @@ public sealed class StaffCanvas : Control
     public static readonly StyledProperty<string> AnswerProperty =
         AvaloniaProperty.Register<StaffCanvas, string>(nameof(Answer), "C4");
 
+    public static readonly StyledProperty<string> AccidentalProperty =
+        AvaloniaProperty.Register<StaffCanvas, string>(nameof(Accidental), "none");
+
     public static readonly StyledProperty<bool> ShowAnswersProperty =
         AvaloniaProperty.Register<StaffCanvas, bool>(nameof(ShowAnswers));
 
@@ -55,6 +58,12 @@ public sealed class StaffCanvas : Control
         set => SetValue(ShowAnswersProperty, value);
     }
 
+    public string Accidental
+    {
+        get => GetValue(AccidentalProperty);
+        set => SetValue(AccidentalProperty, value);
+    }
+
     public bool UseLetterNames
     {
         get => GetValue(UseLetterNamesProperty);
@@ -63,7 +72,7 @@ public sealed class StaffCanvas : Control
 
     public StaffCanvas()
     {
-        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, ShowAnswersProperty, UseLetterNamesProperty);
+        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, AccidentalProperty, ShowAnswersProperty, UseLetterNamesProperty);
         ClipToBounds = true;
         MinHeight = 260;
     }
@@ -123,12 +132,32 @@ public sealed class StaffCanvas : Control
             DrawLedgerLines(context, x, noteNumber, Clef, centerY, spacing, notePen);
             var noteHeight = spacing * 5.08;
             var noteWidth = WholeNoteImage.Size.Width / WholeNoteImage.Size.Height * noteHeight;
+            var accidentalSymbol = NoteRangeSettings.ToAccidentalSymbol(Accidental);
+            if (!string.IsNullOrEmpty(accidentalSymbol))
+            {
+                var isFlatAccidental = Accidental == "flat" || Accidental == "double-flat";
+                var accidentalTypeface = isFlatAccidental
+                    ? new Typeface("Cambria Math")
+                    : new Typeface("Segoe UI Symbol");
+                var accidentalSize = isFlatAccidental ? spacing * 3.15 : spacing * 1.9;
+                var accidental = new FormattedText(accidentalSymbol, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, accidentalTypeface, accidentalSize, Brushes.Black);
+                var accidentalX = isFlatAccidental
+                    ? x - noteWidth * 1.03
+                    : x - noteWidth * 1.05;
+                var accidentalY = isFlatAccidental
+                    ? y - spacing * 2.90
+                    : y - spacing * 1.85;
+                context.DrawText(accidental, new Point(accidentalX, accidentalY));
+            }
+
             DrawImage(context, WholeNoteImage, new Rect(x - noteWidth / 2, y - spacing * 4.44, noteWidth, noteHeight));
 
             if (ShowAnswers && !isBassClef)
             {
                 var nameMode = UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization;
-                var label = new FormattedText(NoteRangeSettings.ToSymbolicName(Answer, nameMode), CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), spacing, Brushes.Black);
+                var labelText = NoteRangeSettings.ToDisplayName(Answer, Accidental, nameMode);
+
+                var label = new FormattedText(labelText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Segoe UI"), spacing, Brushes.Black);
                 context.DrawText(label, new Point(x - spacing, centerY + spacing * 6.5));
             }
         }

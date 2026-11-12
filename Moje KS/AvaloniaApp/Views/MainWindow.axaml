@@ -175,6 +175,30 @@
                                          IsChecked="{Binding IsSolmizationNamesSelected, Mode=TwoWay}" FontSize="16" />
                         </StackPanel>
 
+                        <TextBlock Text="Znaki chromatyczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
+                        <WrapPanel Orientation="Horizontal" ItemHeight="36" ItemWidth="36">
+                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                                         IsChecked="{Binding IsNoAccidentalSelected, Mode=TwoWay}">
+                                <TextBlock Text="" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </RadioButton>
+                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                                         IsChecked="{Binding IsFlatSelected, Mode=TwoWay}">
+                                <TextBlock Text="♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </RadioButton>
+                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                                         IsChecked="{Binding IsSharpSelected, Mode=TwoWay}">
+                                <TextBlock Text="♯" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </RadioButton>
+                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                                         IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}">
+                                <TextBlock Text="♭♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </RadioButton>
+                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                                         IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}">
+                                <TextBlock Text="𝄪" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </RadioButton>
+                        </WrapPanel>
+
                         <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
                             <RadioButton Content="Wiolinowy" GroupName="ExerciseClef"
@@ -221,13 +245,24 @@
                     <controls:StaffCanvas Clef="{Binding CurrentQuestion.Clef}"
                                           Note="{Binding CurrentQuestion.Note}"
                                           Answer="{Binding CurrentQuestion.Answer}"
+                                          Accidental="{Binding CurrentQuestion.Accidental}"
                                           ShowAnswers="{Binding IsAnswerVisible}"
                                           UseLetterNames="{Binding UseLetterNames}"
                                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                     <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,0,0"
                             IsVisible="{Binding IsAnswerVisible}"
                             Background="#DFECFF" CornerRadius="24" Padding="18,6">
-                        <TextBlock Text="{Binding SymbolicNote}" FontSize="48" FontWeight="Bold" Foreground="#123F7D" />
+                        <StackPanel Spacing="1" HorizontalAlignment="Center">
+                            <Grid RowDefinitions="Auto,Auto,Auto" HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding SymbolicNote}" FontSize="48" FontWeight="Bold" Foreground="#123F7D"
+                                           HorizontalAlignment="Center" />
+                                <Border Grid.Row="1" Height="4" CornerRadius="2" Background="#123F7D" HorizontalAlignment="Stretch"
+                                        Margin="0,-7,0,0"
+                                        IsVisible="{Binding HasFirstLowLine}" />
+                                <Border Grid.Row="2" Height="4" CornerRadius="2" Background="#123F7D" HorizontalAlignment="Stretch"
+                                        IsVisible="{Binding HasSecondLowLine}" />
+                            </Grid>
+                        </StackPanel>
                     </Border>
                 </Grid>
             </Border>

@@ -37,6 +37,15 @@ public sealed class NoteRangeSettings
         "basowy"
     };
 
+    public static IReadOnlyList<string> ChromaticSigns { get; } = new[]
+    {
+        "none",
+        "flat",
+        "sharp",
+        "double-flat",
+        "double-sharp"
+    };
+
     public static IReadOnlyList<string> Notes { get; } = CreateNoteList(LowestNoteNumber, HighestNoteNumber);
 
     public static IReadOnlyList<string> TrebleNotes { get; } = CreateNoteList(TrebleLowestNoteNumber, TrebleHighestNoteNumber);
@@ -53,7 +62,9 @@ public sealed class NoteRangeSettings
 
     public string BassTo { get; private set; } = FormatNote(20);
 
-    public void Update(string clef, string trebleFrom, string trebleTo, string bassFrom, string bassTo)
+    public string ChromaticSign { get; private set; } = ChromaticSigns[0];
+
+    public void Update(string clef, string trebleFrom, string trebleTo, string bassFrom, string bassTo, string chromaticSign)
     {
         if (!Clefs.Contains(clef, StringComparer.Ordinal))
         {
@@ -78,11 +89,29 @@ public sealed class NoteRangeSettings
             throw new ArgumentException("Bass range must contain at least two notes.");
         }
 
+        if (!ChromaticSigns.Contains(chromaticSign, StringComparer.Ordinal))
+        {
+            throw new ArgumentException("Unknown chromatic sign.", nameof(chromaticSign));
+        }
+
         Clef = clef;
         TrebleFrom = trebleFrom;
         TrebleTo = trebleTo;
         BassFrom = bassFrom;
         BassTo = bassTo;
+        ChromaticSign = chromaticSign;
+    }
+
+    public static string ToAccidentalSymbol(string chromaticSign)
+    {
+        return chromaticSign switch
+        {
+            "flat" => "♭",
+            "sharp" => "♯",
+            "double-flat" => "♭♭",
+            "double-sharp" => "𝄪",
+            _ => string.Empty
+        };
     }
 
     public static int NoteNumber(string note)
@@ -127,15 +156,96 @@ public sealed class NoteRangeSettings
             ? SolmizationNoteNames[(number + 5) % 7]
             : NoteNames[(number + 5) % 7];
 
-        if (octaveNumber <= 2)
+        if (mode == NoteNameMode.Letter)
         {
-            return mode == NoteNameMode.Letter
-                ? noteName.ToUpperInvariant()
-                : noteName;
+            if (octaveNumber == 2)
+            {
+                return noteName.ToUpperInvariant();
+            }
+
+            if (octaveNumber <= 1)
+            {
+                return noteName.ToUpperInvariant();
+            }
+
+            var octaveSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
+            return noteName + octaveSuffix;
         }
 
-        var octaveSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
-        return noteName + octaveSuffix;
+        if (octaveNumber <= 2)
+        {
+            return noteName;
+        }
+
+        var solmizationSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
+        return noteName + solmizationSuffix;
+    }
+
+    public static string ToDisplayName(string note, string chromaticSign, NoteNameMode mode = NoteNameMode.Letter)
+    {
+        var symbolicName = ToSymbolicName(note, mode);
+        if (mode != NoteNameMode.Letter)
+        {
+            return symbolicName;
+        }
+
+        if (string.Equals(chromaticSign, "flat", StringComparison.Ordinal))
+        {
+            return ToLetterFlatName(symbolicName);
+        }
+
+        return symbolicName + ToAccidentalSymbol(chromaticSign);
+    }
+
+    public static int GetLetterLowLineCount(string note)
+    {
+        var number = NoteNumber(note);
+        if (number < 0)
+        {
+            return 0;
+        }
+
+        var octaveNumber = (number + 5) / 7;
+        return octaveNumber switch
+        {
+            0 => 2,
+            1 => 1,
+            _ => 0
+        };
+    }
+
+    private static string ToLetterFlatName(string symbolicName)
+    {
+        if (string.IsNullOrEmpty(symbolicName))
+        {
+            return symbolicName;
+        }
+
+        var baseLetter = symbolicName[0];
+        var suffix = symbolicName[1..];
+        var mappedFlat = char.ToLowerInvariant(baseLetter) switch
+        {
+            'c' => "ces",
+            'd' => "des",
+            'e' => "es",
+            'f' => "fes",
+            'g' => "ges",
+            'a' => "as",
+            'h' => "b",
+            _ => symbolicName
+        };
+
+        if (mappedFlat == symbolicName)
+        {
+            return symbolicName;
+        }
+
+        if (char.IsUpper(baseLetter))
+        {
+            mappedFlat = mappedFlat.ToUpperInvariant();
+        }
+
+        return mappedFlat + suffix;
     }
 
     private static IReadOnlyList<string> CreateNoteList(int firstNumber, int lastNumber)

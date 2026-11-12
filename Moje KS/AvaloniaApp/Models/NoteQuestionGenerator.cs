@@ -18,7 +18,7 @@ public sealed class NoteQuestionGenerator
         var notes = GetCandidateNotes(settings);
         var note = sequential ? GetNextSequentialNote(settings, notes) : GetNextBalancedRandomNote(settings, notes);
         var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
-        return new NoteQuestion(note, clef, note);
+        return new NoteQuestion(note, clef, note, settings.ChromaticSign);
     }
 
     public void ResetSequence()
@@ -104,7 +104,7 @@ public sealed class NoteQuestionGenerator
         var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
         var from = clef == "basowy" ? settings.BassFrom : settings.TrebleFrom;
         var to = clef == "basowy" ? settings.BassTo : settings.TrebleTo;
-        return $"{clef}:{from}:{to}";
+        return $"{clef}:{from}:{to}:{settings.ChromaticSign}";
     }
 
     private static IReadOnlyList<string> GetCandidateNotes(NoteRangeSettings settings)

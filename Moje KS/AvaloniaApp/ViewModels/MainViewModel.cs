@@ -41,6 +41,7 @@ public partial class MainViewModel : ViewModelBase
         TrebleTo = _noteRange.TrebleTo;
         BassFrom = _noteRange.BassFrom;
         BassTo = _noteRange.BassTo;
+        SelectedChromaticSign = _noteRange.ChromaticSign;
         CurrentQuestion = _questionGenerator.Create(_noteRange, ShowSequential);
         _isInitialized = true;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
@@ -85,11 +86,25 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _bassTo;
 
+    [ObservableProperty]
+    private string _selectedChromaticSign = NoteRangeSettings.ChromaticSigns[0];
+
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
 
-    public string SymbolicNote => NoteRangeSettings.ToSymbolicName(
-        CurrentQuestion.Note,
-        UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization);
+    public string SymbolicNote
+    {
+        get
+        {
+            var mode = UseLetterNames ? NoteNameMode.Letter : NoteNameMode.Solmization;
+            return NoteRangeSettings.ToDisplayName(CurrentQuestion.Note, CurrentQuestion.Accidental, mode);
+        }
+    }
+
+    public bool HasFirstLowLine =>
+        UseLetterNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 1;
+
+    public bool HasSecondLowLine =>
+        UseLetterNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 2;
 
     public bool UseLetterNames
     {
@@ -99,8 +114,70 @@ public partial class MainViewModel : ViewModelBase
             if (SetProperty(ref _useLetterNames, value))
             {
                 OnPropertyChanged(nameof(SymbolicNote));
+                OnPropertyChanged(nameof(HasFirstLowLine));
+                OnPropertyChanged(nameof(HasSecondLowLine));
                 OnPropertyChanged(nameof(IsLetterNamesSelected));
                 OnPropertyChanged(nameof(IsSolmizationNamesSelected));
+            }
+        }
+    }
+
+    public bool IsNoAccidentalSelected
+    {
+        get => SelectedChromaticSign == "none";
+        set
+        {
+            if (value)
+            {
+                SelectedChromaticSign = "none";
+            }
+        }
+    }
+
+    public bool IsFlatSelected
+    {
+        get => SelectedChromaticSign == "flat";
+        set
+        {
+            if (value)
+            {
+                SelectedChromaticSign = "flat";
+            }
+        }
+    }
+
+    public bool IsSharpSelected
+    {
+        get => SelectedChromaticSign == "sharp";
+        set
+        {
+            if (value)
+            {
+                SelectedChromaticSign = "sharp";
+            }
+        }
+    }
+
+    public bool IsDoubleFlatSelected
+    {
+        get => SelectedChromaticSign == "double-flat";
+        set
+        {
+            if (value)
+            {
+                SelectedChromaticSign = "double-flat";
+            }
+        }
+    }
+
+    public bool IsDoubleSharpSelected
+    {
+        get => SelectedChromaticSign == "double-sharp";
+        set
+        {
+            if (value)
+            {
+                SelectedChromaticSign = "double-sharp";
             }
         }
     }
@@ -155,7 +232,12 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private NoteQuestion _currentQuestion;
 
-    partial void OnCurrentQuestionChanged(NoteQuestion value) => OnPropertyChanged(nameof(SymbolicNote));
+    partial void OnCurrentQuestionChanged(NoteQuestion value)
+    {
+        OnPropertyChanged(nameof(SymbolicNote));
+        OnPropertyChanged(nameof(HasFirstLowLine));
+        OnPropertyChanged(nameof(HasSecondLowLine));
+    }
 
     [RelayCommand]
     private void SelectExercise(string exercise)
@@ -172,12 +254,25 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo);
+            _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo, SelectedChromaticSign);
             CreateNewQuestion();
         }
         catch (ArgumentException exception)
         {
             StatusMessage = exception.Message;
+        }
+    }
+
+    partial void OnSelectedChromaticSignChanged(string value)
+    {
+        OnPropertyChanged(nameof(IsNoAccidentalSelected));
+        OnPropertyChanged(nameof(IsFlatSelected));
+        OnPropertyChanged(nameof(IsSharpSelected));
+        OnPropertyChanged(nameof(IsDoubleFlatSelected));
+        OnPropertyChanged(nameof(IsDoubleSharpSelected));
+        if (_isInitialized)
+        {
+            ApplyNoteRange();
         }
     }
 
