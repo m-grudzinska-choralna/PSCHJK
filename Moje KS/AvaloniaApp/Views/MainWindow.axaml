@@ -54,22 +54,22 @@
                         </Path.Fill>
                     </Path>
 
-                    <TextBlock Canvas.Left="444" Canvas.Top="16" Text="♫" FontFamily="Segoe UI Symbol" FontSize="48" FontWeight="Bold" Foreground="#0A3F86" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Canvas.Left="444" Canvas.Top="34" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#0A3F86" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="-11" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="640" Canvas.Top="9" Text="♬" FontFamily="Segoe UI Symbol" FontSize="56" FontWeight="Bold" Foreground="#0E4B95" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Canvas.Left="640" Canvas.Top="28" Text="♩" FontFamily="Segoe UI Symbol" FontSize="50" FontWeight="Bold" Foreground="#0E4B95" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="-8" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="902" Canvas.Top="-2" Text="♪" FontFamily="Segoe UI Symbol" FontSize="50" FontWeight="Bold" Foreground="#1458A5" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Canvas.Left="902" Canvas.Top="8" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#1458A5" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="7" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="1068" Canvas.Top="16" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#165FAF" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Canvas.Left="1068" Canvas.Top="20" Text="♩" FontFamily="Segoe UI Symbol" FontSize="44" FontWeight="Bold" Foreground="#165FAF" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="9" />
                         </TextBlock.RenderTransform>
