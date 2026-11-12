@@ -3,6 +3,8 @@
 ## Project Guidelines
 - Po zakończeniu migracji .NET 8 użytkownik wybrał jako następny etap naprawę podpisywania aplikacji i weryfikację jej uruchomienia.
 - Fix for Avalonia .NET 8: Do NOT include XAML files as AvaloniaResource with wildcard patterns (e.g., `<AvaloniaResource Include="**/*.axaml" />`). This causes "Duplicate x:Class directive" errors in Avalonia 11.2.0+ with .NET 8. Solution: Only include static assets (`<AvaloniaResource Include="Assets/**" />`). XAML files are automatically loaded at runtime via AvaloniaXamlLoader.Load(this) in code-behind files.
+- Document the Avalonia startup issue caused by local Debug code-signing being blocked by Windows Application Control (0x800711C7). Fix: disable `EnableLocalSigning` by default in `AvaloniaApp.csproj`, keeping optional signing via `/p:EnableLocalSigning=true`.
+- Always build the application after making changes to verify there are no errors.
 
 ## Visual Design Preferences
 - For the music-themed header, use cheerful, lively-looking wavy staff lines and musical notes, avoiding a subdued or overly formal treatment.
