@@ -42,12 +42,77 @@ public partial class MainViewModel : ViewModelBase
         TrebleTo = _noteRange.TrebleTo;
         BassFrom = _noteRange.BassFrom;
         BassTo = _noteRange.BassTo;
+        SelectedRangePreset = RangePresets[1];
+        UpdateRangePresetLabels();
         CurrentQuestion = _questionGenerator.Create(_noteRange, ShowSequential);
         _isInitialized = true;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
     }
 
+    public bool IsStudentMode { get; } = Parametry.Ograniczenie.edycjaProgramu == "uczniowie";
+
     public ObservableCollection<string> Notes { get; }
+
+    private static string N(int number) => NoteRangeSettings.Notes[number];
+
+    public IReadOnlyList<RangePresetOption> RangePresets { get; } = new[]
+    {
+        new RangePresetOption("Klasa 1", N(23), N(27), N(16), N(23)),
+        new RangePresetOption("Klasa 2", N(23), N(30), N(8), N(20)),
+        new RangePresetOption("Klasa 3", N(20), N(34), N(4), N(23)),
+        new RangePresetOption("Klasa 4", N(20), N(37), N(0), N(26)),
+        new RangePresetOption("Własny wybór")
+    };
+
+    private bool _isApplyingPreset;
+
+    [ObservableProperty]
+    private RangePresetOption _selectedRangePreset;
+
+    public bool IsTrebleCustomRange => IsTrebleClefSelected && SelectedRangePreset?.IsCustom == true;
+    public bool IsBassCustomRange => IsBassClefSelected && SelectedRangePreset?.IsCustom == true;
+
+    public bool IsPresetRangeSelected => SelectedRangePreset?.IsCustom == false;
+
+    public string SelectedRangeText => IsTrebleClefSelected
+        ? $"{TrebleFrom} — {TrebleTo}"
+        : $"{BassFrom} — {BassTo}";
+
+    partial void OnSelectedRangePresetChanged(RangePresetOption value)
+    {
+        OnPropertyChanged(nameof(IsTrebleCustomRange));
+        OnPropertyChanged(nameof(IsBassCustomRange));
+        OnPropertyChanged(nameof(IsPresetRangeSelected));
+
+        if (!_isInitialized || value is null || value.IsCustom)
+        {
+            return;
+        }
+
+        _isApplyingPreset = true;
+        try
+        {
+            TrebleFrom = value.TrebleFrom;
+            TrebleTo = value.TrebleTo;
+            BassFrom = value.BassFrom;
+            BassTo = value.BassTo;
+        }
+        finally
+        {
+            _isApplyingPreset = false;
+        }
+
+        OnPropertyChanged(nameof(SelectedRangeText));
+        ApplyNoteRange();
+    }
+
+    private void UpdateRangePresetLabels()
+    {
+        foreach (var preset in RangePresets)
+        {
+            preset.UpdateLabel(IsTrebleClefSelected);
+        }
+    }
     public ObservableCollection<string> TrebleNotes { get; }
     public ObservableCollection<string> BassNotes { get; }
 
@@ -336,6 +401,10 @@ public partial class MainViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(IsTrebleClefSelected));
         OnPropertyChanged(nameof(IsBassClefSelected));
+        OnPropertyChanged(nameof(IsTrebleCustomRange));
+        OnPropertyChanged(nameof(IsBassCustomRange));
+        OnPropertyChanged(nameof(SelectedRangeText));
+        UpdateRangePresetLabels();
         if (_isInitialized)
         {
             ApplyNoteRange();
@@ -348,7 +417,8 @@ public partial class MainViewModel : ViewModelBase
 
     private void ApplyNoteRangeIfInitialized()
     {
-        if (_isInitialized)
+        OnPropertyChanged(nameof(SelectedRangeText));
+        if (_isInitialized && !_isApplyingPreset)
         {
             ApplyNoteRange();
         }

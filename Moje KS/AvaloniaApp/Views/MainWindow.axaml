@@ -51,48 +51,56 @@
                 </LinearGradientBrush>
             </Border.Background>
             <Grid ColumnDefinitions="Auto,*">
+                <Viewbox Grid.ColumnSpan="2" Stretch="Fill" Height="112" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Canvas Width="1300" Height="112">
+                        <Path Data="M 0,0 H 1300 V 26 C 1168,8 1068,40 946,24 S 700,40 560,24 S 288,40 0,20 Z" Fill="#F7FBFF" />
+                        <Path Data="M 0,112 V 64 C 94,36 186,96 308,68 S 534,72 690,62 S 934,84 1128,60 S 1236,70 1300,62 V 112 Z" Fill="#CFE4FF" Opacity="0.9" />
+                        <Path Data="M 250,20 C 328,-18 422,74 510,28 S 702,-12 802,32 S 992,0 1300,20" Stroke="#88C0FF" StrokeThickness="3.2" StrokeLineCap="Round" />
+                        <Path Data="M 250,32 C 328,-6 422,86 510,40 S 702,0 802,44 S 992,12 1300,32" Stroke="#73B0FF" StrokeThickness="3.2" StrokeLineCap="Round" />
+                        <Path Data="M 250,44 C 328,6 422,98 510,52 S 702,12 802,56 S 992,24 1300,44" Stroke="#5EA2FA" StrokeThickness="3.2" StrokeLineCap="Round" />
+                        <Path Data="M 250,56 C 328,18 422,110 510,64 S 702,24 802,68 S 992,36 1300,56" Stroke="#4B94F0" StrokeThickness="3.2" StrokeLineCap="Round" />
+                        <Path Data="M 250,68 C 328,30 422,122 510,76 S 702,36 802,80 S 992,48 1300,68" Stroke="#3A84E2" StrokeThickness="3.2" StrokeLineCap="Round" />
+                    </Canvas>
+                </Viewbox>
                 <Canvas Grid.ColumnSpan="2" Height="112" VerticalAlignment="Center" IsHitTestVisible="False" ClipToBounds="True">
-                    <Path Data="M 0,0 H 1300 V 26 C 1168,8 1068,40 946,24 S 700,40 560,24 S 288,40 0,20 Z" Fill="#F7FBFF" />
-                    <Path Data="M 0,112 V 64 C 94,36 186,96 308,68 S 534,72 690,62 S 934,84 1128,60 S 1236,70 1300,62 V 112 Z" Fill="#CFE4FF" Opacity="0.9" />
-                </Canvas>
-                <Canvas Grid.ColumnSpan="2" Height="112" VerticalAlignment="Center" IsHitTestVisible="False" ClipToBounds="True">
-                    <Path Data="M 250,20 C 328,-18 422,74 510,28 S 702,-12 802,32 S 992,0 1300,20" Stroke="#88C0FF" StrokeThickness="3.2" StrokeLineCap="Round" />
-                    <Path Data="M 250,32 C 328,-6 422,86 510,40 S 702,0 802,44 S 992,12 1300,32" Stroke="#73B0FF" StrokeThickness="3.2" StrokeLineCap="Round" />
-                    <Path Data="M 250,44 C 328,6 422,98 510,52 S 702,12 802,56 S 992,24 1300,44" Stroke="#5EA2FA" StrokeThickness="3.2" StrokeLineCap="Round" />
-                    <Path Data="M 250,56 C 328,18 422,110 510,64 S 702,24 802,68 S 992,36 1300,56" Stroke="#4B94F0" StrokeThickness="3.2" StrokeLineCap="Round" />
-                    <Path Data="M 250,68 C 328,30 422,122 510,76 S 702,36 802,80 S 992,48 1300,68" Stroke="#3A84E2" StrokeThickness="3.2" StrokeLineCap="Round" />
-
                     <Path Data="M 0,0 H 520 C 488,24 456,40 432,62 C 402,88 338,108 244,112 H 0 Z">
                         <Path.Fill>
                             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
                                 <GradientStop Color="#EFF6FF" Offset="0" />
                                 <GradientStop Color="#EFF6FF" Offset="0.76" />
-                                <GradientStop Color="#EFF6FF00" Offset="1" />
+                                <GradientStop Color="#00EFF6FF" Offset="1" />
                             </LinearGradientBrush>
                         </Path.Fill>
                     </Path>
-
-                    <TextBlock Canvas.Left="444" Canvas.Top="34" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#0A3F86" RenderTransformOrigin="0.5,0.5">
+                </Canvas>
+                <Grid Grid.ColumnSpan="2" Height="112" VerticalAlignment="Center" IsHitTestVisible="False" ClipToBounds="True"
+                      ColumnDefinitions="444*,Auto,196*,Auto,140*,Auto,122*,Auto,166*,Auto">
+                    <TextBlock Grid.Column="1" Margin="0,12,0,0" VerticalAlignment="Top" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#0A3F86" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="-11" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="640" Canvas.Top="28" Text="♩" FontFamily="Segoe UI Symbol" FontSize="50" FontWeight="Bold" Foreground="#0E4B95" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Grid.Column="3" Margin="0,28,0,0" VerticalAlignment="Top" Text="♩" FontFamily="Segoe UI Symbol" FontSize="50" FontWeight="Bold" Foreground="#0E4B95" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="-8" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="902" Canvas.Top="8" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#1458A5" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Grid.Column="5" Margin="0,22,0,0" VerticalAlignment="Top" Text="♫" FontFamily="Segoe UI Symbol" FontSize="48" FontWeight="Bold" Foreground="#0C4590" RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <RotateTransform Angle="-4" />
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                    <TextBlock Grid.Column="7" Margin="0,8,0,0" VerticalAlignment="Top" Text="♪" FontFamily="Segoe UI Symbol" FontSize="46" FontWeight="Bold" Foreground="#1458A5" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="7" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                    <TextBlock Canvas.Left="1068" Canvas.Top="20" Text="♩" FontFamily="Segoe UI Symbol" FontSize="44" FontWeight="Bold" Foreground="#165FAF" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock Grid.Column="9" Margin="0,20,0,0" VerticalAlignment="Top" Text="♩" FontFamily="Segoe UI Symbol" FontSize="44" FontWeight="Bold" Foreground="#165FAF" RenderTransformOrigin="0.5,0.5">
                         <TextBlock.RenderTransform>
                             <RotateTransform Angle="9" />
                         </TextBlock.RenderTransform>
                     </TextBlock>
-                </Canvas>
+                </Grid>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
                     <Image Source="avares://AvaloniaApp/Assets/klucz__g.png" Width="52" Height="82" Stretch="Uniform" />
                     <StackPanel VerticalAlignment="Center" Spacing="2">
@@ -112,7 +120,7 @@
                     <TextBlock Text="Rozpoznawanie" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje"
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Tonacje" IsVisible="{Binding !IsStudentMode}"
                     FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
                     Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -124,7 +132,7 @@
                     <TextBlock Text="Materiały" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty"
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Losowe nuty" IsVisible="{Binding !IsStudentMode}"
                     FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
                     Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -141,7 +149,7 @@
                     <TextBlock Text="Losowe" VerticalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut"
+            <Button Command="{Binding SelectExerciseCommand}" CommandParameter="Edytor nut" IsVisible="{Binding !IsStudentMode}"
                     FontSize="16" FontWeight="SemiBold" Foreground="#183B6A"
                     Background="#F8FBFF" BorderBrush="#D5E4F8" BorderThickness="1" CornerRadius="28" Padding="22,11">
                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -155,8 +163,8 @@
         <Grid Grid.Row="3" ColumnDefinitions="286,*" Margin="4,4,0,0">
             <Border Grid.Column="0" Margin="0,0,14,0" Background="#FBFCFF" BorderBrush="#DFE9F7" BorderThickness="1"
                     CornerRadius="22" Padding="18" BoxShadow="0 5 14 0 #304B78">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Spacing="11">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="11" Margin="0,0,14,0">
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <Border Width="38" Height="38" CornerRadius="19" Background="#E5EFFD">
                                 <TextBlock Text="⚙" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#164D90"
@@ -202,29 +210,32 @@
                                          IsChecked="{Binding IsBassClefSelected, Mode=TwoWay}" FontSize="16" />
                         </StackPanel>
 
-                        <Separator Margin="0,2" />
+                        <TextBlock Text="ZAKRES" FontSize="11" FontWeight="SemiBold" Foreground="#5B6B85" Margin="4,6,0,0" />
+                        <ComboBox HorizontalAlignment="Stretch" FontSize="14" ItemsSource="{Binding RangePresets}"
+                                  SelectedItem="{Binding SelectedRangePreset}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RangePresetOption">
+                                    <TextBlock Text="{Binding Label}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Border IsVisible="{Binding IsPresetRangeSelected}" Background="#F3F7FD" BorderBrush="#DFE9F7" BorderThickness="1"
+                                CornerRadius="10" Padding="12,9">
+                            <TextBlock Text="{Binding SelectedRangeText}" FontSize="13" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center" TextWrapping="Wrap" />
+                        </Border>
 
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Border Width="38" Height="38" CornerRadius="19" Background="#E5EFFD">
-                                <TextBlock Text="☾" FontFamily="Segoe UI Symbol" FontSize="22" Foreground="#164D90"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
-                            <TextBlock Text="Zakres nut" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+                        <StackPanel IsVisible="{Binding IsTrebleCustomRange}" Spacing="6">
+                            <TextBlock Text="OD" FontSize="11" FontWeight="SemiBold" Foreground="#5B6B85" Margin="4,0,0,0" />
+                            <ComboBox HorizontalAlignment="Stretch" FontSize="14" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleFrom}" />
+                            <TextBlock Text="DO" FontSize="11" FontWeight="SemiBold" Foreground="#5B6B85" Margin="4,0,0,0" />
+                            <ComboBox HorizontalAlignment="Stretch" FontSize="14" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleTo}" />
                         </StackPanel>
-
-                        <StackPanel IsVisible="{Binding IsTrebleClefSelected}" Spacing="6">
-                            <TextBlock Text="Wiolinowy: od — do" FontSize="15" />
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleFrom}" />
-                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding TrebleNotes}" SelectedItem="{Binding TrebleTo}" />
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel IsVisible="{Binding IsBassClefSelected}" Spacing="6">
-                            <TextBlock Text="Basowy: od — do" FontSize="15" />
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassFrom}" />
-                                <ComboBox Width="108" FontSize="13" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassTo}" />
-                            </StackPanel>
+                        <StackPanel IsVisible="{Binding IsBassCustomRange}" Spacing="6">
+                            <TextBlock Text="OD" FontSize="11" FontWeight="SemiBold" Foreground="#5B6B85" Margin="4,0,0,0" />
+                            <ComboBox HorizontalAlignment="Stretch" FontSize="14" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassFrom}" />
+                            <TextBlock Text="DO" FontSize="11" FontWeight="SemiBold" Foreground="#5B6B85" Margin="4,0,0,0" />
+                            <ComboBox HorizontalAlignment="Stretch" FontSize="14" ItemsSource="{Binding BassNotes}" SelectedItem="{Binding BassTo}" />
                         </StackPanel>
 
                         <Separator Margin="0,2" />
