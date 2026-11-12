@@ -46,6 +46,15 @@ public sealed class NoteRangeSettings
         "double-sharp"
     };
 
+    public static IReadOnlyList<string> RhythmicValueNames { get; } = new[]
+    {
+        "cala_nuta",
+        "polnuta",
+        "cwiercnuta",
+        "osemka",
+        "szesnastka"
+    };
+
     public static IReadOnlyList<string> Notes { get; } = CreateNoteList(LowestNoteNumber, HighestNoteNumber);
 
     public static IReadOnlyList<string> TrebleNotes { get; } = CreateNoteList(TrebleLowestNoteNumber, TrebleHighestNoteNumber);
@@ -62,9 +71,18 @@ public sealed class NoteRangeSettings
 
     public string BassTo { get; private set; } = FormatNote(20);
 
-    public string ChromaticSign { get; private set; } = ChromaticSigns[0];
+    public IReadOnlyList<string> SelectedChromaticSigns { get; private set; } = new[] { ChromaticSigns[0] };
 
-    public void Update(string clef, string trebleFrom, string trebleTo, string bassFrom, string bassTo, string chromaticSign)
+    public IReadOnlyList<string> SelectedRhythmicValues { get; private set; } = new[] { RhythmicValueNames[0] };
+
+    public void Update(
+        string clef,
+        string trebleFrom,
+        string trebleTo,
+        string bassFrom,
+        string bassTo,
+        IReadOnlyList<string> chromaticSigns,
+        IReadOnlyList<string> rhythmicValues)
     {
         if (!Clefs.Contains(clef, StringComparer.Ordinal))
         {
@@ -89,9 +107,14 @@ public sealed class NoteRangeSettings
             throw new ArgumentException("Bass range must contain at least two notes.");
         }
 
-        if (!ChromaticSigns.Contains(chromaticSign, StringComparer.Ordinal))
+        if (chromaticSigns.Count == 0 || chromaticSigns.Any(sign => !ChromaticSigns.Contains(sign, StringComparer.Ordinal)))
         {
-            throw new ArgumentException("Unknown chromatic sign.", nameof(chromaticSign));
+            throw new ArgumentException("Wybierz co najmniej jeden znak chromatyczny.", nameof(chromaticSigns));
+        }
+
+        if (rhythmicValues.Count == 0 || rhythmicValues.Any(value => !RhythmicValueNames.Contains(value, StringComparer.Ordinal)))
+        {
+            throw new ArgumentException("Wybierz co najmniej jedną wartość rytmiczną.", nameof(rhythmicValues));
         }
 
         Clef = clef;
@@ -99,7 +122,8 @@ public sealed class NoteRangeSettings
         TrebleTo = trebleTo;
         BassFrom = bassFrom;
         BassTo = bassTo;
-        ChromaticSign = chromaticSign;
+        SelectedChromaticSigns = ChromaticSigns.Where(sign => chromaticSigns.Contains(sign)).ToList();
+        SelectedRhythmicValues = RhythmicValueNames.Where(value => rhythmicValues.Contains(value)).ToList();
     }
 
     public static string ToAccidentalSymbol(string chromaticSign)
@@ -183,12 +207,21 @@ public sealed class NoteRangeSettings
             return symbolicName;
         }
 
-        if (string.Equals(chromaticSign, "flat", StringComparison.Ordinal))
+        var number = NoteNumber(note);
+        if (number < 0)
         {
-            return ToLetterFlatName(symbolicName);
+            return symbolicName;
         }
 
-        return symbolicName + ToAccidentalSymbol(chromaticSign);
+        var octaveNumber = (number + 5) / 7;
+        var letterName = new MusicNote(number, chromaticSign).LetterName;
+        if (octaveNumber <= 2)
+        {
+            return letterName.ToUpperInvariant();
+        }
+
+        var octaveSuffix = octaveNumber >= 4 ? "⁰¹²³⁴⁵⁶⁷⁸⁹"[octaveNumber - 3].ToString() : string.Empty;
+        return letterName + octaveSuffix;
     }
 
     public static int GetLetterLowLineCount(string note)

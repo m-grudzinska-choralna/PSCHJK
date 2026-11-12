@@ -19,6 +19,14 @@
     <AvaloniaResource Include="..\KS2\Resources\klucz__g.png" Link="Assets/klucz__g.png" />
     <AvaloniaResource Include="..\KS2\Resources\klucz_f.png" Link="Assets/klucz_f.png" />
     <AvaloniaResource Include="..\KS2\Resources\cala_nuta.png" Link="Assets/cala_nuta.png" />
+    <AvaloniaResource Include="..\KS2\Resources\polnuta_w_gore.png" Link="Assets/polnuta_w_gore.png" />
+    <AvaloniaResource Include="..\KS2\Resources\polnuta_w_dol.png" Link="Assets/polnuta_w_dol.png" />
+    <AvaloniaResource Include="..\KS2\Resources\cwiercnuta_w_gore.png" Link="Assets/cwiercnuta_w_gore.png" />
+    <AvaloniaResource Include="..\KS2\Resources\cwiercnuta_w_dol.png" Link="Assets/cwiercnuta_w_dol.png" />
+    <AvaloniaResource Include="..\KS2\Resources\osemka_w_gore.png" Link="Assets/osemka_w_gore.png" />
+    <AvaloniaResource Include="..\KS2\Resources\osemka_w_dol.png" Link="Assets/osemka_w_dol.png" />
+    <AvaloniaResource Include="..\KS2\Resources\szesnastka_w_gore.png" Link="Assets/szesnastka_w_gore.png" />
+    <AvaloniaResource Include="..\KS2\Resources\szesnastka_w_dol.png" Link="Assets/szesnastka_w_dol.png" />
   </ItemGroup>
 
   <ItemGroup>

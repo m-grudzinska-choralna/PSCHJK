@@ -47,7 +47,6 @@ public sealed class ExerciseSession
     public void Next()
     {
         CurrentRound++;
-        ShowAnswers = false;
     }
 
     public void Previous()
@@ -56,8 +55,6 @@ public sealed class ExerciseSession
         {
             CurrentRound--;
         }
-
-        ShowAnswers = false;
     }
 
     public void SetShowAnswers(bool showAnswers)

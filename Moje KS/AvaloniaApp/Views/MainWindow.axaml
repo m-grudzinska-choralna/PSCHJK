@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApp.ViewModels"
         xmlns:controls="using:AvaloniaApp.Controls"
@@ -177,28 +177,29 @@
 
                         <TextBlock Text="Znaki chromatyczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <WrapPanel Orientation="Horizontal" ItemHeight="36" ItemWidth="36">
-                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                            <ToggleButton Width="36" Height="36"
                                          IsChecked="{Binding IsNoAccidentalSelected, Mode=TwoWay}">
                                 <TextBlock Text="" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </RadioButton>
-                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                            </ToggleButton>
+                            <ToggleButton Width="36" Height="36"
                                          IsChecked="{Binding IsFlatSelected, Mode=TwoWay}">
                                 <TextBlock Text="♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </RadioButton>
-                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                            </ToggleButton>
+                            <ToggleButton Width="36" Height="36"
                                          IsChecked="{Binding IsSharpSelected, Mode=TwoWay}">
                                 <TextBlock Text="♯" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </RadioButton>
-                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                            </ToggleButton>
+                            <ToggleButton Width="36" Height="36"
                                          IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}">
                                 <TextBlock Text="♭♭" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </RadioButton>
-                            <RadioButton Width="36" Height="36" GroupName="ChromaticSigns"
+                            </ToggleButton>
+                            <ToggleButton Width="36" Height="36"
                                          IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}">
                                 <TextBlock Text="𝄪" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </RadioButton>
+                            </ToggleButton>
                         </WrapPanel>
 
+                        <TextBlock Text="Warto&#347;ci rytmiczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" /><StackPanel Spacing="4"><CheckBox Content="Ca&#322;a nuta" IsChecked="{Binding IsWholeNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="P&#243;&#322;nuta" IsChecked="{Binding IsHalfNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="&#262;wier&#263;nuta" IsChecked="{Binding IsQuarterNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="&#211;semka" IsChecked="{Binding IsEighthNoteSelected, Mode=TwoWay}" FontSize="16" /><CheckBox Content="Szesnastka" IsChecked="{Binding IsSixteenthNoteSelected, Mode=TwoWay}" FontSize="16" /></StackPanel>
                         <TextBlock Text="Klucz ćwiczenia" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
                             <RadioButton Content="Wiolinowy" GroupName="ExerciseClef"
@@ -242,7 +243,8 @@
             <Border Grid.Column="1" Background="#FFFEFC" BorderBrush="#C7DDFB" BorderThickness="2"
                     CornerRadius="24" Padding="22" BoxShadow="0 6 16 0 #405A86">
                 <Grid>
-                    <controls:StaffCanvas Clef="{Binding CurrentQuestion.Clef}"
+                    <controls:StaffCanvas Rhythm="{Binding CurrentQuestion.NoteData.RhythmicValue.Name}"
+                                                              Clef="{Binding CurrentQuestion.Clef}"
                                           Note="{Binding CurrentQuestion.Note}"
                                           Answer="{Binding CurrentQuestion.Answer}"
                                           Accidental="{Binding CurrentQuestion.Accidental}"

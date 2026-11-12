@@ -7,19 +7,37 @@ namespace AvaloniaApp.Models;
 public sealed class NoteQuestionGenerator
 {
     private string _ks2SessionKey = string.Empty;
-    private Ks2RecognizeNotesData? _ks2Data;
+    private Ks2ScreenNavigator? _navigator;
 
     public NoteQuestion Create(NoteRangeSettings settings, bool sequential)
     {
+        return Build(settings, sequential, navigator => { });
+    }
+
+    public NoteQuestion Next(NoteRangeSettings settings, bool sequential, bool showAnswers)
+    {
+        return Build(settings, sequential, navigator => navigator.Next(showAnswers));
+    }
+
+    public NoteQuestion Previous(NoteRangeSettings settings, bool sequential, bool showAnswers)
+    {
+        return Build(settings, sequential, navigator => navigator.Previous(showAnswers));
+    }
+
+    public bool IsAnswerShown => _navigator?.IsAnswerShown ?? false;
+
+    private NoteQuestion Build(NoteRangeSettings settings, bool sequential, Action<Ks2ScreenNavigator> move)
+    {
         var parameters = BuildKs2Parameters(settings, sequential);
         var key = parameters.BuildKey();
-        if (!string.Equals(_ks2SessionKey, key, StringComparison.Ordinal) || _ks2Data is null)
+        if (!string.Equals(_ks2SessionKey, key, StringComparison.Ordinal) || _navigator is null)
         {
             _ks2SessionKey = key;
-            _ks2Data = new Ks2RecognizeNotesData(parameters);
+            _navigator = new Ks2ScreenNavigator(new Ks2RecognizeNotesData(parameters), sequential);
         }
 
-        var screen = _ks2Data.NextScreen();
+        move(_navigator);
+        var screen = _navigator.Current;
         var clef = settings.Clef == "basowy" ? "basowy" : "wiolinowy";
         return new NoteQuestion(screen.Element.Element, clef, screen);
     }
@@ -27,7 +45,7 @@ public sealed class NoteQuestionGenerator
     public void ResetSequence()
     {
         _ks2SessionKey = string.Empty;
-        _ks2Data = null;
+        _navigator = null;
     }
 
     private static Ks2RecognizeNotesParameters BuildKs2Parameters(NoteRangeSettings settings, bool sequential)
@@ -46,8 +64,8 @@ public sealed class NoteQuestionGenerator
             Sequential = sequential,
             Clef = settings.Clef == "basowy" ? "bas" : "wiol",
             NoteNumbers = notes,
-            ChromaticSigns = new[] { settings.ChromaticSign },
-            RhythmicValues = new[] { "cala_nuta", "polnuta", "cwiercnuta", "osemka", "szesnastka" }
+            ChromaticSigns = settings.SelectedChromaticSigns,
+            RhythmicValues = settings.SelectedRhythmicValues
         };
     }
 

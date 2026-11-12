@@ -130,13 +130,18 @@ public sealed class Ks2NoteElementGenerator
         selected.AskedCount++;
         selected.LastDrawIndex = DrawnElements.Count + 1;
         DrawnElements.Add(selected);
-        var rhythm = _rhythmicValueNames[_random.Next(0, _rhythmicValueNames.Count)];
+        var rhythm = RandomRhythmicValueName();
         var note = new MusicNote(selected.Element.Number, selected.Element.ChromaticSign, rhythm);
         return new Ks2Element<MusicNote>(selected.ElementKind, selected.ElementNumber, note, note)
         {
             AskedCount = selected.AskedCount,
             LastDrawIndex = selected.LastDrawIndex
         };
+    }
+
+    public string RandomRhythmicValueName()
+    {
+        return _rhythmicValueNames[_random.Next(0, _rhythmicValueNames.Count)];
     }
 
     private static float Distance(Ks2Element<MusicNote> left, Ks2Element<MusicNote> right)
@@ -159,6 +164,85 @@ public sealed class Ks2RecognizeNotesParameters
     }
 }
 
+public sealed class Ks2ScreenNavigator
+{
+    private readonly Ks2RecognizeNotesData _data;
+    private readonly bool _sequential;
+    private readonly List<Ks2Screen> _screens;
+    private int _index;
+
+    public Ks2ScreenNavigator(Ks2RecognizeNotesData data, bool sequential)
+    {
+        _data = data;
+        _sequential = sequential;
+        _screens = sequential ? new List<Ks2Screen>(data.SequentialScreens) : new List<Ks2Screen> { data.NextScreen() };
+    }
+
+    public bool IsAnswerShown { get; private set; }
+    public Ks2Screen Current => _screens[_index];
+
+    public void Next(bool showAnswers)
+    {
+        var newScreen = true;
+        if (showAnswers)
+        {
+            newScreen = IsAnswerShown;
+            IsAnswerShown = !IsAnswerShown;
+        }
+
+        if (!newScreen)
+        {
+            return;
+        }
+
+        if (_sequential)
+        {
+            _index = _index < _screens.Count - 1 ? _index + 1 : 0;
+        }
+        else if (_index < _screens.Count - 1)
+        {
+            _index++;
+            IsAnswerShown = _index != _screens.Count - 1 && showAnswers;
+        }
+        else
+        {
+            _screens.Add(_data.NextScreen());
+            _index = _screens.Count - 1;
+        }
+    }
+
+    public void Previous(bool showAnswers)
+    {
+        if (_sequential)
+        {
+            var goBack = true;
+            if (showAnswers)
+            {
+                goBack = IsAnswerShown;
+                IsAnswerShown = !IsAnswerShown;
+            }
+
+            if (goBack)
+            {
+                _index = _index > 0 ? _index - 1 : _screens.Count - 1;
+            }
+        }
+        else if (_index >= 1)
+        {
+            _index--;
+            if (showAnswers)
+            {
+                IsAnswerShown = true;
+            }
+        }
+    }
+
+    public void HideAnswer()
+    {
+        IsAnswerShown = false;
+    }
+}
+
 public sealed class Ks2RecognizeNotesData
 {
     private readonly Ks2RecognizeNotesParameters _parameters;
@@ -174,12 +258,14 @@ public sealed class Ks2RecognizeNotesData
         {
             foreach (var element in _generator.AllElements)
             {
-                var note = new MusicNote(element.Element.Number, element.Element.ChromaticSign, parameters.RhythmicValues[0]);
+                var note = new MusicNote(element.Element.Number, element.Element.ChromaticSign, _generator.RandomRhythmicValueName());
                 var sequentialElement = new Ks2Element<MusicNote>(element.ElementKind, element.ElementNumber, note, note);
                 _screens.Add(new Ks2Screen("rozpoznawanie", "nuty", sequentialElement));
             }
         }
     }
+
+    public IReadOnlyList<Ks2Screen> SequentialScreens => _screens;
 
     public Ks2Screen NextScreen()
     {

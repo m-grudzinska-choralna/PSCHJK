@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -41,7 +42,6 @@ public partial class MainViewModel : ViewModelBase
         TrebleTo = _noteRange.TrebleTo;
         BassFrom = _noteRange.BassFrom;
         BassTo = _noteRange.BassTo;
-        SelectedChromaticSign = _noteRange.ChromaticSign;
         CurrentQuestion = _questionGenerator.Create(_noteRange, ShowSequential);
         _isInitialized = true;
         StatusMessage = "Gotowe do rozpoczęcia ćwiczenia.";
@@ -86,8 +86,8 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _bassTo;
 
-    [ObservableProperty]
-    private string _selectedChromaticSign = NoteRangeSettings.ChromaticSigns[0];
+    private readonly HashSet<string> _chromaticSigns = new(StringComparer.Ordinal) { "none" };
+    private readonly HashSet<string> _rhythmicValues = new(StringComparer.Ordinal) { "cala_nuta" };
 
     public string WindowTitle => $"Moje KS — {SelectedExercise}";
 
@@ -124,62 +124,104 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsNoAccidentalSelected
     {
-        get => SelectedChromaticSign == "none";
-        set
-        {
-            if (value)
-            {
-                SelectedChromaticSign = "none";
-            }
-        }
+        get => _chromaticSigns.Contains("none");
+        set => SetChromaticSign("none", value, nameof(IsNoAccidentalSelected));
     }
 
     public bool IsFlatSelected
     {
-        get => SelectedChromaticSign == "flat";
-        set
-        {
-            if (value)
-            {
-                SelectedChromaticSign = "flat";
-            }
-        }
+        get => _chromaticSigns.Contains("flat");
+        set => SetChromaticSign("flat", value, nameof(IsFlatSelected));
     }
 
     public bool IsSharpSelected
     {
-        get => SelectedChromaticSign == "sharp";
-        set
-        {
-            if (value)
-            {
-                SelectedChromaticSign = "sharp";
-            }
-        }
+        get => _chromaticSigns.Contains("sharp");
+        set => SetChromaticSign("sharp", value, nameof(IsSharpSelected));
     }
 
     public bool IsDoubleFlatSelected
     {
-        get => SelectedChromaticSign == "double-flat";
-        set
-        {
-            if (value)
-            {
-                SelectedChromaticSign = "double-flat";
-            }
-        }
+        get => _chromaticSigns.Contains("double-flat");
+        set => SetChromaticSign("double-flat", value, nameof(IsDoubleFlatSelected));
     }
 
     public bool IsDoubleSharpSelected
     {
-        get => SelectedChromaticSign == "double-sharp";
-        set
+        get => _chromaticSigns.Contains("double-sharp");
+        set => SetChromaticSign("double-sharp", value, nameof(IsDoubleSharpSelected));
+    }
+
+    public bool IsWholeNoteSelected
+    {
+        get => _rhythmicValues.Contains("cala_nuta");
+        set => SetRhythmicValue("cala_nuta", value, nameof(IsWholeNoteSelected));
+    }
+
+    public bool IsHalfNoteSelected
+    {
+        get => _rhythmicValues.Contains("polnuta");
+        set => SetRhythmicValue("polnuta", value, nameof(IsHalfNoteSelected));
+    }
+
+    public bool IsQuarterNoteSelected
+    {
+        get => _rhythmicValues.Contains("cwiercnuta");
+        set => SetRhythmicValue("cwiercnuta", value, nameof(IsQuarterNoteSelected));
+    }
+
+    public bool IsEighthNoteSelected
+    {
+        get => _rhythmicValues.Contains("osemka");
+        set => SetRhythmicValue("osemka", value, nameof(IsEighthNoteSelected));
+    }
+
+    public bool IsSixteenthNoteSelected
+    {
+        get => _rhythmicValues.Contains("szesnastka");
+        set => SetRhythmicValue("szesnastka", value, nameof(IsSixteenthNoteSelected));
+    }
+
+    private void SetChromaticSign(string sign, bool selected, string propertyName)
+    {
+        if (SetSelection(_chromaticSigns, sign, selected, "Wybierz co najmniej jeden znak chromatyczny."))
         {
-            if (value)
-            {
-                SelectedChromaticSign = "double-sharp";
-            }
+            OnPropertyChanged(propertyName);
+            ApplyNoteRangeIfInitialized();
         }
+        else
+        {
+            OnPropertyChanged(propertyName);
+        }
+    }
+
+    private void SetRhythmicValue(string value, bool selected, string propertyName)
+    {
+        if (SetSelection(_rhythmicValues, value, selected, "Wybierz co najmniej jedną wartość rytmiczną."))
+        {
+            OnPropertyChanged(propertyName);
+            ApplyNoteRangeIfInitialized();
+        }
+        else
+        {
+            OnPropertyChanged(propertyName);
+        }
+    }
+
+    private bool SetSelection(HashSet<string> set, string item, bool selected, string lastItemMessage)
+    {
+        if (selected)
+        {
+            return set.Add(item);
+        }
+
+        if (set.Count == 1 && set.Contains(item))
+        {
+            StatusMessage = lastItemMessage;
+            return false;
+        }
+
+        return set.Remove(item);
     }
 
     public bool IsLetterNamesSelected
@@ -254,7 +296,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo, SelectedChromaticSign);
+            _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo, _chromaticSigns.ToList(), _rhythmicValues.ToList());
             CreateNewQuestion();
         }
         catch (ArgumentException exception)
@@ -263,24 +305,11 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
-    partial void OnSelectedChromaticSignChanged(string value)
-    {
-        OnPropertyChanged(nameof(IsNoAccidentalSelected));
-        OnPropertyChanged(nameof(IsFlatSelected));
-        OnPropertyChanged(nameof(IsSharpSelected));
-        OnPropertyChanged(nameof(IsDoubleFlatSelected));
-        OnPropertyChanged(nameof(IsDoubleSharpSelected));
-        if (_isInitialized)
-        {
-            ApplyNoteRange();
-        }
-    }
-
     [RelayCommand]
     private void GoPrevious()
     {
         _session.Previous();
-        CreateNewQuestion();
+        MoveQuestion(previous: true);
         RefreshSessionState("Poprzedni ekran sesji ćwiczenia.");
     }
 
@@ -310,32 +339,20 @@ public partial class MainViewModel : ViewModelBase
     private void GoNext()
     {
         _session.Next();
-        CreateNewQuestion();
+        MoveQuestion(previous: false);
         RefreshSessionState("Następny ekran sesji ćwiczenia.");
     }
 
     [RelayCommand]
     private void GenerateNewNote()
     {
-        CreateNewQuestion();
+        MoveQuestion(previous: false);
     }
 
     [RelayCommand]
     private void HandleSpace()
     {
-        if (!ShowAnswers)
-        {
-            CreateNewQuestion();
-            return;
-        }
-
-        if (!IsAnswerVisible)
-        {
-            IsAnswerVisible = true;
-            return;
-        }
-
-        CreateNewQuestion();
+        MoveQuestion(previous: false);
     }
 
     partial void OnSelectedExerciseChanged(string value)
@@ -370,6 +387,14 @@ public partial class MainViewModel : ViewModelBase
 
         _questionGenerator.ResetSequence();
         CreateNewQuestion();
+    }
+
+    private void MoveQuestion(bool previous)
+    {
+        CurrentQuestion = previous
+            ? _questionGenerator.Previous(_noteRange, ShowSequential, ShowAnswers)
+            : _questionGenerator.Next(_noteRange, ShowSequential, ShowAnswers);
+        IsAnswerVisible = ShowAnswers && _questionGenerator.IsAnswerShown;
     }
 
     private void CreateNewQuestion()

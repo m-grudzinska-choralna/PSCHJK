@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,6 +16,33 @@ public sealed class StaffCanvas : Control
     private static readonly Bitmap TrebleClefImage = LoadImage("klucz__g.png");
     private static readonly Bitmap BassClefImage = LoadImage("klucz_f.png");
     private static readonly Bitmap WholeNoteImage = LoadImage("cala_nuta.png");
+    private static readonly Dictionary<string, Bitmap> RhythmImages = new();
+
+    public static readonly StyledProperty<string> RhythmProperty =
+        AvaloniaProperty.Register<StaffCanvas, string>(nameof(Rhythm), "cala_nuta");
+
+    public string Rhythm
+    {
+        get => GetValue(RhythmProperty);
+        set => SetValue(RhythmProperty, value);
+    }
+
+    private static Bitmap GetRhythmImage(string rhythm, bool stemUp)
+    {
+        if (rhythm == "cala_nuta")
+        {
+            return WholeNoteImage;
+        }
+
+        var file = $"{rhythm}_{(stemUp ? "w_gore" : "w_dol")}.png";
+        if (!RhythmImages.TryGetValue(file, out var image))
+        {
+            image = LoadImage(file);
+            RhythmImages[file] = image;
+        }
+
+        return image;
+    }
 
     public static readonly StyledProperty<string> ClefProperty =
         AvaloniaProperty.Register<StaffCanvas, string>(nameof(Clef), "wiolinowy");
@@ -72,7 +100,7 @@ public sealed class StaffCanvas : Control
 
     public StaffCanvas()
     {
-        AffectsRender<StaffCanvas>(ClefProperty, NoteProperty, AnswerProperty, AccidentalProperty, ShowAnswersProperty, UseLetterNamesProperty);
+        AffectsRender<StaffCanvas>(RhythmProperty, ClefProperty, NoteProperty, AnswerProperty, AccidentalProperty, ShowAnswersProperty, UseLetterNamesProperty);
         ClipToBounds = true;
         MinHeight = 260;
     }
@@ -130,8 +158,12 @@ public sealed class StaffCanvas : Control
 
             var y = centerY - GetStaffOffset(noteNumber, Clef, spacing);
             DrawLedgerLines(context, x, noteNumber, Clef, centerY, spacing, notePen);
-            var noteHeight = spacing * 5.08;
-            var noteWidth = WholeNoteImage.Size.Width / WholeNoteImage.Size.Height * noteHeight;
+            var isWhole = Rhythm == "cala_nuta";
+            var stemUp = (noteNumber - middleLineNoteNumber) < 0;
+            var noteImage = GetRhythmImage(Rhythm, stemUp);
+            var noteHeight = spacing * (isWhole ? 5.08 : 3.7);
+            var noteOffset = isWhole ? 4.44 : (stemUp ? 3.2 : 0.5);
+            var noteWidth = noteImage.Size.Width / noteImage.Size.Height * noteHeight;
             var accidentalSymbol = NoteRangeSettings.ToAccidentalSymbol(Accidental);
             if (!string.IsNullOrEmpty(accidentalSymbol))
             {
@@ -150,7 +182,7 @@ public sealed class StaffCanvas : Control
                 context.DrawText(accidental, new Point(accidentalX, accidentalY));
             }
 
-            DrawImage(context, WholeNoteImage, new Rect(x - noteWidth / 2, y - spacing * 4.44, noteWidth, noteHeight));
+            DrawImage(context, noteImage, new Rect(x - noteWidth / 2, y - spacing * noteOffset, noteWidth, noteHeight));
 
             if (ShowAnswers && !isBassClef)
             {
