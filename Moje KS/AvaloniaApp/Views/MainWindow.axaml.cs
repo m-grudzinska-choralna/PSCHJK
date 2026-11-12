@@ -10,7 +10,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        KeyDown += OnKeyDown;
+        AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
     }
 
     private void OnMinimizeClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
@@ -28,6 +29,14 @@ public partial class MainWindow : Window
         }
 
         BeginMoveDrag(e);
+    }
+
+    private void OnKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Space)
+        {
+            e.Handled = true;
+        }
     }
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
@@ -48,7 +57,7 @@ public partial class MainWindow : Window
                 e.Handled = true;
                 break;
             case Key.Space:
-                viewModel.GenerateNewNoteCommand.Execute(null);
+                viewModel.HandleSpaceCommand.Execute(null);
                 e.Handled = true;
                 break;
             case Key.Escape:

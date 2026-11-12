@@ -60,6 +60,9 @@ public partial class MainViewModel : ViewModelBase
     private bool _showAnswers;
 
     [ObservableProperty]
+    private bool _isAnswerVisible;
+
+    [ObservableProperty]
     private int _currentRound;
 
     [ObservableProperty]
@@ -115,7 +118,7 @@ public partial class MainViewModel : ViewModelBase
         _session.SelectExercise(exercise);
         if (exercise == "Rozpoznawanie nut")
         {
-            CurrentQuestion = _questionGenerator.Create(_noteRange);
+            CreateNewQuestion();
         }
         RefreshSessionState($"Wybrano tryb: {exercise}.");
     }
@@ -125,7 +128,7 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             _noteRange.Update(SelectedClef, TrebleFrom, TrebleTo, BassFrom, BassTo);
-            CurrentQuestion = _questionGenerator.Create(_noteRange);
+            CreateNewQuestion();
         }
         catch (ArgumentException exception)
         {
@@ -137,7 +140,7 @@ public partial class MainViewModel : ViewModelBase
     private void GoPrevious()
     {
         _session.Previous();
-        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        CreateNewQuestion();
         RefreshSessionState("Poprzedni ekran sesji ćwiczenia.");
     }
 
@@ -167,14 +170,32 @@ public partial class MainViewModel : ViewModelBase
     private void GoNext()
     {
         _session.Next();
-        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        CreateNewQuestion();
         RefreshSessionState("Następny ekran sesji ćwiczenia.");
     }
 
     [RelayCommand]
     private void GenerateNewNote()
     {
-        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        CreateNewQuestion();
+    }
+
+    [RelayCommand]
+    private void HandleSpace()
+    {
+        if (!ShowAnswers)
+        {
+            CreateNewQuestion();
+            return;
+        }
+
+        if (!IsAnswerVisible)
+        {
+            IsAnswerVisible = true;
+            return;
+        }
+
+        CreateNewQuestion();
     }
 
     partial void OnSelectedExerciseChanged(string value)
@@ -193,7 +214,17 @@ public partial class MainViewModel : ViewModelBase
     partial void OnShowAnswersChanged(bool value)
     {
         _session.SetShowAnswers(value);
+        if (!value)
+        {
+            IsAnswerVisible = false;
+        }
         StatusMessage = value ? "Odpowiedzi są widoczne." : "Odpowiedzi są ukryte.";
+    }
+
+    private void CreateNewQuestion()
+    {
+        CurrentQuestion = _questionGenerator.Create(_noteRange);
+        IsAnswerVisible = false;
     }
 
     private void RefreshSessionState(string message)
