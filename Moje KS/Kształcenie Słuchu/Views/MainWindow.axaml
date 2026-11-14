@@ -11,34 +11,46 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding WindowTitle}"
-        SystemDecorations="BorderOnly"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="False"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="0"
         Width="1370"
         Height="980"
         WindowStartupLocation="CenterScreen"
         MinWidth="900"
         MinHeight="600"
-        Background="#EFF6FF">
+        TransparencyLevelHint="Transparent"
+        Background="Transparent">
 
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="32,112,64,*" Margin="8">
-        <Border Grid.Row="0" Background="#1257A8" CornerRadius="12" Margin="0,-3,0,6"
+    <Border CornerRadius="16" ClipToBounds="True" Background="#EFF6FF">
+    <Grid RowDefinitions="44,112,64,*" Margin="8,0,8,8">
+        <Border Grid.Row="0" Background="#1257A8" CornerRadius="0" Margin="-8,0,-8,6"
                 PointerPressed="OnTitleBarPointerPressed">
             <Grid>
-            <TextBlock Text="{Binding WindowTitle}" Foreground="White" FontSize="13" FontWeight="SemiBold"
+            <TextBlock Text="{Binding WindowTitle}" Foreground="White"
+                       FontSize="16" FontWeight="SemiBold"
                        VerticalAlignment="Center" Margin="14,0,0,0" IsHitTestVisible="False" />
             <StackPanel Orientation="Horizontal" Spacing="2" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button Click="OnMinimizeClick" Content="—" ToolTip.Tip="Minimalizuj"
-                        Width="36" Height="30" Padding="0" FontSize="18" Foreground="White"
-                        Background="Transparent" BorderThickness="0" />
-                <Button Click="OnMaximizeClick" Content="□" ToolTip.Tip="Maksymalizuj"
-                        Width="36" Height="30" Padding="0" FontSize="17" Foreground="White"
-                        Background="Transparent" BorderThickness="0" />
-                <Button Click="OnCloseClick" Content="×" ToolTip.Tip="Zamknij"
-                        Width="36" Height="30" Padding="0" FontSize="22" Foreground="White"
-                        Background="Transparent" BorderThickness="0" />
+                <Button Click="OnMinimizeClick" ToolTip.Tip="Minimalizuj"
+                        Width="44" Height="40" Padding="0" Foreground="White"
+                        Background="Transparent" BorderThickness="0">
+                    <Rectangle Width="13" Height="2" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <Button Click="OnMaximizeClick" ToolTip.Tip="Maksymalizuj"
+                        Width="44" Height="40" Padding="0" Foreground="White"
+                        Background="Transparent" BorderThickness="0">
+                    <Rectangle Width="13" Height="13" Stroke="White" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <Button Click="OnCloseClick" ToolTip.Tip="Zamknij"
+                        Width="44" Height="40" Padding="0" Foreground="White"
+                        Background="Transparent" BorderThickness="0">
+                    <Path Data="M0,0 L13,13 M13,0 L0,13" Stroke="White" StrokeThickness="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
             </StackPanel>
             </Grid>
         </Border>
@@ -285,4 +297,5 @@
                         </Border>
                     </Grid>
                 </Grid>
+    </Border>
 </Window>
