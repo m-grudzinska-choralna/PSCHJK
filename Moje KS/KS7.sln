@@ -5,7 +5,7 @@ VisualStudioVersion = 18.10.12224.181 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Program Moje KS", "KS2\Program Moje KS.csproj", "{016442B4-20C5-44B0-968C-DDA525E95D24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApp", "AvaloniaApp\AvaloniaApp.csproj", "{8C9F3661-CA61-303A-8D68-4CC704101EA4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kształcenie Słuchu", "Kształcenie Słuchu\Kształcenie Słuchu.csproj", "{8C9F3661-CA61-303A-8D68-4CC704101EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

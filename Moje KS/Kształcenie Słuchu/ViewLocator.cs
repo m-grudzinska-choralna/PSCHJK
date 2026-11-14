@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using AvaloniaApp.ViewModels;
+using KsztalcenieSluchu.ViewModels;
 
-namespace AvaloniaApp;
+namespace KsztalcenieSluchu;
 
 /// <summary>
 /// Given a view model, returns the corresponding view if possible.

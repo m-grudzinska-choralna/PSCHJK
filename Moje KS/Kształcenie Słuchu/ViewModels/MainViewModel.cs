@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using AvaloniaApp.Models;
+using KsztalcenieSluchu.Models;
 
-namespace AvaloniaApp.ViewModels;
+namespace KsztalcenieSluchu.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
@@ -157,7 +157,7 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isIntroVisible = true;
 
-    public string WindowTitle => $"Moje KS — {SelectedExercise}";
+    public string WindowTitle => $"Kształcenie Słuchu — {SelectedExercise}";
 
     public string SymbolicNote
     {

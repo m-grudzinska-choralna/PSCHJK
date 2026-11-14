@@ -1,4 +1,4 @@
-namespace AvaloniaApp.Models;
+﻿namespace KsztalcenieSluchu.Models;
 
 public sealed class NoteQuestion
 {

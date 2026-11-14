@@ -1,6 +1,6 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace AvaloniaApp.Models;
+namespace KsztalcenieSluchu.Models;
 
 /// <summary>
 /// Odpowiednik KS2 AktualneZnakiChromatyczne + logiki z Rysowanie.RysujNute:

@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace AvaloniaApp.Models;
+namespace KsztalcenieSluchu.Models;
 
 public sealed record NoteOctave(int Number, string Name, string NoteName);
 

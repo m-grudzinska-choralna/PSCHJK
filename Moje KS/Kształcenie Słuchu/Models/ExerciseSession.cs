@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AvaloniaApp.Models;
+namespace KsztalcenieSluchu.Models;
 
 /// <summary>
 /// Framework-neutral state of the active exercise session.

@@ -4,8 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <RuntimeIdentifiers>win-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <Nullable>enable</Nullable>
-    <Product>Kształcenie Słuchu</Product>
-    <AssemblyTitle>Kształcenie Słuchu</AssemblyTitle>
+    <AssemblyName>KsztalcenieSluchu</AssemblyName>
+    <Product>Kszta?cenie S?uchu</Product>
+    <AssemblyTitle>Kszta?cenie S?uchu</AssemblyTitle>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <EnableLocalSigning Condition="'$(EnableLocalSigning)' == ''">true</EnableLocalSigning>
     <UseAppHost Condition="'$(Configuration)' == 'Debug'">false</UseAppHost>

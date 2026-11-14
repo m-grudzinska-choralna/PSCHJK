@@ -1,9 +1,9 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using AvaloniaApp.ViewModels;
+using KsztalcenieSluchu.ViewModels;
 
-namespace AvaloniaApp.Views;
+namespace KsztalcenieSluchu.Views;
 
 public partial class MainWindow : Window
 {

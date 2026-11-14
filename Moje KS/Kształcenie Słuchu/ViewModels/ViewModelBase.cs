@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace AvaloniaApp.ViewModels;
+namespace KsztalcenieSluchu.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {

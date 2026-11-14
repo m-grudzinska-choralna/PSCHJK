@@ -6,9 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using AvaloniaApp.Models;
+using KsztalcenieSluchu.Models;
 
-namespace AvaloniaApp.Controls;
+namespace KsztalcenieSluchu.Controls;
 
 /// <summary>
 /// Rysuje pięciolinię z jedną nutą według algorytmu KS2 (Rysowanie.RysujNute, RysujSymbol, RysujPodpisNuty).
@@ -356,7 +356,7 @@ public sealed class StaffCanvas : Control
     {
         if (!Images.TryGetValue(file, out var image))
         {
-            using var stream = AssetLoader.Open(new Uri($"avares://AvaloniaApp/Assets/{file}.png"));
+            using var stream = AssetLoader.Open(new Uri($"avares://KsztalcenieSluchu/Assets/{file}.png"));
             image = new Bitmap(stream);
             Images[file] = image;
         }

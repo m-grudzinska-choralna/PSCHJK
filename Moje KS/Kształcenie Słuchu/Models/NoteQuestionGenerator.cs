@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AvaloniaApp.Models;
+namespace KsztalcenieSluchu.Models;
 
 public sealed class NoteQuestionGenerator
 {

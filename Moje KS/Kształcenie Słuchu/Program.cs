@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace AvaloniaApp;
+namespace KsztalcenieSluchu;
 
 sealed class Program
 {

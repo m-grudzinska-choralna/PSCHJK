@@ -1,13 +1,13 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:AvaloniaApp.ViewModels"
-        xmlns:controls="using:AvaloniaApp.Controls"
+        xmlns:vm="using:KsztalcenieSluchu.ViewModels"
+        xmlns:controls="using:KsztalcenieSluchu.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         d:DesignWidth="1200"
         d:DesignHeight="760"
-        x:Class="AvaloniaApp.Views.MainWindow"
+        x:Class="KsztalcenieSluchu.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="{Binding WindowTitle}"
@@ -102,7 +102,7 @@
                     </TextBlock>
                 </Grid>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="14" VerticalAlignment="Center">
-                    <Image Source="avares://AvaloniaApp/Assets/klucz__g.png" Width="52" Height="82" Stretch="Uniform" />
+                    <Image Source="avares://KsztalcenieSluchu/Assets/klucz__g.png" Width="52" Height="82" Stretch="Uniform" />
                     <StackPanel VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Moje KS" FontSize="30" FontWeight="Bold" Foreground="#102A50" />
                         <TextBlock Text="Ćwiczenia muzyczne" FontSize="16" Foreground="#263B59" />
@@ -190,19 +190,19 @@
                         <TextBlock Text="Znaki chromatyczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Orientation="Horizontal" Spacing="5">
                             <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsNoAccidentalSelected, Mode=TwoWay}"></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsFlatSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSharpSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/podwojny_bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/podwojny_krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsFlatSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSharpSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleFlatSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/podwojny_bemol.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsDoubleSharpSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/podwojny_krzyzyk.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
                         </StackPanel>
 
                         <TextBlock Text="Wartości rytmiczne" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsWholeNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/cala_nuta.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsHalfNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/polnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsQuarterNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/cwiercnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsEighthNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/osemka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
-                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSixteenthNoteSelected, Mode=TwoWay}"><Image Source="avares://AvaloniaApp/Assets/szesnastka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsWholeNoteSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/cala_nuta.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsHalfNoteSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/polnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsQuarterNoteSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/cwiercnuta_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsEighthNoteSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/osemka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
+                            <ToggleButton Width="30" Height="30" Padding="0" IsChecked="{Binding IsSixteenthNoteSelected, Mode=TwoWay}"><Image Source="avares://KsztalcenieSluchu/Assets/szesnastka_w_gore.png" Stretch="Uniform" RenderOptions.BitmapInterpolationMode="HighQuality" /></ToggleButton>
                         </StackPanel>
                         <TextBlock Text="Klucz" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">

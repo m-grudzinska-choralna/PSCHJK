@@ -1,10 +1,10 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using AvaloniaApp.ViewModels;
-using AvaloniaApp.Views;
+using KsztalcenieSluchu.ViewModels;
+using KsztalcenieSluchu.Views;
 
-namespace AvaloniaApp;
+namespace KsztalcenieSluchu;
 
 public partial class App : Application
 {
