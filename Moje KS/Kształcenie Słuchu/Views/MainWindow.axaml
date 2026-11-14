@@ -285,14 +285,6 @@
                             </Grid>
                         </StackPanel>
                     </Border>
-                                <Canvas IsVisible="{Binding IsIntroVisible}" IsHitTestVisible="False" Background="#FFFEFC">
-                                    <TextBlock Canvas.Left="200" Canvas.Top="20" FontFamily="Arial" FontSize="18" Foreground="Red"
-                                               Text="Uwaga! Niniejszy program powstał na WYŁĄCZNY użytek Marty Grudzińskiej" />
-                                    <TextBlock Canvas.Left="200" Canvas.Top="80" FontFamily="Arial" FontSize="18" Foreground="Red"
-                                               Text=" i osób przez nią upoważnionych." />
-                                    <TextBlock Canvas.Left="200" Canvas.Top="140" FontFamily="Arial" FontSize="18" Foreground="Red"
-                                               Text=" Poznańska Szkoła Chóralna Jerzego Kurczewskiego, 2021" />
-                                </Canvas>
                             </Grid>
                         </Border>
                     </Grid>
