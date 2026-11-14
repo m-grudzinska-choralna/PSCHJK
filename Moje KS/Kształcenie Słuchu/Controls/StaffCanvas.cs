@@ -286,8 +286,11 @@ public sealed class StaffCanvas : Control
             var eight = new FormattedText("8", CultureInfo.CurrentCulture, FlowDirection.LeftToRight, new Typeface("Arial"), spacing * PointsToPixels, Brushes.Black);
             context.DrawText(eight, new Point(x, transfer == 1 ? y - 0.4 * spacing : y - 1.1 * spacing));
 
-            var dotted = new Pen(Brushes.Black, Math.Max(1, spacing * 0.09), DashStyle.Dot);
-            context.DrawLine(dotted, new Point(x + 1.3 * spacing, y), new Point(x + 4.8 * spacing, y));
+            var thickness = Math.Max(1, spacing * 0.09);
+            var dotted = new Pen(Brushes.Black, thickness, new DashStyle(new double[] { 1, 2 }, 0));
+            context.DrawLine(dotted, new Point(x + 1.3 * spacing, y), new Point(x + 4.4 * spacing, y));
+            context.DrawLine(linePen, new Point(x + 4.4 * spacing, y), new Point(x + 4.8 * spacing, y));
+            context.DrawLine(linePen, new Point(x + 4.8 * spacing, y), new Point(x + 4.8 * spacing, y + 0.3 * spacing * transfer));
         }
     }
 

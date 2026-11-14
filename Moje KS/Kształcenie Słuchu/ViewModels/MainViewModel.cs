@@ -57,10 +57,11 @@ public partial class MainViewModel : ViewModelBase
 
     public IReadOnlyList<RangePresetOption> RangePresets { get; } = new[]
     {
-        new RangePresetOption("Klasa 1", N(23), N(27), N(16), N(23)),
-        new RangePresetOption("Klasa 2", N(23), N(30), N(8), N(20)),
-        new RangePresetOption("Klasa 3", N(20), N(34), N(4), N(23)),
-        new RangePresetOption("Klasa 4", N(20), N(37), N(0), N(26)),
+        new RangePresetOption("Klasa 1", N(22), N(32), N(19), N(23)),
+        new RangePresetOption("Klasa 2", N(20), N(34), N(16), N(23)),
+        new RangePresetOption("Klasa 3", N(20), N(37), N(13), N(25)),
+        new RangePresetOption("Klasa 4", N(20), N(37), N(9), N(26)),
+        new RangePresetOption("Pełny zakres", N(20), N(44), N(0), N(26)),
         new RangePresetOption("Własny wybór")
     };
 
