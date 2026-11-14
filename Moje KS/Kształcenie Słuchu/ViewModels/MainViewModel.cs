@@ -179,7 +179,7 @@ public partial class MainViewModel : ViewModelBase
     public bool HasSecondLowLine =>
         UseLetterNames && !UseFullNames && NoteRangeSettings.GetLetterLowLineCount(CurrentQuestion.Note) >= 2;
 
-    private bool _useFullNames;
+    private bool _useFullNames = true;
 
     public bool UseFullNames
     {

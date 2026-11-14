@@ -189,7 +189,7 @@
 
                         <TextBlock Text="Nazwy nut" FontSize="16" FontWeight="Bold" Margin="4,2,0,0" />
                         <StackPanel Spacing="4">
-                            <RadioButton Content="Nie pokazuj" GroupName="NoteNames"
+                            <RadioButton Content="Nie pokazuj" GroupName="NoteNames" IsVisible="{Binding !IsStudentMode}"
                                          IsChecked="{Binding IsNoNamesSelected, Mode=TwoWay}" FontSize="16" />
                             <RadioButton Content="Nazwy literowe"
                                          IsChecked="{Binding IsLetterNamesSelected, Mode=TwoWay}" FontSize="16" />
