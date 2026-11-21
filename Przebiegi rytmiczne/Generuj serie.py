@@ -534,16 +534,28 @@ def przetworz_klasy(
                 continue
             uczen_info, numery_str = linia.split(":", 1)
             nazwa_ucznia = uczen_info.strip()
-            nazwa_ucznia_bez_nr = re.sub(r"^\d+\.\s*", "", nazwa_ucznia).strip()
+            dopasowanie_ucznia = re.match(
+                r"^(\d+)\.?\s*(?:\S+)\s+(.+)$", nazwa_ucznia
+            )
+            if dopasowanie_ucznia:
+                numer_ucznia = dopasowanie_ucznia.group(1)
+                imiona_ucznia = dopasowanie_ucznia.group(2).strip()
+                nazwa_ucznia_bez_nazwiska = f"{numer_ucznia}. {imiona_ucznia}"
+            else:
+                numer_ucznia = re.sub(r"[^0-9].*$", "", nazwa_ucznia)
+                nazwa_ucznia_bez_nazwiska = re.sub(r"^\d+\.\s*", "", nazwa_ucznia).strip()
+
             numery = [
                 int(value.strip())
                 for value in numery_str.split(",")
                 if value.strip().isdigit()
             ]
 
-            folder_ucznia = os.path.join(folder_klasy_out, nazwa_ucznia)
+            folder_ucznia = os.path.join(
+                folder_klasy_out, nazwa_ucznia_bez_nazwiska
+            )
             podfolder_audio = os.path.join(
-                folder_ucznia, nazwa_ucznia_bez_nr, nazwa_serii
+                folder_ucznia, numer_ucznia, nazwa_serii
             )
             os.makedirs(podfolder_audio, exist_ok=True)
             kopiowane_audio_count = 0
