@@ -203,36 +203,68 @@ Write-Host ""
 $results = foreach ($studentEntry in $studentEntries) {
     $number = $studentEntry.Numer
     $studentName = $studentEntry.ImieINazwisko
-    Write-Host "Folder $number - $studentName" -ForegroundColor White
+    $nameParts = $studentName -split '\s+', 2
+    $firstName = if ($nameParts.Count -gt 1) { $nameParts[1] } else { $nameParts[0] }
+    $studentFolderName = "$number. $firstName"
+    Write-Host "Folder $studentFolderName\$number" -ForegroundColor White
 
     try {
-        $escapedName = "$number".Replace('\', '\\').Replace("'", "\'")
-        $q = "'$($parentFolder.id)' in parents and name = '$escapedName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
-        $encodedQ = [System.Uri]::EscapeDataString($q)
-        $folderUri = "https://www.googleapis.com/drive/v3/files?q=$encodedQ&fields=files(id,name,webViewLink)&pageSize=100"
-        $folderResponse = Invoke-RestMethod -Method Get -Uri $folderUri -Headers $headers
+        $escapedStudentFolderName = $studentFolderName.Replace('\', '\\').Replace("'", "\'")
+        $studentFolderQuery = "'$($parentFolder.id)' in parents and name = '$escapedStudentFolderName' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        $encodedStudentFolderQuery = [System.Uri]::EscapeDataString($studentFolderQuery)
+        $studentFolderUri = "https://www.googleapis.com/drive/v3/files?q=$encodedStudentFolderQuery&fields=files(id,name)&pageSize=100"
+        $studentFolderResponse = Invoke-RestMethod -Method Get -Uri $studentFolderUri -Headers $headers
 
-        if ($folderResponse.files.Count -gt 1) {
-            throw "Znaleziono kilka folderow o numerze '$number' w folderze klasy."
+        if ($studentFolderResponse.files.Count -gt 1) {
+            throw "Znaleziono kilka folderow '$studentFolderName' w folderze klasy."
         }
 
-        if ($null -eq $folderResponse.files -or $folderResponse.files.Count -eq 0) {
-            $folderBody = @{
-                name     = "$number"
+        if ($null -eq $studentFolderResponse.files -or $studentFolderResponse.files.Count -eq 0) {
+            $studentFolderBody = @{
+                name     = $studentFolderName
                 mimeType = "application/vnd.google-apps.folder"
                 parents  = @($parentFolder.id)
             } | ConvertTo-Json
-            $folder = Invoke-RestMethod -Method Post -Uri "https://www.googleapis.com/drive/v3/files?fields=id,name,webViewLink" -Headers $headers -Body $folderBody
+            $studentFolder = Invoke-RestMethod -Method Post -Uri "https://www.googleapis.com/drive/v3/files?fields=id,name" -Headers $headers -Body $studentFolderBody
 
-            if ([string]::IsNullOrWhiteSpace($folder.id)) {
-                throw "Google Drive API nie zwrocilo ID folderu '$number'."
+            if ([string]::IsNullOrWhiteSpace($studentFolder.id)) {
+                throw "Google Drive API nie zwrocilo ID folderu '$studentFolderName'."
             }
 
-            Write-Host "Utworzono folder: $number" -ForegroundColor Green
+            Write-Host "Utworzono folder: $studentFolderName" -ForegroundColor Green
         }
         else {
-            $folder = $folderResponse.files[0]
-            Write-Host "Folder $number juz istnieje - zostanie uzyty ponownie." -ForegroundColor DarkGray
+            $studentFolder = $studentFolderResponse.files[0]
+            Write-Host "Folder $studentFolderName juz istnieje - zostanie uzyty ponownie." -ForegroundColor DarkGray
+        }
+
+        $escapedNumber = "$number".Replace('\', '\\').Replace("'", "\'")
+        $childFolderQuery = "'$($studentFolder.id)' in parents and name = '$escapedNumber' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        $encodedChildFolderQuery = [System.Uri]::EscapeDataString($childFolderQuery)
+        $childFolderUri = "https://www.googleapis.com/drive/v3/files?q=$encodedChildFolderQuery&fields=files(id,name,webViewLink)&pageSize=100"
+        $childFolderResponse = Invoke-RestMethod -Method Get -Uri $childFolderUri -Headers $headers
+
+        if ($childFolderResponse.files.Count -gt 1) {
+            throw "Znaleziono kilka podfolderow '$number' w folderze '$studentFolderName'."
+        }
+
+        if ($null -eq $childFolderResponse.files -or $childFolderResponse.files.Count -eq 0) {
+            $childFolderBody = @{
+                name     = "$number"
+                mimeType = "application/vnd.google-apps.folder"
+                parents  = @($studentFolder.id)
+            } | ConvertTo-Json
+            $folder = Invoke-RestMethod -Method Post -Uri "https://www.googleapis.com/drive/v3/files?fields=id,name,webViewLink" -Headers $headers -Body $childFolderBody
+
+            if ([string]::IsNullOrWhiteSpace($folder.id)) {
+                throw "Google Drive API nie zwrocilo ID podfolderu '$number'."
+            }
+
+            Write-Host "Utworzono podfolder: $number" -ForegroundColor Green
+        }
+        else {
+            $folder = $childFolderResponse.files[0]
+            Write-Host "Podfolder $number juz istnieje - zostanie uzyty ponownie." -ForegroundColor DarkGray
         }
 
         $permissionsUri = "https://www.googleapis.com/drive/v3/files/$($folder.id)/permissions?fields=permissions(id,type,role)&pageSize=100"
@@ -255,7 +287,7 @@ $results = foreach ($studentEntry in $studentEntries) {
         }
 
         if ([string]::IsNullOrWhiteSpace($shareLink)) {
-            throw "Google Drive API nie zwrocilo linku do folderu '$number'."
+            throw "Google Drive API nie zwrocilo linku do podfolderu '$number'."
         }
 
         Write-Host "OK: $shareLink" -ForegroundColor Green
