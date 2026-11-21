@@ -1,0 +1,16 @@
+﻿1 | Bocheński Filip | https://drive.google.com/drive/folders/1gCGbSZ_ezR1RUa8E4NuLto3lj6IKVoVz
+2 | Bortual Danyil | https://drive.google.com/drive/folders/1oHDkybClebBRXCl3y1MHN0SHts2mEJuW
+4 | Chrobak Sergiusz | https://drive.google.com/drive/folders/1X3yWgDUoLSe6JhxAKt14bStBPIf4FhLa
+5 | Gadzińska Michalina | https://drive.google.com/drive/folders/1__axsMGe6kA_XznL803tmNt1ySEcreas
+6 | Gondek Karolina | https://drive.google.com/drive/folders/1rExGYFu1Vj-FVSNG0eEosxgyuveW4K8S
+7 | Jagła Justyna | https://drive.google.com/drive/folders/1vJdyqoYgcb9KsIiIXEHFLjBZpWFt8SS9
+8 | Kierzyńska Hanna | https://drive.google.com/drive/folders/1T-a6fE3PoqCQzgUieT_pth3OKc7twr4L
+9 | Koźma Julia | https://drive.google.com/drive/folders/12TSl19aGXhoJx8zauoWIr8T22NDoL0mF
+10 | Perez Nina | https://drive.google.com/drive/folders/1b3ConotuBvUUSRv8WCuHXdBZUXu6I8AS
+11 | Rejzdrowicz Witold | https://drive.google.com/drive/folders/19vm6d_LbB6xUxeeyOmWLjJtkg4lZ4zCI
+12 | Ręgałek Karol | https://drive.google.com/drive/folders/1_geekenQZx5-TujXDOHC_rYyQ0gabl8M
+13 | Roszkiewicz Celina | https://drive.google.com/drive/folders/1AxIo5CTvG7bBQgypZB38ZQF5Gxq9WbGJ
+14 | Stachowiak Anton | https://drive.google.com/drive/folders/1WS6x7u8ocqadsI9raGTZVYuRxdVlu310
+15 | Stachowiak Michał | https://drive.google.com/drive/folders/1X9K8KEo3wpudr4b2nlFgZLor-r7KJEwS
+16 | Stróżyńska Olga | https://drive.google.com/drive/folders/1xX4hlUL1jOG_Ru-v5jwVWVKidCk48yV0
+17 | Vantslava Evialina | https://drive.google.com/drive/folders/1uAeHbxZDdGtMYZwn7cAg6DlowDSUQsqw
